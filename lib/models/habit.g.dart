@@ -17,7 +17,7 @@ extension GetHabitCollection on Isar {
 final HabitSchema = CollectionSchema(
   name: 'Habit',
   schema:
-      '{"name":"Habit","properties":[{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Byte"},{"name":"name","type":"String"},{"name":"ownerId","type":"Long"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
+      '{"name":"Habit","properties":[{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Byte"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
   adapter: const _HabitAdapter(),
   idName: 'id',
   propertyIds: {
@@ -26,11 +26,10 @@ final HabitSchema = CollectionSchema(
     'emojiIcon': 2,
     'isArchived': 3,
     'name': 4,
-    'ownerId': 5,
-    'parentId': 6,
-    'reminders': 7,
-    'repeatCron': 8,
-    'targetGoal': 9
+    'parentId': 5,
+    'reminders': 6,
+    'repeatCron': 7,
+    'targetGoal': 8
   },
   indexIds: {},
   indexTypes: {},
@@ -69,58 +68,54 @@ class _HabitAdapter extends IsarTypeAdapter<Habit> {
     final value4 = object.name;
     final _name = BinaryWriter.utf8Encoder.convert(value4);
     dynamicSize += _name.length;
-    final value5 = object.ownerId;
-    final _ownerId = value5;
-    final value6 = object.parentId;
-    final _parentId = value6;
-    final value7 = object.reminders;
-    dynamicSize += (value7?.length ?? 0) * 8;
-    final _reminders = value7;
-    final value8 = object.repeatCron;
+    final value5 = object.parentId;
+    final _parentId = value5;
+    final value6 = object.reminders;
+    dynamicSize += (value6?.length ?? 0) * 8;
+    final _reminders = value6;
+    final value7 = object.repeatCron;
     IsarUint8List? _repeatCron;
-    if (value8 != null) {
-      _repeatCron = BinaryWriter.utf8Encoder.convert(value8);
+    if (value7 != null) {
+      _repeatCron = BinaryWriter.utf8Encoder.convert(value7);
     }
     dynamicSize += _repeatCron?.length ?? 0;
-    final value9 = object.targetGoal;
+    final value8 = object.targetGoal;
     IsarUint8List? _targetGoal;
-    if (value9 != null) {
-      _targetGoal = BinaryWriter.utf8Encoder.convert(value9);
+    if (value8 != null) {
+      _targetGoal = BinaryWriter.utf8Encoder.convert(value8);
     }
     dynamicSize += _targetGoal?.length ?? 0;
-    final size = dynamicSize + 75;
+    final size = dynamicSize + 67;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 75);
+    final writer = BinaryWriter(buffer, 67);
     writer.writeDateTime(offsets[0], _createdAt);
     writer.writeBytes(offsets[1], _description);
     writer.writeBytes(offsets[2], _emojiIcon);
     writer.writeBool(offsets[3], _isArchived);
     writer.writeBytes(offsets[4], _name);
-    writer.writeLong(offsets[5], _ownerId);
-    writer.writeLong(offsets[6], _parentId);
-    writer.writeDateTimeList(offsets[7], _reminders);
-    writer.writeBytes(offsets[8], _repeatCron);
-    writer.writeBytes(offsets[9], _targetGoal);
+    writer.writeLong(offsets[5], _parentId);
+    writer.writeDateTimeList(offsets[6], _reminders);
+    writer.writeBytes(offsets[7], _repeatCron);
+    writer.writeBytes(offsets[8], _targetGoal);
   }
 
   @override
   Habit deserialize(IsarCollection<Habit> collection, int id,
       BinaryReader reader, List<int> offsets) {
     final object = Habit();
-    object.createdAt = reader.readDateTime(offsets[0]);
+    object.createdAt = reader.readDateTimeOrNull(offsets[0]);
     object.description = reader.readStringOrNull(offsets[1]);
     object.emojiIcon = reader.readStringOrNull(offsets[2]);
     object.id = id;
     object.isArchived = reader.readBool(offsets[3]);
     object.name = reader.readString(offsets[4]);
-    object.ownerId = reader.readLong(offsets[5]);
-    object.parentId = reader.readLongOrNull(offsets[6]);
-    object.reminders = reader.readDateTimeList(offsets[7]);
-    object.repeatCron = reader.readStringOrNull(offsets[8]);
-    object.targetGoal = reader.readStringOrNull(offsets[9]);
+    object.parentId = reader.readLongOrNull(offsets[5]);
+    object.reminders = reader.readDateTimeList(offsets[6]);
+    object.repeatCron = reader.readStringOrNull(offsets[7]);
+    object.targetGoal = reader.readStringOrNull(offsets[8]);
     return object;
   }
 
@@ -131,7 +126,7 @@ class _HabitAdapter extends IsarTypeAdapter<Habit> {
       case -1:
         return id as P;
       case 0:
-        return (reader.readDateTime(offset)) as P;
+        return (reader.readDateTimeOrNull(offset)) as P;
       case 1:
         return (reader.readStringOrNull(offset)) as P;
       case 2:
@@ -141,14 +136,12 @@ class _HabitAdapter extends IsarTypeAdapter<Habit> {
       case 4:
         return (reader.readString(offset)) as P;
       case 5:
-        return (reader.readLong(offset)) as P;
-      case 6:
         return (reader.readLongOrNull(offset)) as P;
-      case 7:
+      case 6:
         return (reader.readDateTimeList(offset)) as P;
-      case 8:
+      case 7:
         return (reader.readStringOrNull(offset)) as P;
-      case 9:
+      case 8:
         return (reader.readStringOrNull(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -236,8 +229,16 @@ extension HabitQueryWhere on QueryBuilder<Habit, Habit, QWhereClause> {
 }
 
 extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'createdAt',
+      value: null,
+    ));
+  }
+
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtEqualTo(
-      DateTime value) {
+      DateTime? value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'createdAt',
@@ -246,7 +247,7 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -258,7 +259,7 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -270,8 +271,8 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -660,53 +661,6 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
       property: 'name',
       value: pattern,
       caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> ownerIdEqualTo(int value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'ownerId',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> ownerIdGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'ownerId',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> ownerIdLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'ownerId',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> ownerIdBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'ownerId',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
     ));
   }
 
@@ -1102,14 +1056,6 @@ extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
     return addSortByInternal('name', Sort.desc);
   }
 
-  QueryBuilder<Habit, Habit, QAfterSortBy> sortByOwnerId() {
-    return addSortByInternal('ownerId', Sort.asc);
-  }
-
-  QueryBuilder<Habit, Habit, QAfterSortBy> sortByOwnerIdDesc() {
-    return addSortByInternal('ownerId', Sort.desc);
-  }
-
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByParentId() {
     return addSortByInternal('parentId', Sort.asc);
   }
@@ -1184,14 +1130,6 @@ extension HabitQueryWhereSortThenBy on QueryBuilder<Habit, Habit, QSortThenBy> {
     return addSortByInternal('name', Sort.desc);
   }
 
-  QueryBuilder<Habit, Habit, QAfterSortBy> thenByOwnerId() {
-    return addSortByInternal('ownerId', Sort.asc);
-  }
-
-  QueryBuilder<Habit, Habit, QAfterSortBy> thenByOwnerIdDesc() {
-    return addSortByInternal('ownerId', Sort.desc);
-  }
-
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByParentId() {
     return addSortByInternal('parentId', Sort.asc);
   }
@@ -1245,10 +1183,6 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
     return addDistinctByInternal('name', caseSensitive: caseSensitive);
   }
 
-  QueryBuilder<Habit, Habit, QDistinct> distinctByOwnerId() {
-    return addDistinctByInternal('ownerId');
-  }
-
   QueryBuilder<Habit, Habit, QDistinct> distinctByParentId() {
     return addDistinctByInternal('parentId');
   }
@@ -1265,7 +1199,7 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
 }
 
 extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
-  QueryBuilder<Habit, DateTime, QQueryOperations> createdAtProperty() {
+  QueryBuilder<Habit, DateTime?, QQueryOperations> createdAtProperty() {
     return addPropertyNameInternal('createdAt');
   }
 
@@ -1287,10 +1221,6 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
 
   QueryBuilder<Habit, String, QQueryOperations> nameProperty() {
     return addPropertyNameInternal('name');
-  }
-
-  QueryBuilder<Habit, int, QQueryOperations> ownerIdProperty() {
-    return addPropertyNameInternal('ownerId');
   }
 
   QueryBuilder<Habit, int?, QQueryOperations> parentIdProperty() {

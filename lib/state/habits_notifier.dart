@@ -14,12 +14,10 @@ class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
   }
 
   void putHabit(Habit h) {
-    h.createdAt = DateTime.now();
-    h.ownerId = 0;
-
-    state = BuiltList([h, ...state]);
+    h.createdAt = h.createdAt ?? DateTime.now();
     _isar.writeTxn((isar) async {
-      await isar.habits.put(h);
+      h.id = await isar.habits.put(h);
+      state = BuiltList([h, ...state]);
     });
   }
 

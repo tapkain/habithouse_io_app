@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
@@ -19,6 +20,10 @@ class PreviewHabitView extends HookConsumerWidget {
         error: (_, __) => Container(),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => context.go('${GoRouter.of(context).location}/select'),
+      ),
     );
   }
 
@@ -30,12 +35,13 @@ class PreviewHabitView extends HookConsumerWidget {
         SliverAppBar(
           title: Text(habit.name),
         ),
-        SliverToBoxAdapter(
-          child: ElevatedButton(onPressed: () {}, child: Text('Start FLOW')),
-        ),
+        if (childHabits.isNotEmpty)
+          SliverToBoxAdapter(
+            child: ElevatedButton(onPressed: () {}, child: Text('Start FLOW')),
+          ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            (_, index) => LeafHabitListItem(habit: childHabits[index]),
+            (_, index) => ChildHabitListTile(habit: childHabits[index]),
             childCount: childHabits.length,
           ),
         ),
@@ -44,13 +50,15 @@ class PreviewHabitView extends HookConsumerWidget {
   }
 }
 
-class LeafHabitListItem extends StatelessWidget {
-  const LeafHabitListItem({required this.habit, Key? key}) : super(key: key);
+class ChildHabitListTile extends StatelessWidget {
+  const ChildHabitListTile({required this.habit, Key? key}) : super(key: key);
 
   final Habit habit;
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return ListTile(
+      title: Text(habit.name),
+    );
   }
 }

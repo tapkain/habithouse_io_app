@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habithouse_io/models/create_child_habit_form.dart';
 import 'package:habithouse_io/models/models.dart';
-import 'package:habithouse_io/models/create_habit_form.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/state/select_child_habits_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -34,8 +34,8 @@ class CreateChildHabitView extends HookConsumerWidget {
   }
 
   Widget buildView(Habit? editHabit, WidgetRef ref) => Scaffold(
-        body: CreateHabitFormBuilder(
-          model: CreateHabit(
+        body: CreateChildHabitFormBuilder(
+          model: CreateChildHabit(
             name: editHabit?.name ?? '',
           ),
           builder: (context, formModel, child) => ListView(
@@ -45,7 +45,7 @@ class CreateChildHabitView extends HookConsumerWidget {
                 formControl: formModel.nameControl,
                 decoration: const InputDecoration(labelText: 'name'),
               ),
-              ReactiveCreateHabitFormConsumer(
+              ReactiveCreateChildHabitFormConsumer(
                 builder: (context, form, child) => ElevatedButton(
                   child: Text('Submit'),
                   onPressed: form.form.valid

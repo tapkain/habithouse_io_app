@@ -5,7 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
-  HabitsNotifier() : super(BuiltList()) {
+  HabitsNotifier(this.viewDate) : super(BuiltList()) {
+    // TODO: add query by viewDate when isar has better datetime support
+    // https://github.com/isar/isar/issues/222
     _isar.habits
         .filter()
         .parentIdIsNull()
@@ -24,13 +26,16 @@ class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
   Future<Habit?> getById(int id) => _isar.habits.get(id);
 
   final _isar = Isar.getInstance(Config.localDbName)!;
+  final DateTime viewDate;
 }
 
 final habitsProvider = StateNotifierProvider<HabitsNotifier, BuiltList<Habit>>(
-  (_) => HabitsNotifier(),
+  (ref) => HabitsNotifier(ref.watch(viewDateProvider)),
 );
 
 final habitByIdProvider = FutureProvider.family<Habit?, int>((ref, habitId) {
   final habits = ref.watch(habitsProvider.notifier);
   return habits.getById(habitId);
 });
+
+final viewDateProvider = StateProvider((_) => DateTime.now());

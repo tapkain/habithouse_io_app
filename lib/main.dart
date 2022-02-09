@@ -1,5 +1,6 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
+import 'package:habithouse_io/models/habit_entry.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
@@ -18,14 +19,14 @@ class HabithouseProviderObserver extends ProviderObserver {
   @override
   void didAddProvider(
       ProviderBase provider, Object? value, ProviderContainer container) {
-    log.fine('Add: ${provider.name ?? provider.runtimeType.toString()}');
-    log.fine(value);
+    log.finest('Add: ${provider.name ?? provider.runtimeType.toString()}');
+    log.finest(value);
     super.didAddProvider(provider, value, container);
   }
 
   @override
   void didDisposeProvider(ProviderBase provider, ProviderContainer containers) {
-    log.fine('Dispose: ${provider.name ?? provider.runtimeType.toString()}');
+    log.finest('Dispose: ${provider.name ?? provider.runtimeType.toString()}');
     super.didDisposeProvider(provider, containers);
   }
 
@@ -36,10 +37,8 @@ class HabithouseProviderObserver extends ProviderObserver {
     Object? newValue,
     ProviderContainer container,
   ) {
-    log.fine('Update: ${provider.name ?? provider.runtimeType.toString()}');
-    log.fine(previousValue);
-    log.fine('->');
-    log.fine(newValue);
+    log.finest('Update: ${provider.name ?? provider.runtimeType.toString()}');
+    log.finest('$previousValue -> $newValue');
     super.didUpdateProvider(provider, previousValue, newValue, container);
   }
 }
@@ -66,7 +65,7 @@ void main() {
     runAppFunction: () async {
       final dir = await getApplicationSupportDirectory();
       await Isar.open(
-        schemas: [HabitSchema],
+        schemas: [HabitSchema, HabitEntrySchema],
         directory: dir.path,
         name: Config.localDbName,
         inspector: Config.isDebug,

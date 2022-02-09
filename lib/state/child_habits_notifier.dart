@@ -2,11 +2,14 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dartx/dartx.dart';
 import 'package:habithouse_io/config.dart';
 import 'package:habithouse_io/models/habit.dart';
+import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 
 class ChildHabitsNotifier extends StateNotifier<BuiltList<Habit>> {
-  ChildHabitsNotifier(this.habitId) : super(BuiltList()) {
+  ChildHabitsNotifier(this.viewDate, this.habitId) : super(BuiltList()) {
+    // TODO: add query by viewDate when isar has better datetime support
+    // https://github.com/isar/isar/issues/222
     _isar.habits
         .filter()
         .parentIdEqualTo(habitId)
@@ -41,9 +44,10 @@ class ChildHabitsNotifier extends StateNotifier<BuiltList<Habit>> {
 
   final int habitId;
   final _isar = Isar.getInstance(Config.localDbName)!;
+  final DateTime viewDate;
 }
 
 final childHabitsProvider =
     StateNotifierProvider.family<ChildHabitsNotifier, BuiltList<Habit>, int>(
-  (ref, habitId) => ChildHabitsNotifier(habitId),
+  (ref, habitId) => ChildHabitsNotifier(ref.watch(viewDateProvider), habitId),
 );

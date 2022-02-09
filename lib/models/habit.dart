@@ -1,3 +1,4 @@
+import 'package:habithouse_io/models/habit_entry.dart';
 import 'package:isar/isar.dart';
 
 part 'habit.g.dart';

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/models/habit.dart';
 import 'package:habithouse_io/state/auth_notifier.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
+import 'package:habithouse_io/widgets/date_list_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeView extends HookConsumerWidget {
@@ -17,8 +18,20 @@ class HomeView extends HookConsumerWidget {
         child: const Icon(Icons.add),
         onPressed: () => context.go('/habits/create'),
       ),
-      body: ListView(
-        children: habits.map((e) => HomeHabitWidget(habit: e)).toList(),
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          Container(
+            alignment: Alignment.center,
+            height: 40,
+            child: const DateListView(),
+          ),
+          Expanded(
+            child: ListView(
+              children: habits.map((e) => HomeHabitWidget(habit: e)).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }

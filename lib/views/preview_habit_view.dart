@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habithouse_io/models/habit_entry.dart';
 import 'package:habithouse_io/models/models.dart';
+import 'package:habithouse_io/state/child_habit_entry_notifier.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -29,6 +31,7 @@ class PreviewHabitView extends HookConsumerWidget {
 
   Widget buildView(Habit habit, WidgetRef ref) {
     final childHabits = ref.watch(childHabitsProvider(habitId));
+    final childHabitEntries = ref.watch(childHabitEntryProvider(habitId));
 
     return CustomScrollView(
       slivers: [
@@ -41,7 +44,16 @@ class PreviewHabitView extends HookConsumerWidget {
           ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
-            (_, index) => ChildHabitListTile(habit: childHabits[index]),
+            (_, index) {
+              final habit = childHabits[index];
+              final entryIndex =
+                  childHabitEntries.indexWhere((e) => e.habitId == habit.id);
+
+              return ChildHabitListTile(
+                habit: habit,
+                entry: entryIndex == -1 ? null : childHabitEntries[entryIndex],
+              );
+            },
             childCount: childHabits.length,
           ),
         ),
@@ -50,15 +62,37 @@ class PreviewHabitView extends HookConsumerWidget {
   }
 }
 
-class ChildHabitListTile extends StatelessWidget {
-  const ChildHabitListTile({required this.habit, Key? key}) : super(key: key);
+class ChildHabitListTile extends HookConsumerWidget {
+  const ChildHabitListTile({
+    required this.habit,
+    required this.entry,
+    Key? key,
+  }) : super(key: key);
 
   final Habit habit;
+  final HabitEntry? entry;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
       title: Text(habit.name),
+      trailing: Checkbox(
+        value: entry != null,
+        onChanged: (value) {
+          final childHabitEntries =
+              ref.read(childHabitEntryProvider(habit.parentId!).notifier);
+
+          if (value == true) {
+            childHabitEntries.putEntry(
+              HabitEntry()
+                ..createdAt = DateTime.now()
+                ..habitId = habit.id,
+            );
+          } else if (entry != null) {
+            childHabitEntries.deleteEntry(entry!);
+          }
+        },
+      ),
     );
   }
 }

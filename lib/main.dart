@@ -1,13 +1,10 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
-import 'package:habithouse_io/models/habit_entry.dart';
+import 'package:habithouse_io/repository/isar_storage.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
 import 'package:logging/logging.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:habithouse_io/models/models.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -63,14 +60,7 @@ void main() {
     ),
     enableLogger: false,
     runAppFunction: () async {
-      final dir = await getApplicationSupportDirectory();
-      await Isar.open(
-        schemas: [HabitSchema, HabitEntrySchema],
-        directory: dir.path,
-        name: Config.localDbName,
-        inspector: Config.isDebug,
-      );
-
+      await IsarStorage.initialize();
       await Supabase.initialize(
         anonKey: Config.supabaseKey,
         url: Config.supabaseUrl,

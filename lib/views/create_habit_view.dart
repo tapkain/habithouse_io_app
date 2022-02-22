@@ -15,13 +15,7 @@ class CreateHabitView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (editHabitId != null) {
       final editHabit = ref.watch(habitByIdProvider(editHabitId!));
-      return editHabit.when(
-        data: (data) => buildView(data, ref),
-        error: (_, __) => Container(),
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return editHabit == null ? Container() : buildView(editHabit, ref);
     }
 
     return buildView(null, ref);
@@ -43,13 +37,7 @@ class CreateHabitView extends HookConsumerWidget {
                 builder: (context, form, child) => ElevatedButton(
                   child: Text('Submit'),
                   onPressed: form.form.valid
-                      ? () {
-                          final habit = editHabit ?? Habit();
-                          ref.read(habitsProvider.notifier).putHabit(
-                                habit..name = form.nameValue,
-                              );
-                          GoRouter.of(context).pop();
-                        }
+                      ? () => submitForm(context, ref, form)
                       : null,
                 ),
               ),
@@ -57,4 +45,25 @@ class CreateHabitView extends HookConsumerWidget {
           ),
         ),
       );
+
+  void submitForm(
+    BuildContext context,
+    WidgetRef ref,
+    CreateHabitForm form,
+  ) async {
+    final habitsNotifier = ref.read(habitsProvider.notifier);
+    final editHabit = ref.read(habitByIdProvider(editHabitId!));
+
+    if (editHabit != null) {
+      habitsNotifier.putHabit(
+        editHabit.copyWithCreateHabitForm(form),
+      );
+    } else {
+      habitsNotifier.putHabit(
+        Habit.fromCreateHabitForm(form),
+      );
+    }
+
+    GoRouter.of(context).pop();
+  }
 }

@@ -1,41 +1,39 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:habithouse_io/config.dart';
 import 'package:habithouse_io/models/models.dart';
+import 'package:habithouse_io/repository/repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
+import 'package:time/src/extensions.dart';
 
 class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
-  HabitsNotifier(this.viewDate) : super(BuiltList()) {
-    // TODO: add query by viewDate when isar has better datetime support
-    // https://github.com/isar/isar/issues/222
-    _isar.habits
-        .filter()
-        .parentIdIsNull()
-        .findAll()
-        .then((value) => state = BuiltList(value));
+  HabitsNotifier(this.storage, this.viewDate)
+      : super(BuiltList(storage.fetchHabitsAfterDate(viewDate)));
+
+  void putHabit(Habit h) async {
+    state = BuiltList([await storage.putHabit(h), ...state]);
   }
 
-  void putHabit(Habit h) {
-    h.createdAt = h.createdAt ?? DateTime.now();
-    _isar.writeTxn((isar) async {
-      h.id = await isar.habits.put(h);
-      state = BuiltList([h, ...state]);
-    });
-  }
+  Habit? getById(int id) => storage.fetchHabitById(id);
 
-  Future<Habit?> getById(int id) => _isar.habits.get(id);
-
-  final _isar = Isar.getInstance(Config.localDbName)!;
   final DateTime viewDate;
+  final IStorage storage;
 }
 
 final habitsProvider = StateNotifierProvider<HabitsNotifier, BuiltList<Habit>>(
-  (ref) => HabitsNotifier(ref.watch(viewDateProvider)),
+  (ref) => HabitsNotifier(
+    ref.read(storageProvider),
+    ref.watch(viewDateProvider),
+  ),
 );
 
-final habitByIdProvider = FutureProvider.family<Habit?, int>((ref, habitId) {
-  final habits = ref.watch(habitsProvider.notifier);
-  return habits.getById(habitId);
+final habitByIdProvider = StateProvider.family<Habit?, int>((ref, habitId) {
+  final habitsNotifier = ref.watch(habitsProvider.notifier);
+  return habitsNotifier.getById(habitId);
 });
 
-final viewDateProvider = StateProvider((_) => DateTime.now());
+final viewDateProvider = StateProvider((_) => DateTime.now().copyWith(
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
+      microsecond: 0,
+    ));

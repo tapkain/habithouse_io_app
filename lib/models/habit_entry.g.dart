@@ -6,7 +6,7 @@ part of 'habit_entry.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetHabitEntryCollection on Isar {
   IsarCollection<HabitEntry> get habitEntrys {
@@ -17,27 +17,98 @@ extension GetHabitEntryCollection on Isar {
 final HabitEntrySchema = CollectionSchema(
   name: 'HabitEntry',
   schema:
-      '{"name":"HabitEntry","properties":[{"name":"createdAt","type":"Long"},{"name":"habitId","type":"Long"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _HabitEntryAdapter(),
+      '{"name":"HabitEntry","idName":"id","properties":[{"name":"createdAt","type":"Long"},{"name":"habitId","type":"Long"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
+  nativeAdapter: const _HabitEntryNativeAdapter(),
+  webAdapter: const _HabitEntryWebAdapter(),
   idName: 'id',
   propertyIds: {'createdAt': 0, 'habitId': 1, 'targetGoal': 2},
+  listProperties: {},
   indexIds: {},
   indexTypes: {},
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
+  getId: (obj) {
+    if (obj.id == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.id;
+    }
+  },
+  setId: null,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _HabitEntryAdapter extends IsarTypeAdapter<HabitEntry> {
-  const _HabitEntryAdapter();
+class _HabitEntryWebAdapter extends IsarWebTypeAdapter<HabitEntry> {
+  const _HabitEntryWebAdapter();
 
   @override
-  void serialize(IsarCollection<HabitEntry> collection, IsarRawObject rawObj,
-      HabitEntry object, List<int> offsets, AdapterAlloc alloc) {
+  Object serialize(IsarCollection<HabitEntry> collection, HabitEntry object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(
+        jsObj, 'createdAt', object.createdAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'habitId', object.habitId);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'targetGoal', object.targetGoal);
+    return jsObj;
+  }
+
+  @override
+  HabitEntry deserialize(IsarCollection<HabitEntry> collection, dynamic jsObj) {
+    final object = HabitEntry(
+      createdAt: IsarNative.jsObjectGet(jsObj, 'createdAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'createdAt'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0),
+      habitId:
+          IsarNative.jsObjectGet(jsObj, 'habitId') ?? double.negativeInfinity,
+      id: IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity,
+      targetGoal: IsarNative.jsObjectGet(jsObj, 'targetGoal'),
+    );
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'createdAt':
+        return (IsarNative.jsObjectGet(jsObj, 'createdAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'createdAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'habitId':
+        return (IsarNative.jsObjectGet(jsObj, 'habitId') ??
+            double.negativeInfinity) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity)
+            as P;
+      case 'targetGoal':
+        return (IsarNative.jsObjectGet(jsObj, 'targetGoal')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, HabitEntry object) {}
+}
+
+class _HabitEntryNativeAdapter extends IsarNativeTypeAdapter<HabitEntry> {
+  const _HabitEntryNativeAdapter();
+
+  @override
+  void serialize(
+      IsarCollection<HabitEntry> collection,
+      IsarRawObject rawObj,
+      HabitEntry object,
+      int staticSize,
+      List<int> offsets,
+      AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.createdAt;
     final _createdAt = value0;
@@ -46,15 +117,15 @@ class _HabitEntryAdapter extends IsarTypeAdapter<HabitEntry> {
     final value2 = object.targetGoal;
     IsarUint8List? _targetGoal;
     if (value2 != null) {
-      _targetGoal = BinaryWriter.utf8Encoder.convert(value2);
+      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value2);
     }
-    dynamicSize += _targetGoal?.length ?? 0;
-    final size = dynamicSize + 26;
+    dynamicSize += (_targetGoal?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 26);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _createdAt);
     writer.writeLong(offsets[1], _habitId);
     writer.writeBytes(offsets[2], _targetGoal);
@@ -62,18 +133,19 @@ class _HabitEntryAdapter extends IsarTypeAdapter<HabitEntry> {
 
   @override
   HabitEntry deserialize(IsarCollection<HabitEntry> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = HabitEntry();
-    object.createdAt = reader.readDateTime(offsets[0]);
-    object.habitId = reader.readLong(offsets[1]);
-    object.id = id;
-    object.targetGoal = reader.readStringOrNull(offsets[2]);
+      IsarBinaryReader reader, List<int> offsets) {
+    final object = HabitEntry(
+      createdAt: reader.readDateTime(offsets[0]),
+      habitId: reader.readLong(offsets[1]),
+      id: id,
+      targetGoal: reader.readStringOrNull(offsets[2]),
+    );
     return object;
   }
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
@@ -87,6 +159,9 @@ class _HabitEntryAdapter extends IsarTypeAdapter<HabitEntry> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, HabitEntry object) {}
 }
 
 extension HabitEntryQueryWhereSort
@@ -433,6 +508,9 @@ extension HabitEntryQueryFilter
     ));
   }
 }
+
+extension HabitEntryQueryLinks
+    on QueryBuilder<HabitEntry, HabitEntry, QFilterCondition> {}
 
 extension HabitEntryQueryWhereSortBy
     on QueryBuilder<HabitEntry, HabitEntry, QSortBy> {

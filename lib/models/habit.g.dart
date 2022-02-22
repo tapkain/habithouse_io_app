@@ -6,7 +6,7 @@ part of 'habit.dart';
 // IsarCollectionGenerator
 // **************************************************************************
 
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast
 
 extension GetHabitCollection on Isar {
   IsarCollection<Habit> get habits {
@@ -17,8 +17,9 @@ extension GetHabitCollection on Isar {
 final HabitSchema = CollectionSchema(
   name: 'Habit',
   schema:
-      '{"name":"Habit","properties":[{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Byte"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
-  adapter: const _HabitAdapter(),
+      '{"name":"Habit","idName":"id","properties":[{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
+  nativeAdapter: const _HabitNativeAdapter(),
+  webAdapter: const _HabitWebAdapter(),
   idName: 'id',
   propertyIds: {
     'createdAt': 0,
@@ -31,43 +32,145 @@ final HabitSchema = CollectionSchema(
     'repeatCron': 7,
     'targetGoal': 8
   },
+  listProperties: {'reminders'},
   indexIds: {},
   indexTypes: {},
   linkIds: {},
   backlinkIds: {},
   linkedCollections: [],
-  getId: (obj) => obj.id,
-  setId: (obj, id) => obj.id = id,
+  getId: (obj) {
+    if (obj.id == Isar.autoIncrement) {
+      return null;
+    } else {
+      return obj.id;
+    }
+  },
+  setId: null,
   getLinks: (obj) => [],
-  version: 1,
+  version: 2,
 );
 
-class _HabitAdapter extends IsarTypeAdapter<Habit> {
-  const _HabitAdapter();
+class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
+  const _HabitWebAdapter();
+
+  @override
+  Object serialize(IsarCollection<Habit> collection, Habit object) {
+    final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(
+        jsObj, 'createdAt', object.createdAt.toUtc().millisecondsSinceEpoch);
+    IsarNative.jsObjectSet(jsObj, 'description', object.description);
+    IsarNative.jsObjectSet(jsObj, 'emojiIcon', object.emojiIcon);
+    IsarNative.jsObjectSet(jsObj, 'id', object.id);
+    IsarNative.jsObjectSet(jsObj, 'isArchived', object.isArchived);
+    IsarNative.jsObjectSet(jsObj, 'name', object.name);
+    IsarNative.jsObjectSet(jsObj, 'parentId', object.parentId);
+    IsarNative.jsObjectSet(
+        jsObj,
+        'reminders',
+        object.reminders
+            ?.map((e) => e.toUtc().millisecondsSinceEpoch)
+            .toList());
+    IsarNative.jsObjectSet(jsObj, 'repeatCron', object.repeatCron);
+    IsarNative.jsObjectSet(jsObj, 'targetGoal', object.targetGoal);
+    return jsObj;
+  }
+
+  @override
+  Habit deserialize(IsarCollection<Habit> collection, dynamic jsObj) {
+    final object = Habit(
+      createdAt: IsarNative.jsObjectGet(jsObj, 'createdAt') != null
+          ? DateTime.fromMillisecondsSinceEpoch(
+                  IsarNative.jsObjectGet(jsObj, 'createdAt'),
+                  isUtc: true)
+              .toLocal()
+          : DateTime.fromMillisecondsSinceEpoch(0),
+      description: IsarNative.jsObjectGet(jsObj, 'description'),
+      emojiIcon: IsarNative.jsObjectGet(jsObj, 'emojiIcon'),
+      id: IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity,
+      isArchived: IsarNative.jsObjectGet(jsObj, 'isArchived') ?? false,
+      name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
+      parentId: IsarNative.jsObjectGet(jsObj, 'parentId'),
+      reminders: (IsarNative.jsObjectGet(jsObj, 'reminders') as List?)
+          ?.map((e) => e != null
+              ? DateTime.fromMillisecondsSinceEpoch(e, isUtc: true).toLocal()
+              : DateTime.fromMillisecondsSinceEpoch(0))
+          .toList()
+          .cast<DateTime>(),
+      repeatCron: IsarNative.jsObjectGet(jsObj, 'repeatCron'),
+      targetGoal: IsarNative.jsObjectGet(jsObj, 'targetGoal'),
+    );
+    return object;
+  }
+
+  @override
+  P deserializeProperty<P>(Object jsObj, String propertyName) {
+    switch (propertyName) {
+      case 'createdAt':
+        return (IsarNative.jsObjectGet(jsObj, 'createdAt') != null
+            ? DateTime.fromMillisecondsSinceEpoch(
+                    IsarNative.jsObjectGet(jsObj, 'createdAt'),
+                    isUtc: true)
+                .toLocal()
+            : DateTime.fromMillisecondsSinceEpoch(0)) as P;
+      case 'description':
+        return (IsarNative.jsObjectGet(jsObj, 'description')) as P;
+      case 'emojiIcon':
+        return (IsarNative.jsObjectGet(jsObj, 'emojiIcon')) as P;
+      case 'id':
+        return (IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity)
+            as P;
+      case 'isArchived':
+        return (IsarNative.jsObjectGet(jsObj, 'isArchived') ?? false) as P;
+      case 'name':
+        return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
+      case 'parentId':
+        return (IsarNative.jsObjectGet(jsObj, 'parentId')) as P;
+      case 'reminders':
+        return ((IsarNative.jsObjectGet(jsObj, 'reminders') as List?)
+            ?.map((e) => e != null
+                ? DateTime.fromMillisecondsSinceEpoch(e, isUtc: true).toLocal()
+                : DateTime.fromMillisecondsSinceEpoch(0))
+            .toList()
+            .cast<DateTime>()) as P;
+      case 'repeatCron':
+        return (IsarNative.jsObjectGet(jsObj, 'repeatCron')) as P;
+      case 'targetGoal':
+        return (IsarNative.jsObjectGet(jsObj, 'targetGoal')) as P;
+      default:
+        throw 'Illegal propertyName';
+    }
+  }
+
+  @override
+  void attachLinks(Isar isar, int id, Habit object) {}
+}
+
+class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
+  const _HabitNativeAdapter();
 
   @override
   void serialize(IsarCollection<Habit> collection, IsarRawObject rawObj,
-      Habit object, List<int> offsets, AdapterAlloc alloc) {
+      Habit object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
     final value0 = object.createdAt;
     final _createdAt = value0;
     final value1 = object.description;
     IsarUint8List? _description;
     if (value1 != null) {
-      _description = BinaryWriter.utf8Encoder.convert(value1);
+      _description = IsarBinaryWriter.utf8Encoder.convert(value1);
     }
-    dynamicSize += _description?.length ?? 0;
+    dynamicSize += (_description?.length ?? 0) as int;
     final value2 = object.emojiIcon;
     IsarUint8List? _emojiIcon;
     if (value2 != null) {
-      _emojiIcon = BinaryWriter.utf8Encoder.convert(value2);
+      _emojiIcon = IsarBinaryWriter.utf8Encoder.convert(value2);
     }
-    dynamicSize += _emojiIcon?.length ?? 0;
+    dynamicSize += (_emojiIcon?.length ?? 0) as int;
     final value3 = object.isArchived;
     final _isArchived = value3;
     final value4 = object.name;
-    final _name = BinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += _name.length;
+    final _name = IsarBinaryWriter.utf8Encoder.convert(value4);
+    dynamicSize += (_name.length) as int;
     final value5 = object.parentId;
     final _parentId = value5;
     final value6 = object.reminders;
@@ -76,21 +179,21 @@ class _HabitAdapter extends IsarTypeAdapter<Habit> {
     final value7 = object.repeatCron;
     IsarUint8List? _repeatCron;
     if (value7 != null) {
-      _repeatCron = BinaryWriter.utf8Encoder.convert(value7);
+      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value7);
     }
-    dynamicSize += _repeatCron?.length ?? 0;
+    dynamicSize += (_repeatCron?.length ?? 0) as int;
     final value8 = object.targetGoal;
     IsarUint8List? _targetGoal;
     if (value8 != null) {
-      _targetGoal = BinaryWriter.utf8Encoder.convert(value8);
+      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value8);
     }
-    dynamicSize += _targetGoal?.length ?? 0;
-    final size = dynamicSize + 67;
+    dynamicSize += (_targetGoal?.length ?? 0) as int;
+    final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
-    final buffer = bufAsBytes(rawObj.buffer, size);
-    final writer = BinaryWriter(buffer, 67);
+    final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
+    final writer = IsarBinaryWriter(buffer, staticSize);
     writer.writeDateTime(offsets[0], _createdAt);
     writer.writeBytes(offsets[1], _description);
     writer.writeBytes(offsets[2], _emojiIcon);
@@ -104,29 +207,30 @@ class _HabitAdapter extends IsarTypeAdapter<Habit> {
 
   @override
   Habit deserialize(IsarCollection<Habit> collection, int id,
-      BinaryReader reader, List<int> offsets) {
-    final object = Habit();
-    object.createdAt = reader.readDateTimeOrNull(offsets[0]);
-    object.description = reader.readStringOrNull(offsets[1]);
-    object.emojiIcon = reader.readStringOrNull(offsets[2]);
-    object.id = id;
-    object.isArchived = reader.readBool(offsets[3]);
-    object.name = reader.readString(offsets[4]);
-    object.parentId = reader.readLongOrNull(offsets[5]);
-    object.reminders = reader.readDateTimeList(offsets[6]);
-    object.repeatCron = reader.readStringOrNull(offsets[7]);
-    object.targetGoal = reader.readStringOrNull(offsets[8]);
+      IsarBinaryReader reader, List<int> offsets) {
+    final object = Habit(
+      createdAt: reader.readDateTime(offsets[0]),
+      description: reader.readStringOrNull(offsets[1]),
+      emojiIcon: reader.readStringOrNull(offsets[2]),
+      id: id,
+      isArchived: reader.readBool(offsets[3]),
+      name: reader.readString(offsets[4]),
+      parentId: reader.readLongOrNull(offsets[5]),
+      reminders: reader.readDateTimeList(offsets[6]),
+      repeatCron: reader.readStringOrNull(offsets[7]),
+      targetGoal: reader.readStringOrNull(offsets[8]),
+    );
     return object;
   }
 
   @override
   P deserializeProperty<P>(
-      int id, BinaryReader reader, int propertyIndex, int offset) {
+      int id, IsarBinaryReader reader, int propertyIndex, int offset) {
     switch (propertyIndex) {
       case -1:
         return id as P;
       case 0:
-        return (reader.readDateTimeOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 1:
         return (reader.readStringOrNull(offset)) as P;
       case 2:
@@ -147,6 +251,9 @@ class _HabitAdapter extends IsarTypeAdapter<Habit> {
         throw 'Illegal propertyIndex';
     }
   }
+
+  @override
+  void attachLinks(Isar isar, int id, Habit object) {}
 }
 
 extension HabitQueryWhereSort on QueryBuilder<Habit, Habit, QWhere> {
@@ -229,16 +336,8 @@ extension HabitQueryWhere on QueryBuilder<Habit, Habit, QWhereClause> {
 }
 
 extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'createdAt',
-      value: null,
-    ));
-  }
-
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtEqualTo(
-      DateTime? value) {
+      DateTime value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'createdAt',
@@ -247,7 +346,7 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtGreaterThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -259,7 +358,7 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtLessThan(
-    DateTime? value, {
+    DateTime value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
@@ -271,8 +370,8 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtBetween(
-    DateTime? lower,
-    DateTime? upper, {
+    DateTime lower,
+    DateTime upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -1007,6 +1106,8 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 }
 
+extension HabitQueryLinks on QueryBuilder<Habit, Habit, QFilterCondition> {}
+
 extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByCreatedAt() {
     return addSortByInternal('createdAt', Sort.asc);
@@ -1199,7 +1300,7 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
 }
 
 extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
-  QueryBuilder<Habit, DateTime?, QQueryOperations> createdAtProperty() {
+  QueryBuilder<Habit, DateTime, QQueryOperations> createdAtProperty() {
     return addPropertyNameInternal('createdAt');
   }
 

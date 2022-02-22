@@ -6,18 +6,24 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:dartx/dartx.dart';
 
 final _premadeHabits = [
-  Habit()
-    ..emojiIcon = '🧘'
-    ..name = 'Meditation'
-    ..description = 'Meditation is gud',
-  Habit()
-    ..emojiIcon = '🚿'
-    ..name = 'Cold Shower'
-    ..description = 'Cold Shomer is too cold',
-  Habit()
-    ..emojiIcon = '🍺'
-    ..name = 'Drink Beer'
-    ..description = 'Makes u ugly',
+  Habit(
+    emojiIcon: '🧘',
+    name: 'Meditation',
+    description: 'Meditation is gud',
+    createdAt: DateTime.now(),
+  ),
+  Habit(
+    emojiIcon: '🚿',
+    name: 'Cold Shower',
+    description: 'Cold Shomer is too cold',
+    createdAt: DateTime.now(),
+  ),
+  Habit(
+    emojiIcon: '🍺',
+    name: 'Drink Beer',
+    description: 'Makes u ugly',
+    createdAt: DateTime.now(),
+  ),
 ];
 
 @immutable
@@ -52,8 +58,10 @@ class SelectChildHabitsNotifier extends StateNotifier<BuiltList<HabitOption>> {
     state = BuiltList([HabitOption(h, true), ...state]);
   }
 
-  BuiltList<Habit> get selected =>
-      state.where((e) => e.isSelected).map((e) => e.habit).toBuiltList();
+  BuiltList<Habit> get selected => state
+      .where((e) => e.isSelected)
+      .map((e) => e.habit.copyWith(createdAt: DateTime.now()))
+      .toBuiltList();
 }
 
 final selectChildHabitsProvider = StateNotifierProvider.family

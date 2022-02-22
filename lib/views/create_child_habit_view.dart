@@ -21,13 +21,7 @@ class CreateChildHabitView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (editHabitId != null) {
       final editHabit = ref.watch(habitByIdProvider(editHabitId!));
-      return editHabit.when(
-        data: (data) => buildView(data, ref),
-        error: (_, __) => Container(),
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return editHabit == null ? Container() : buildView(editHabit, ref);
     }
 
     return buildView(null, ref);
@@ -49,16 +43,7 @@ class CreateChildHabitView extends HookConsumerWidget {
                 builder: (context, form, child) => ElevatedButton(
                   child: Text('Submit'),
                   onPressed: form.form.valid
-                      ? () {
-                          final habit = editHabit ?? Habit();
-                          ref
-                              .read(
-                                selectChildHabitsProvider(parentHabitId)
-                                    .notifier,
-                              )
-                              .putHabit(habit..name = form.nameValue);
-                          GoRouter.of(context).pop();
-                        }
+                      ? () => submitForm(context, ref, form)
                       : null,
                 ),
               ),
@@ -66,4 +51,33 @@ class CreateChildHabitView extends HookConsumerWidget {
           ),
         ),
       );
+
+  void submitForm(
+    BuildContext context,
+    WidgetRef ref,
+    CreateChildHabitForm form,
+  ) async {
+    final editHabit = ref.read(habitByIdProvider(editHabitId!));
+    final childHabitsNotifier = ref.read(
+      selectChildHabitsProvider(parentHabitId).notifier,
+    );
+
+    if (editHabit != null) {
+      childHabitsNotifier.putHabit(
+        editHabit.copyWithCreateChildHabitForm(
+          form,
+          parentHabitId,
+        ),
+      );
+    } else {
+      childHabitsNotifier.putHabit(
+        Habit.fromCreateChildHabitForm(
+          form,
+          parentHabitId,
+        ),
+      );
+    }
+
+    GoRouter.of(context).pop();
+  }
 }

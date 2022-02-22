@@ -21,14 +21,14 @@ class SelectChildHabitsView extends HookConsumerWidget {
         actions: [
           TextButton(
             onPressed: () {
-              final selectedChildHabits =
+              final selectedChildHabitsNotifier =
                   ref.read(selectChildHabitsProvider(habitId).notifier);
-              final childHabits =
+              final childHabitsNotifier =
                   ref.read(childHabitsProvider(habitId).notifier);
 
-              childHabits.putHabits(
+              childHabitsNotifier.putHabits(
                 habitId,
-                selectedChildHabits.selected.toList(),
+                selectedChildHabitsNotifier.selected.toList(),
               );
 
               GoRouter.of(context).pop();

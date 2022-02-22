@@ -9,7 +9,7 @@ import 'package:habithouse_io/views/select_child_habits_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final routerProvider = Provider((ref) {
-  final auth = ref.watch(authProvider.notifier);
+  final authNotifier = ref.watch(authProvider.notifier);
   return GoRouter(
     initialLocation: '/habits',
     routes: [
@@ -59,6 +59,6 @@ final routerProvider = Provider((ref) {
         ],
       ),
     ],
-    refreshListenable: GoRouterRefreshStream(auth.stream),
+    refreshListenable: GoRouterRefreshStream(authNotifier.stream),
   );
 });

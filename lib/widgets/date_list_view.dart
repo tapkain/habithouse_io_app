@@ -17,7 +17,13 @@ class DateListView extends HookConsumerWidget {
         final isMatch = viewDate.isAtSameDayAs(date);
 
         return InkWell(
-          onTap: () => ref.read(viewDateProvider.state).state = date,
+          onTap: () => ref.read(viewDateProvider.state).state = date.copyWith(
+            hour: 0,
+            minute: 0,
+            second: 0,
+            millisecond: 0,
+            microsecond: 0,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(

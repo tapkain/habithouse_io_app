@@ -1,16 +1,18 @@
 # habithouse_io
 
-A new Flutter project.
+### Habit tracking app on flutter.
+- 🌟 Build better habits with people. 
+- 👨‍👩‍👧‍👦 Create support groups & enjoy the journey together.
+- 🧘 Improve well-being & hapiness, inspire your group.
+- ✨ Commit to sustainable lifestyle with people you care.
 
-## Getting Started
+### Tech
+- [State management & DI - Riverpod](https://riverpod.dev/)
+- [Local DB - Isar](https://isar.dev/)
+- [Remote backend & auth - Supabase](https://supabase.com/)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Testing
+```
+sh tool/setup_tests.sh
+flutter test
+```

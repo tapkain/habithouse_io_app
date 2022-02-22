@@ -1,6 +1,7 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
 import 'package:habithouse_io/repository/isar_storage.dart';
+import 'package:habithouse_io/repository/storage.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
@@ -60,14 +61,16 @@ void main() {
     ),
     enableLogger: false,
     runAppFunction: () async {
-      await IsarStorage.initialize();
       await Supabase.initialize(
         anonKey: Config.supabaseKey,
         url: Config.supabaseUrl,
         debug: Config.isDebug,
       );
 
+      final isar = await IsarStorage.initialize();
+
       runApp(ProviderScope(
+        overrides: [storageProvider.overrideWithValue(IsarStorage(isar))],
         observers: [HabithouseProviderObserver()],
         child: const HabithouseIO(),
       ));

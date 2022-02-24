@@ -9,7 +9,7 @@ class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
       : super(BuiltList(storage.fetchHabitsAfterDate(viewDate)));
 
   void putHabit(Habit h) async {
-    state = BuiltList([await storage.putHabit(h), ...state]);
+    state = BuiltList([...state, await storage.putHabit(h)]);
   }
 
   Habit? getById(int id) => storage.fetchHabitById(id);

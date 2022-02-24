@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/habit.dart';
 import 'package:habithouse_io/state/auth_notifier.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
@@ -14,16 +15,17 @@ class HomeView extends HookConsumerWidget {
     final habits = ref.watch(habitsProvider);
 
     return Scaffold(
+      appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => context.go('/habits/create'),
       ),
       body: Column(
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: padding),
           Container(
             alignment: Alignment.center,
-            height: 40,
+            height: padding * 5,
             child: const DateListView(),
           ),
           Expanded(
@@ -48,12 +50,21 @@ class HomeHabitWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: InkWell(
+      color: Theme.of(context).toggleableActiveColor,
+      elevation: 1,
+      child: ListTile(
         onTap: () => context.go('/habits/view/${habit.id}'),
-        child: Text(
+        leading: habit.emojiIcon == null
+            ? null
+            : Text(
+                habit.emojiIcon!,
+                style: Theme.of(context).textTheme.headline4,
+              ),
+        title: Text(
           habit.name,
           style: Theme.of(context).textTheme.headline6,
         ),
+        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }

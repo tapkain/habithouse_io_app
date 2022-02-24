@@ -50,6 +50,7 @@ class IsarStorage implements IStorage {
         )
         .and()
         .habitIdEqualTo(habitId)
+        .sortByCreatedAt()
         .findAllSync();
     return list.isEmpty ? null : list.first;
   }

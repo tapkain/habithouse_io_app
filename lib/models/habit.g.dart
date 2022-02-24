@@ -17,22 +17,26 @@ extension GetHabitCollection on Isar {
 final HabitSchema = CollectionSchema(
   name: 'Habit',
   schema:
-      '{"name":"Habit","idName":"id","properties":[{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"}],"indexes":[],"links":[]}',
+      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
   nativeAdapter: const _HabitNativeAdapter(),
   webAdapter: const _HabitWebAdapter(),
   idName: 'id',
   propertyIds: {
-    'createdAt': 0,
-    'description': 1,
-    'emojiIcon': 2,
-    'isArchived': 3,
-    'name': 4,
-    'parentId': 5,
-    'reminders': 6,
-    'repeatCron': 7,
-    'targetGoal': 8
+    'backgroundColor': 0,
+    'createdAt': 1,
+    'description': 2,
+    'durationSeconds': 3,
+    'emojiIcon': 4,
+    'isArchived': 5,
+    'localFileAttachmentUris': 6,
+    'name': 7,
+    'parentId': 8,
+    'reminders': 9,
+    'repeatCron': 10,
+    'targetGoal': 11,
+    'templateId': 12
   },
-  listProperties: {'reminders'},
+  listProperties: {'localFileAttachmentUris', 'reminders'},
   indexIds: {},
   indexTypes: {},
   linkIds: {},
@@ -56,12 +60,16 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
   @override
   Object serialize(IsarCollection<Habit> collection, Habit object) {
     final jsObj = IsarNative.newJsObject();
+    IsarNative.jsObjectSet(jsObj, 'backgroundColor', object.backgroundColor);
     IsarNative.jsObjectSet(
         jsObj, 'createdAt', object.createdAt.toUtc().millisecondsSinceEpoch);
     IsarNative.jsObjectSet(jsObj, 'description', object.description);
+    IsarNative.jsObjectSet(jsObj, 'durationSeconds', object.durationSeconds);
     IsarNative.jsObjectSet(jsObj, 'emojiIcon', object.emojiIcon);
     IsarNative.jsObjectSet(jsObj, 'id', object.id);
     IsarNative.jsObjectSet(jsObj, 'isArchived', object.isArchived);
+    IsarNative.jsObjectSet(
+        jsObj, 'localFileAttachmentUris', object.localFileAttachmentUris);
     IsarNative.jsObjectSet(jsObj, 'name', object.name);
     IsarNative.jsObjectSet(jsObj, 'parentId', object.parentId);
     IsarNative.jsObjectSet(
@@ -72,12 +80,14 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
             .toList());
     IsarNative.jsObjectSet(jsObj, 'repeatCron', object.repeatCron);
     IsarNative.jsObjectSet(jsObj, 'targetGoal', object.targetGoal);
+    IsarNative.jsObjectSet(jsObj, 'templateId', object.templateId);
     return jsObj;
   }
 
   @override
   Habit deserialize(IsarCollection<Habit> collection, dynamic jsObj) {
     final object = Habit(
+      backgroundColor: IsarNative.jsObjectGet(jsObj, 'backgroundColor'),
       createdAt: IsarNative.jsObjectGet(jsObj, 'createdAt') != null
           ? DateTime.fromMillisecondsSinceEpoch(
                   IsarNative.jsObjectGet(jsObj, 'createdAt'),
@@ -85,9 +95,15 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
               .toLocal()
           : DateTime.fromMillisecondsSinceEpoch(0),
       description: IsarNative.jsObjectGet(jsObj, 'description'),
+      durationSeconds: IsarNative.jsObjectGet(jsObj, 'durationSeconds'),
       emojiIcon: IsarNative.jsObjectGet(jsObj, 'emojiIcon'),
       id: IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity,
       isArchived: IsarNative.jsObjectGet(jsObj, 'isArchived') ?? false,
+      localFileAttachmentUris:
+          (IsarNative.jsObjectGet(jsObj, 'localFileAttachmentUris') as List?)
+              ?.map((e) => e ?? '')
+              .toList()
+              .cast<String>(),
       name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
       parentId: IsarNative.jsObjectGet(jsObj, 'parentId'),
       reminders: (IsarNative.jsObjectGet(jsObj, 'reminders') as List?)
@@ -98,6 +114,7 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
           .cast<DateTime>(),
       repeatCron: IsarNative.jsObjectGet(jsObj, 'repeatCron'),
       targetGoal: IsarNative.jsObjectGet(jsObj, 'targetGoal'),
+      templateId: IsarNative.jsObjectGet(jsObj, 'templateId'),
     );
     return object;
   }
@@ -105,6 +122,8 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
   @override
   P deserializeProperty<P>(Object jsObj, String propertyName) {
     switch (propertyName) {
+      case 'backgroundColor':
+        return (IsarNative.jsObjectGet(jsObj, 'backgroundColor')) as P;
       case 'createdAt':
         return (IsarNative.jsObjectGet(jsObj, 'createdAt') != null
             ? DateTime.fromMillisecondsSinceEpoch(
@@ -114,6 +133,8 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
             : DateTime.fromMillisecondsSinceEpoch(0)) as P;
       case 'description':
         return (IsarNative.jsObjectGet(jsObj, 'description')) as P;
+      case 'durationSeconds':
+        return (IsarNative.jsObjectGet(jsObj, 'durationSeconds')) as P;
       case 'emojiIcon':
         return (IsarNative.jsObjectGet(jsObj, 'emojiIcon')) as P;
       case 'id':
@@ -121,6 +142,12 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
             as P;
       case 'isArchived':
         return (IsarNative.jsObjectGet(jsObj, 'isArchived') ?? false) as P;
+      case 'localFileAttachmentUris':
+        return ((IsarNative.jsObjectGet(jsObj, 'localFileAttachmentUris')
+                as List?)
+            ?.map((e) => e ?? '')
+            .toList()
+            .cast<String>()) as P;
       case 'name':
         return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
       case 'parentId':
@@ -136,6 +163,8 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
         return (IsarNative.jsObjectGet(jsObj, 'repeatCron')) as P;
       case 'targetGoal':
         return (IsarNative.jsObjectGet(jsObj, 'targetGoal')) as P;
+      case 'templateId':
+        return (IsarNative.jsObjectGet(jsObj, 'templateId')) as P;
       default:
         throw 'Illegal propertyName';
     }
@@ -152,73 +181,99 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
   void serialize(IsarCollection<Habit> collection, IsarRawObject rawObj,
       Habit object, int staticSize, List<int> offsets, AdapterAlloc alloc) {
     var dynamicSize = 0;
-    final value0 = object.createdAt;
-    final _createdAt = value0;
-    final value1 = object.description;
+    final value0 = object.backgroundColor;
+    final _backgroundColor = value0;
+    final value1 = object.createdAt;
+    final _createdAt = value1;
+    final value2 = object.description;
     IsarUint8List? _description;
-    if (value1 != null) {
-      _description = IsarBinaryWriter.utf8Encoder.convert(value1);
+    if (value2 != null) {
+      _description = IsarBinaryWriter.utf8Encoder.convert(value2);
     }
     dynamicSize += (_description?.length ?? 0) as int;
-    final value2 = object.emojiIcon;
+    final value3 = object.durationSeconds;
+    final _durationSeconds = value3;
+    final value4 = object.emojiIcon;
     IsarUint8List? _emojiIcon;
-    if (value2 != null) {
-      _emojiIcon = IsarBinaryWriter.utf8Encoder.convert(value2);
+    if (value4 != null) {
+      _emojiIcon = IsarBinaryWriter.utf8Encoder.convert(value4);
     }
     dynamicSize += (_emojiIcon?.length ?? 0) as int;
-    final value3 = object.isArchived;
-    final _isArchived = value3;
-    final value4 = object.name;
-    final _name = IsarBinaryWriter.utf8Encoder.convert(value4);
-    dynamicSize += (_name.length) as int;
-    final value5 = object.parentId;
-    final _parentId = value5;
-    final value6 = object.reminders;
+    final value5 = object.isArchived;
+    final _isArchived = value5;
+    final value6 = object.localFileAttachmentUris;
     dynamicSize += (value6?.length ?? 0) * 8;
-    final _reminders = value6;
-    final value7 = object.repeatCron;
+    List<IsarUint8List?>? bytesList6;
+    if (value6 != null) {
+      bytesList6 = [];
+      for (var str in value6) {
+        final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
+        bytesList6.add(bytes);
+        dynamicSize += bytes.length as int;
+      }
+    }
+    final _localFileAttachmentUris = bytesList6;
+    final value7 = object.name;
+    final _name = IsarBinaryWriter.utf8Encoder.convert(value7);
+    dynamicSize += (_name.length) as int;
+    final value8 = object.parentId;
+    final _parentId = value8;
+    final value9 = object.reminders;
+    dynamicSize += (value9?.length ?? 0) * 8;
+    final _reminders = value9;
+    final value10 = object.repeatCron;
     IsarUint8List? _repeatCron;
-    if (value7 != null) {
-      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value7);
+    if (value10 != null) {
+      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value10);
     }
     dynamicSize += (_repeatCron?.length ?? 0) as int;
-    final value8 = object.targetGoal;
+    final value11 = object.targetGoal;
     IsarUint8List? _targetGoal;
-    if (value8 != null) {
-      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value8);
+    if (value11 != null) {
+      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value11);
     }
     dynamicSize += (_targetGoal?.length ?? 0) as int;
+    final value12 = object.templateId;
+    final _templateId = value12;
     final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
     rawObj.buffer_length = size;
     final buffer = IsarNative.bufAsBytes(rawObj.buffer, size);
     final writer = IsarBinaryWriter(buffer, staticSize);
-    writer.writeDateTime(offsets[0], _createdAt);
-    writer.writeBytes(offsets[1], _description);
-    writer.writeBytes(offsets[2], _emojiIcon);
-    writer.writeBool(offsets[3], _isArchived);
-    writer.writeBytes(offsets[4], _name);
-    writer.writeLong(offsets[5], _parentId);
-    writer.writeDateTimeList(offsets[6], _reminders);
-    writer.writeBytes(offsets[7], _repeatCron);
-    writer.writeBytes(offsets[8], _targetGoal);
+    writer.writeLong(offsets[0], _backgroundColor);
+    writer.writeDateTime(offsets[1], _createdAt);
+    writer.writeBytes(offsets[2], _description);
+    writer.writeLong(offsets[3], _durationSeconds);
+    writer.writeBytes(offsets[4], _emojiIcon);
+    writer.writeBool(offsets[5], _isArchived);
+    writer.writeStringList(offsets[6], _localFileAttachmentUris);
+    writer.writeBytes(offsets[7], _name);
+    writer.writeLong(offsets[8], _parentId);
+    writer.writeDateTimeList(offsets[9], _reminders);
+    writer.writeBytes(offsets[10], _repeatCron);
+    writer.writeBytes(offsets[11], _targetGoal);
+    writer.writeLong(offsets[12], _templateId);
   }
 
   @override
   Habit deserialize(IsarCollection<Habit> collection, int id,
       IsarBinaryReader reader, List<int> offsets) {
     final object = Habit(
-      createdAt: reader.readDateTime(offsets[0]),
-      description: reader.readStringOrNull(offsets[1]),
-      emojiIcon: reader.readStringOrNull(offsets[2]),
+      backgroundColor: reader.readLongOrNull(offsets[0]),
+      createdAt: reader.readDateTime(offsets[1]),
+      description: reader.readStringOrNull(offsets[2]),
+      durationSeconds: reader.readLongOrNull(offsets[3]),
+      emojiIcon: reader.readStringOrNull(offsets[4]),
       id: id,
-      isArchived: reader.readBool(offsets[3]),
-      name: reader.readString(offsets[4]),
-      parentId: reader.readLongOrNull(offsets[5]),
-      reminders: reader.readDateTimeList(offsets[6]),
-      repeatCron: reader.readStringOrNull(offsets[7]),
-      targetGoal: reader.readStringOrNull(offsets[8]),
+      isArchived: reader.readBool(offsets[5]),
+      localFileAttachmentUris: reader.readStringList(offsets[6]),
+      name: reader.readString(offsets[7]),
+      parentId: reader.readLongOrNull(offsets[8]),
+      reminders: reader.readDateTimeList(offsets[9]),
+      repeatCron: reader.readStringOrNull(offsets[10]),
+      targetGoal: reader.readStringOrNull(offsets[11]),
+      templateId: reader.readLongOrNull(offsets[12]),
     );
     return object;
   }
@@ -230,23 +285,31 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       case -1:
         return id as P;
       case 0:
-        return (reader.readDateTime(offset)) as P;
+        return (reader.readLongOrNull(offset)) as P;
       case 1:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readDateTime(offset)) as P;
       case 2:
         return (reader.readStringOrNull(offset)) as P;
       case 3:
-        return (reader.readBool(offset)) as P;
-      case 4:
-        return (reader.readString(offset)) as P;
-      case 5:
         return (reader.readLongOrNull(offset)) as P;
+      case 4:
+        return (reader.readStringOrNull(offset)) as P;
+      case 5:
+        return (reader.readBool(offset)) as P;
       case 6:
-        return (reader.readDateTimeList(offset)) as P;
+        return (reader.readStringList(offset)) as P;
       case 7:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 8:
+        return (reader.readLongOrNull(offset)) as P;
+      case 9:
+        return (reader.readDateTimeList(offset)) as P;
+      case 10:
         return (reader.readStringOrNull(offset)) as P;
+      case 11:
+        return (reader.readStringOrNull(offset)) as P;
+      case 12:
+        return (reader.readLongOrNull(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
     }
@@ -336,6 +399,62 @@ extension HabitQueryWhere on QueryBuilder<Habit, Habit, QWhereClause> {
 }
 
 extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> backgroundColorIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'backgroundColor',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> backgroundColorEqualTo(
+      int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'backgroundColor',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> backgroundColorGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'backgroundColor',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> backgroundColorLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'backgroundColor',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> backgroundColorBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'backgroundColor',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
+
   QueryBuilder<Habit, Habit, QAfterFilterCondition> createdAtEqualTo(
       DateTime value) {
     return addFilterConditionInternal(FilterCondition(
@@ -492,6 +611,62 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
       property: 'description',
       value: pattern,
       caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> durationSecondsIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'durationSeconds',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> durationSecondsEqualTo(
+      int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'durationSeconds',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> durationSecondsGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'durationSeconds',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> durationSecondsLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'durationSeconds',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> durationSecondsBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'durationSeconds',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
     ));
   }
 
@@ -659,6 +834,133 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
       type: ConditionType.eq,
       property: 'isArchived',
       value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'localFileAttachmentUris',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'localFileAttachmentUris',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'localFileAttachmentUris',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'localFileAttachmentUris',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyLessThan(
+    String? value, {
+    bool caseSensitive = true,
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'localFileAttachmentUris',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'localFileAttachmentUris',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.startsWith,
+      property: 'localFileAttachmentUris',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.endsWith,
+      property: 'localFileAttachmentUris',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyContains(String value,
+          {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.contains,
+      property: 'localFileAttachmentUris',
+      value: value,
+      caseSensitive: caseSensitive,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition>
+      localFileAttachmentUrisAnyMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.matches,
+      property: 'localFileAttachmentUris',
+      value: pattern,
+      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1104,11 +1406,75 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
       caseSensitive: caseSensitive,
     ));
   }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> templateIdIsNull() {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.isNull,
+      property: 'templateId',
+      value: null,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> templateIdEqualTo(
+      int? value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'templateId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> templateIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.gt,
+      include: include,
+      property: 'templateId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> templateIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.lt,
+      include: include,
+      property: 'templateId',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> templateIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return addFilterConditionInternal(FilterCondition.between(
+      property: 'templateId',
+      lower: lower,
+      includeLower: includeLower,
+      upper: upper,
+      includeUpper: includeUpper,
+    ));
+  }
 }
 
 extension HabitQueryLinks on QueryBuilder<Habit, Habit, QFilterCondition> {}
 
 extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByBackgroundColor() {
+    return addSortByInternal('backgroundColor', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByBackgroundColorDesc() {
+    return addSortByInternal('backgroundColor', Sort.desc);
+  }
+
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByCreatedAt() {
     return addSortByInternal('createdAt', Sort.asc);
   }
@@ -1123,6 +1489,14 @@ extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
 
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByDescriptionDesc() {
     return addSortByInternal('description', Sort.desc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByDurationSeconds() {
+    return addSortByInternal('durationSeconds', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByDurationSecondsDesc() {
+    return addSortByInternal('durationSeconds', Sort.desc);
   }
 
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByEmojiIcon() {
@@ -1180,9 +1554,25 @@ extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByTargetGoalDesc() {
     return addSortByInternal('targetGoal', Sort.desc);
   }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByTemplateId() {
+    return addSortByInternal('templateId', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByTemplateIdDesc() {
+    return addSortByInternal('templateId', Sort.desc);
+  }
 }
 
 extension HabitQueryWhereSortThenBy on QueryBuilder<Habit, Habit, QSortThenBy> {
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByBackgroundColor() {
+    return addSortByInternal('backgroundColor', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByBackgroundColorDesc() {
+    return addSortByInternal('backgroundColor', Sort.desc);
+  }
+
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByCreatedAt() {
     return addSortByInternal('createdAt', Sort.asc);
   }
@@ -1197,6 +1587,14 @@ extension HabitQueryWhereSortThenBy on QueryBuilder<Habit, Habit, QSortThenBy> {
 
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByDescriptionDesc() {
     return addSortByInternal('description', Sort.desc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByDurationSeconds() {
+    return addSortByInternal('durationSeconds', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByDurationSecondsDesc() {
+    return addSortByInternal('durationSeconds', Sort.desc);
   }
 
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByEmojiIcon() {
@@ -1254,9 +1652,21 @@ extension HabitQueryWhereSortThenBy on QueryBuilder<Habit, Habit, QSortThenBy> {
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByTargetGoalDesc() {
     return addSortByInternal('targetGoal', Sort.desc);
   }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByTemplateId() {
+    return addSortByInternal('templateId', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByTemplateIdDesc() {
+    return addSortByInternal('templateId', Sort.desc);
+  }
 }
 
 extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
+  QueryBuilder<Habit, Habit, QDistinct> distinctByBackgroundColor() {
+    return addDistinctByInternal('backgroundColor');
+  }
+
   QueryBuilder<Habit, Habit, QDistinct> distinctByCreatedAt() {
     return addDistinctByInternal('createdAt');
   }
@@ -1264,6 +1674,10 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
   QueryBuilder<Habit, Habit, QDistinct> distinctByDescription(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('description', caseSensitive: caseSensitive);
+  }
+
+  QueryBuilder<Habit, Habit, QDistinct> distinctByDurationSeconds() {
+    return addDistinctByInternal('durationSeconds');
   }
 
   QueryBuilder<Habit, Habit, QDistinct> distinctByEmojiIcon(
@@ -1297,15 +1711,27 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
       {bool caseSensitive = true}) {
     return addDistinctByInternal('targetGoal', caseSensitive: caseSensitive);
   }
+
+  QueryBuilder<Habit, Habit, QDistinct> distinctByTemplateId() {
+    return addDistinctByInternal('templateId');
+  }
 }
 
 extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
+  QueryBuilder<Habit, int?, QQueryOperations> backgroundColorProperty() {
+    return addPropertyNameInternal('backgroundColor');
+  }
+
   QueryBuilder<Habit, DateTime, QQueryOperations> createdAtProperty() {
     return addPropertyNameInternal('createdAt');
   }
 
   QueryBuilder<Habit, String?, QQueryOperations> descriptionProperty() {
     return addPropertyNameInternal('description');
+  }
+
+  QueryBuilder<Habit, int?, QQueryOperations> durationSecondsProperty() {
+    return addPropertyNameInternal('durationSeconds');
   }
 
   QueryBuilder<Habit, String?, QQueryOperations> emojiIconProperty() {
@@ -1318,6 +1744,11 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
 
   QueryBuilder<Habit, bool, QQueryOperations> isArchivedProperty() {
     return addPropertyNameInternal('isArchived');
+  }
+
+  QueryBuilder<Habit, List<String>?, QQueryOperations>
+      localFileAttachmentUrisProperty() {
+    return addPropertyNameInternal('localFileAttachmentUris');
   }
 
   QueryBuilder<Habit, String, QQueryOperations> nameProperty() {
@@ -1338,5 +1769,9 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
 
   QueryBuilder<Habit, String?, QQueryOperations> targetGoalProperty() {
     return addPropertyNameInternal('targetGoal');
+  }
+
+  QueryBuilder<Habit, int?, QQueryOperations> templateIdProperty() {
+    return addPropertyNameInternal('templateId');
   }
 }

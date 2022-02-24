@@ -20,26 +20,34 @@ class _$HabitTearOff {
 
   _Habit call(
       {@Id() int id = isarAutoIncrementId,
+      int? templateId,
       int? parentId,
       required String name,
       required DateTime createdAt,
+      int? durationSeconds,
       String? description,
       bool isArchived = false,
       String? emojiIcon,
       List<DateTime>? reminders,
+      List<String>? localFileAttachmentUris,
       String? repeatCron,
-      String? targetGoal}) {
+      String? targetGoal,
+      int? backgroundColor}) {
     return _Habit(
       id: id,
+      templateId: templateId,
       parentId: parentId,
       name: name,
       createdAt: createdAt,
+      durationSeconds: durationSeconds,
       description: description,
       isArchived: isArchived,
       emojiIcon: emojiIcon,
       reminders: reminders,
+      localFileAttachmentUris: localFileAttachmentUris,
       repeatCron: repeatCron,
       targetGoal: targetGoal,
+      backgroundColor: backgroundColor,
     );
   }
 }
@@ -49,17 +57,28 @@ const $Habit = _$HabitTearOff();
 
 /// @nodoc
 mixin _$Habit {
+// local isar db unique autoincrement id
   @Id()
-  int get id => throw _privateConstructorUsedError;
+  int get id =>
+      throw _privateConstructorUsedError; // used for distinquishing templated habits vs user generated ones
+  int? get templateId =>
+      throw _privateConstructorUsedError; // if null, habit is a routine which contains other habits
   int? get parentId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  DateTime get createdAt =>
+      throw _privateConstructorUsedError; // duration of habit in seconds
+  int? get durationSeconds => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   bool get isArchived => throw _privateConstructorUsedError;
-  String? get emojiIcon => throw _privateConstructorUsedError;
-  List<DateTime>? get reminders => throw _privateConstructorUsedError;
+  String? get emojiIcon =>
+      throw _privateConstructorUsedError; // time during the day when app will notify about the routine
+  List<DateTime>? get reminders =>
+      throw _privateConstructorUsedError; // list of file uris
+  List<String>? get localFileAttachmentUris =>
+      throw _privateConstructorUsedError; // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
   String? get repeatCron => throw _privateConstructorUsedError;
   String? get targetGoal => throw _privateConstructorUsedError;
+  int? get backgroundColor => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $HabitCopyWith<Habit> get copyWith => throw _privateConstructorUsedError;
@@ -71,15 +90,19 @@ abstract class $HabitCopyWith<$Res> {
       _$HabitCopyWithImpl<$Res>;
   $Res call(
       {@Id() int id,
+      int? templateId,
       int? parentId,
       String name,
       DateTime createdAt,
+      int? durationSeconds,
       String? description,
       bool isArchived,
       String? emojiIcon,
       List<DateTime>? reminders,
+      List<String>? localFileAttachmentUris,
       String? repeatCron,
-      String? targetGoal});
+      String? targetGoal,
+      int? backgroundColor});
 }
 
 /// @nodoc
@@ -93,21 +116,29 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
+    Object? templateId = freezed,
     Object? parentId = freezed,
     Object? name = freezed,
     Object? createdAt = freezed,
+    Object? durationSeconds = freezed,
     Object? description = freezed,
     Object? isArchived = freezed,
     Object? emojiIcon = freezed,
     Object? reminders = freezed,
+    Object? localFileAttachmentUris = freezed,
     Object? repeatCron = freezed,
     Object? targetGoal = freezed,
+    Object? backgroundColor = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      templateId: templateId == freezed
+          ? _value.templateId
+          : templateId // ignore: cast_nullable_to_non_nullable
+              as int?,
       parentId: parentId == freezed
           ? _value.parentId
           : parentId // ignore: cast_nullable_to_non_nullable
@@ -120,6 +151,10 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      durationSeconds: durationSeconds == freezed
+          ? _value.durationSeconds
+          : durationSeconds // ignore: cast_nullable_to_non_nullable
+              as int?,
       description: description == freezed
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -136,6 +171,10 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
               as List<DateTime>?,
+      localFileAttachmentUris: localFileAttachmentUris == freezed
+          ? _value.localFileAttachmentUris
+          : localFileAttachmentUris // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       repeatCron: repeatCron == freezed
           ? _value.repeatCron
           : repeatCron // ignore: cast_nullable_to_non_nullable
@@ -144,6 +183,10 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
           ? _value.targetGoal
           : targetGoal // ignore: cast_nullable_to_non_nullable
               as String?,
+      backgroundColor: backgroundColor == freezed
+          ? _value.backgroundColor
+          : backgroundColor // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -155,15 +198,19 @@ abstract class _$HabitCopyWith<$Res> implements $HabitCopyWith<$Res> {
   @override
   $Res call(
       {@Id() int id,
+      int? templateId,
       int? parentId,
       String name,
       DateTime createdAt,
+      int? durationSeconds,
       String? description,
       bool isArchived,
       String? emojiIcon,
       List<DateTime>? reminders,
+      List<String>? localFileAttachmentUris,
       String? repeatCron,
-      String? targetGoal});
+      String? targetGoal,
+      int? backgroundColor});
 }
 
 /// @nodoc
@@ -178,21 +225,29 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? templateId = freezed,
     Object? parentId = freezed,
     Object? name = freezed,
     Object? createdAt = freezed,
+    Object? durationSeconds = freezed,
     Object? description = freezed,
     Object? isArchived = freezed,
     Object? emojiIcon = freezed,
     Object? reminders = freezed,
+    Object? localFileAttachmentUris = freezed,
     Object? repeatCron = freezed,
     Object? targetGoal = freezed,
+    Object? backgroundColor = freezed,
   }) {
     return _then(_Habit(
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as int,
+      templateId: templateId == freezed
+          ? _value.templateId
+          : templateId // ignore: cast_nullable_to_non_nullable
+              as int?,
       parentId: parentId == freezed
           ? _value.parentId
           : parentId // ignore: cast_nullable_to_non_nullable
@@ -205,6 +260,10 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      durationSeconds: durationSeconds == freezed
+          ? _value.durationSeconds
+          : durationSeconds // ignore: cast_nullable_to_non_nullable
+              as int?,
       description: description == freezed
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -221,6 +280,10 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
               as List<DateTime>?,
+      localFileAttachmentUris: localFileAttachmentUris == freezed
+          ? _value.localFileAttachmentUris
+          : localFileAttachmentUris // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       repeatCron: repeatCron == freezed
           ? _value.repeatCron
           : repeatCron // ignore: cast_nullable_to_non_nullable
@@ -229,6 +292,10 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
           ? _value.targetGoal
           : targetGoal // ignore: cast_nullable_to_non_nullable
               as String?,
+      backgroundColor: backgroundColor == freezed
+          ? _value.backgroundColor
+          : backgroundColor // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -238,27 +305,35 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
 class _$_Habit extends _Habit {
   const _$_Habit(
       {@Id() this.id = isarAutoIncrementId,
+      this.templateId,
       this.parentId,
       required this.name,
       required this.createdAt,
+      this.durationSeconds,
       this.description,
       this.isArchived = false,
       this.emojiIcon,
       this.reminders,
+      this.localFileAttachmentUris,
       this.repeatCron,
-      this.targetGoal})
+      this.targetGoal,
+      this.backgroundColor})
       : super._();
 
   @JsonKey()
-  @override
+  @override // local isar db unique autoincrement id
   @Id()
   final int id;
-  @override
+  @override // used for distinquishing templated habits vs user generated ones
+  final int? templateId;
+  @override // if null, habit is a routine which contains other habits
   final int? parentId;
   @override
   final String name;
   @override
   final DateTime createdAt;
+  @override // duration of habit in seconds
+  final int? durationSeconds;
   @override
   final String? description;
   @JsonKey()
@@ -266,16 +341,20 @@ class _$_Habit extends _Habit {
   final bool isArchived;
   @override
   final String? emojiIcon;
-  @override
+  @override // time during the day when app will notify about the routine
   final List<DateTime>? reminders;
-  @override
+  @override // list of file uris
+  final List<String>? localFileAttachmentUris;
+  @override // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
   final String? repeatCron;
   @override
   final String? targetGoal;
+  @override
+  final int? backgroundColor;
 
   @override
   String toString() {
-    return 'Habit(id: $id, parentId: $parentId, name: $name, createdAt: $createdAt, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, repeatCron: $repeatCron, targetGoal: $targetGoal)';
+    return 'Habit(id: $id, templateId: $templateId, parentId: $parentId, name: $name, createdAt: $createdAt, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatCron: $repeatCron, targetGoal: $targetGoal, backgroundColor: $backgroundColor)';
   }
 
   @override
@@ -284,34 +363,46 @@ class _$_Habit extends _Habit {
         (other.runtimeType == runtimeType &&
             other is _Habit &&
             const DeepCollectionEquality().equals(other.id, id) &&
+            const DeepCollectionEquality()
+                .equals(other.templateId, templateId) &&
             const DeepCollectionEquality().equals(other.parentId, parentId) &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality().equals(other.createdAt, createdAt) &&
+            const DeepCollectionEquality()
+                .equals(other.durationSeconds, durationSeconds) &&
             const DeepCollectionEquality()
                 .equals(other.description, description) &&
             const DeepCollectionEquality()
                 .equals(other.isArchived, isArchived) &&
             const DeepCollectionEquality().equals(other.emojiIcon, emojiIcon) &&
             const DeepCollectionEquality().equals(other.reminders, reminders) &&
+            const DeepCollectionEquality().equals(
+                other.localFileAttachmentUris, localFileAttachmentUris) &&
             const DeepCollectionEquality()
                 .equals(other.repeatCron, repeatCron) &&
             const DeepCollectionEquality()
-                .equals(other.targetGoal, targetGoal));
+                .equals(other.targetGoal, targetGoal) &&
+            const DeepCollectionEquality()
+                .equals(other.backgroundColor, backgroundColor));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(id),
+      const DeepCollectionEquality().hash(templateId),
       const DeepCollectionEquality().hash(parentId),
       const DeepCollectionEquality().hash(name),
       const DeepCollectionEquality().hash(createdAt),
+      const DeepCollectionEquality().hash(durationSeconds),
       const DeepCollectionEquality().hash(description),
       const DeepCollectionEquality().hash(isArchived),
       const DeepCollectionEquality().hash(emojiIcon),
       const DeepCollectionEquality().hash(reminders),
+      const DeepCollectionEquality().hash(localFileAttachmentUris),
       const DeepCollectionEquality().hash(repeatCron),
-      const DeepCollectionEquality().hash(targetGoal));
+      const DeepCollectionEquality().hash(targetGoal),
+      const DeepCollectionEquality().hash(backgroundColor));
 
   @JsonKey(ignore: true)
   @override
@@ -322,38 +413,50 @@ class _$_Habit extends _Habit {
 abstract class _Habit extends Habit {
   const factory _Habit(
       {@Id() int id,
+      int? templateId,
       int? parentId,
       required String name,
       required DateTime createdAt,
+      int? durationSeconds,
       String? description,
       bool isArchived,
       String? emojiIcon,
       List<DateTime>? reminders,
+      List<String>? localFileAttachmentUris,
       String? repeatCron,
-      String? targetGoal}) = _$_Habit;
+      String? targetGoal,
+      int? backgroundColor}) = _$_Habit;
   const _Habit._() : super._();
 
-  @override
+  @override // local isar db unique autoincrement id
   @Id()
   int get id;
-  @override
+  @override // used for distinquishing templated habits vs user generated ones
+  int? get templateId;
+  @override // if null, habit is a routine which contains other habits
   int? get parentId;
   @override
   String get name;
   @override
   DateTime get createdAt;
+  @override // duration of habit in seconds
+  int? get durationSeconds;
   @override
   String? get description;
   @override
   bool get isArchived;
   @override
   String? get emojiIcon;
-  @override
+  @override // time during the day when app will notify about the routine
   List<DateTime>? get reminders;
-  @override
+  @override // list of file uris
+  List<String>? get localFileAttachmentUris;
+  @override // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
   String? get repeatCron;
   @override
   String? get targetGoal;
+  @override
+  int? get backgroundColor;
   @override
   @JsonKey(ignore: true)
   _$HabitCopyWith<_Habit> get copyWith => throw _privateConstructorUsedError;

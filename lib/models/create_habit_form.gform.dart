@@ -129,6 +129,14 @@ class CreateHabitForm implements FormModel<CreateHabit> {
 
   static String nameControlName = "name";
 
+  static String emojiControlName = "emoji";
+
+  static String backgroundColorControlName = "backgroundColor";
+
+  static String repeatFrequencyControlName = "repeatFrequency";
+
+  static String remindersControlName = "reminders";
+
   final CreateHabit? createHabit;
 
   final FormGroup form;
@@ -136,7 +144,19 @@ class CreateHabitForm implements FormModel<CreateHabit> {
   final String? path;
 
   String nameControlPath() => pathBuilder(nameControlName);
+  String emojiControlPath() => pathBuilder(emojiControlName);
+  String backgroundColorControlPath() =>
+      pathBuilder(backgroundColorControlName);
+  String repeatFrequencyControlPath() =>
+      pathBuilder(repeatFrequencyControlName);
+  String remindersControlPath() => pathBuilder(remindersControlName);
   String get nameValue => nameControl.value as String;
+  Emoji? get emojiValue => emojiControl?.value;
+  Color? get backgroundColorValue => backgroundColorControl?.value;
+  List<int> get repeatFrequencyValue =>
+      repeatFrequencyControl.value as List<int>;
+  List<TimeOfDay> get remindersValue =>
+      remindersControl.value?.whereType<TimeOfDay>().toList() ?? [];
   bool get containsName {
     try {
       form.control(nameControlPath());
@@ -146,17 +166,156 @@ class CreateHabitForm implements FormModel<CreateHabit> {
     }
   }
 
+  bool get containsEmoji {
+    try {
+      form.control(emojiControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool get containsBackgroundColor {
+    try {
+      form.control(backgroundColorControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool get containsRepeatFrequency {
+    try {
+      form.control(repeatFrequencyControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool get containsReminders {
+    try {
+      form.control(remindersControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Object? get nameErrors => nameControl.errors;
+  Object? get emojiErrors => emojiControl?.errors;
+  Object? get backgroundColorErrors => backgroundColorControl?.errors;
+  Object? get repeatFrequencyErrors => repeatFrequencyControl.errors;
+  Object? get remindersErrors => remindersControl.errors;
   void get nameFocus => form.focus(nameControlPath());
+  void get emojiFocus => form.focus(emojiControlPath());
+  void get backgroundColorFocus => form.focus(backgroundColorControlPath());
+  void get repeatFrequencyFocus => form.focus(repeatFrequencyControlPath());
+  void get remindersFocus => form.focus(remindersControlPath());
+  void emojiRemove({bool updateParent = true, bool emitEvent = true}) {
+    if (containsEmoji) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          emojiControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            emojiControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
+  void backgroundColorRemove(
+      {bool updateParent = true, bool emitEvent = true}) {
+    if (containsBackgroundColor) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          backgroundColorControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            backgroundColorControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
   void nameValueUpdate(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.updateValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
+  void emojiValueUpdate(Emoji? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    emojiControl?.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void backgroundColorValueUpdate(Color? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    backgroundColorControl?.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void repeatFrequencyValueUpdate(List<int> value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    repeatFrequencyControl.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void remindersValueUpdate(List<TimeOfDay> value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    remindersControl.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
   void nameValuePatch(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void emojiValuePatch(Emoji? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    emojiControl?.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void backgroundColorValuePatch(Color? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    backgroundColorControl?.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void repeatFrequencyValuePatch(List<int> value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    repeatFrequencyControl.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void remindersValuePatch(List<TimeOfDay> value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    remindersControl.patchValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -167,9 +326,83 @@ class CreateHabitForm implements FormModel<CreateHabit> {
           bool? disabled}) =>
       nameControl.reset(
           value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void emojiValueReset(Emoji? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      emojiControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void backgroundColorValueReset(Color? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      backgroundColorControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void repeatFrequencyValueReset(List<int> value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      repeatFrequencyControl.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void remindersValueReset(List<TimeOfDay> value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      remindersControl.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
   FormControl<String> get nameControl =>
       form.control(nameControlPath()) as FormControl<String>;
-  CreateHabit get model => CreateHabit(name: nameValue);
+  FormControl<Emoji>? get emojiControl => containsEmoji
+      ? form.control(emojiControlPath()) as FormControl<Emoji>?
+      : null;
+  FormControl<Color>? get backgroundColorControl => containsBackgroundColor
+      ? form.control(backgroundColorControlPath()) as FormControl<Color>?
+      : null;
+  FormControl<List<int>> get repeatFrequencyControl =>
+      form.control(repeatFrequencyControlPath()) as FormControl<List<int>>;
+  FormArray<TimeOfDay> get remindersControl =>
+      form.control(remindersControlPath()) as FormArray<TimeOfDay>;
+  void addRemindersItem(TimeOfDay value,
+      {List<AsyncValidatorFunction>? asyncValidators,
+      List<ValidatorFunction>? validators,
+      int? asyncValidatorsDebounceTime,
+      bool? disabled,
+      ValidatorsApplyMode validatorsApplyMode = ValidatorsApplyMode.merge}) {
+    List<ValidatorFunction> resultingValidators = [];
+    List<AsyncValidatorFunction> resultingAsyncValidators = [];
+
+    switch (validatorsApplyMode) {
+      case ValidatorsApplyMode.merge:
+        if (validators != null) resultingValidators.addAll(validators);
+        if (asyncValidators != null)
+          resultingAsyncValidators.addAll(asyncValidators);
+        break;
+      case ValidatorsApplyMode.override:
+        if (validators != null) resultingValidators = validators;
+
+        if (asyncValidators != null) resultingAsyncValidators = asyncValidators;
+        break;
+    }
+
+    remindersControl.add(FormControl<TimeOfDay>(
+      value: value,
+      validators: resultingValidators,
+      asyncValidators: resultingAsyncValidators,
+      asyncValidatorsDebounceTime: asyncValidatorsDebounceTime ?? 250,
+      disabled: disabled ?? false,
+    ));
+  }
+
+  CreateHabit get model => CreateHabit(
+      name: nameValue,
+      emoji: emojiValue,
+      backgroundColor: backgroundColorValue,
+      repeatFrequency: repeatFrequencyValue,
+      reminders: remindersValue);
   void updateValue(CreateHabit value,
           {bool updateParent = true, bool emitEvent = true}) =>
       form.updateValue(
@@ -193,11 +426,47 @@ class CreateHabitForm implements FormModel<CreateHabit> {
   FormGroup formElements() => FormGroup({
         nameControlName: FormControl<String>(
             value: createHabit?.name,
+            validators: [requiredValidator],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        emojiControlName: FormControl<Emoji>(
+            value: createHabit?.emoji,
+            validators: [emojiValidator, maxEmojiLengthValidator],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        backgroundColorControlName: FormControl<Color>(
+            value: createHabit?.backgroundColor,
             validators: [],
             asyncValidators: [],
             asyncValidatorsDebounceTime: 250,
             disabled: false,
-            touched: false)
+            touched: false),
+        repeatFrequencyControlName: FormControl<List<int>>(
+            value: createHabit?.repeatFrequency,
+            validators: [],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        remindersControlName: FormArray<TimeOfDay>(
+            createHabit?.reminders
+                    .map((e) => FormControl<TimeOfDay>(
+                          value: e,
+                          validators: [],
+                          asyncValidators: [],
+                          asyncValidatorsDebounceTime: 250,
+                          disabled: false,
+                        ))
+                    .toList() ??
+                [],
+            validators: [],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false)
       },
           validators: [],
           asyncValidators: [],

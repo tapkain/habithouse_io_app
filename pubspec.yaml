@@ -45,6 +45,19 @@ dependencies:
 
   # UI
   overlay_support: ^1.2.1
+  flex_color_scheme: ^4.2.0
+  google_fonts: ^2.3.1
+  modal_bottom_sheet: ^2.0.0
+  emoji_picker_flutter: ^1.1.2
+  flex_color_picker: ^2.3.0
+
+  # Notifications
+  # TODO: implement local push notifications
+  flutter_local_notifications: ^9.3.2
+
+  # Deep linking
+  # TODO: implement deep linking
+  uni_links: ^0.5.1
 
   # Misc
   path_provider: ^2.0.8

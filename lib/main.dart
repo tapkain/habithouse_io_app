@@ -1,5 +1,6 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:habithouse_io/repository/isar_storage.dart';
 import 'package:habithouse_io/repository/storage.dart';
 import 'package:habithouse_io/router.dart';
@@ -8,6 +9,7 @@ import 'package:logging/logging.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'config.dart';
 
@@ -86,7 +88,30 @@ class HabithouseIO extends HookConsumerWidget {
     final router = ref.watch(routerProvider);
     return OverlaySupport.global(
         child: MaterialApp.router(
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: FlexColorScheme.themedSystemNavigationBar(
+          context,
+          systemNavBarStyle: FlexSystemNavBarStyle.background,
+          useDivider: false,
+          opacity: 0.60,
+        ),
+        child: child ?? Container(),
+      ),
       debugShowCheckedModeBanner: false,
+      darkTheme: FlexThemeData.light(
+        scheme: FlexScheme.blueWhale,
+        useSubThemes: true,
+        blendLevel: 5,
+      ).copyWith(
+        inputDecorationTheme: const InputDecorationTheme(
+          border: UnderlineInputBorder(),
+        ),
+      ),
+      theme: FlexThemeData.light(
+        scheme: FlexScheme.blueWhale,
+        useSubThemes: true,
+      ),
+      themeMode: ThemeMode.system,
       routerDelegate: router.routerDelegate,
       routeInformationParser: router.routeInformationParser,
     ));

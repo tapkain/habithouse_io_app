@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:habithouse_io/models/create_child_habit_form.dart';
 import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/state/select_child_habits_notifier.dart';
@@ -57,12 +56,12 @@ class CreateChildHabitView extends HookConsumerWidget {
     WidgetRef ref,
     CreateChildHabitForm form,
   ) async {
-    final editHabit = ref.read(habitByIdProvider(editHabitId!));
     final childHabitsNotifier = ref.read(
       selectChildHabitsProvider(parentHabitId).notifier,
     );
 
-    if (editHabit != null) {
+    if (editHabitId != null) {
+      final editHabit = ref.read(habitByIdProvider(editHabitId!))!;
       childHabitsNotifier.putHabit(
         editHabit.copyWithCreateChildHabitForm(
           form,

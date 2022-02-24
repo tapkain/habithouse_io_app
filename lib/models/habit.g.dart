@@ -17,7 +17,7 @@ extension GetHabitCollection on Isar {
 final HabitSchema = CollectionSchema(
   name: 'Habit',
   schema:
-      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"reminders","type":"LongList"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
+      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
   nativeAdapter: const _HabitNativeAdapter(),
   webAdapter: const _HabitWebAdapter(),
   idName: 'id',
@@ -31,12 +31,11 @@ final HabitSchema = CollectionSchema(
     'localFileAttachmentUris': 6,
     'name': 7,
     'parentId': 8,
-    'reminders': 9,
-    'repeatCron': 10,
-    'targetGoal': 11,
-    'templateId': 12
+    'repeatCron': 9,
+    'targetGoal': 10,
+    'templateId': 11
   },
-  listProperties: {'localFileAttachmentUris', 'reminders'},
+  listProperties: {'localFileAttachmentUris'},
   indexIds: {},
   indexTypes: {},
   linkIds: {},
@@ -72,12 +71,6 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
         jsObj, 'localFileAttachmentUris', object.localFileAttachmentUris);
     IsarNative.jsObjectSet(jsObj, 'name', object.name);
     IsarNative.jsObjectSet(jsObj, 'parentId', object.parentId);
-    IsarNative.jsObjectSet(
-        jsObj,
-        'reminders',
-        object.reminders
-            ?.map((e) => e.toUtc().millisecondsSinceEpoch)
-            .toList());
     IsarNative.jsObjectSet(jsObj, 'repeatCron', object.repeatCron);
     IsarNative.jsObjectSet(jsObj, 'targetGoal', object.targetGoal);
     IsarNative.jsObjectSet(jsObj, 'templateId', object.templateId);
@@ -106,12 +99,6 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
               .cast<String>(),
       name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
       parentId: IsarNative.jsObjectGet(jsObj, 'parentId'),
-      reminders: (IsarNative.jsObjectGet(jsObj, 'reminders') as List?)
-          ?.map((e) => e != null
-              ? DateTime.fromMillisecondsSinceEpoch(e, isUtc: true).toLocal()
-              : DateTime.fromMillisecondsSinceEpoch(0))
-          .toList()
-          .cast<DateTime>(),
       repeatCron: IsarNative.jsObjectGet(jsObj, 'repeatCron'),
       targetGoal: IsarNative.jsObjectGet(jsObj, 'targetGoal'),
       templateId: IsarNative.jsObjectGet(jsObj, 'templateId'),
@@ -152,13 +139,6 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
         return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
       case 'parentId':
         return (IsarNative.jsObjectGet(jsObj, 'parentId')) as P;
-      case 'reminders':
-        return ((IsarNative.jsObjectGet(jsObj, 'reminders') as List?)
-            ?.map((e) => e != null
-                ? DateTime.fromMillisecondsSinceEpoch(e, isUtc: true).toLocal()
-                : DateTime.fromMillisecondsSinceEpoch(0))
-            .toList()
-            .cast<DateTime>()) as P;
       case 'repeatCron':
         return (IsarNative.jsObjectGet(jsObj, 'repeatCron')) as P;
       case 'targetGoal':
@@ -218,23 +198,20 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
     dynamicSize += (_name.length) as int;
     final value8 = object.parentId;
     final _parentId = value8;
-    final value9 = object.reminders;
-    dynamicSize += (value9?.length ?? 0) * 8;
-    final _reminders = value9;
-    final value10 = object.repeatCron;
+    final value9 = object.repeatCron;
     IsarUint8List? _repeatCron;
-    if (value10 != null) {
-      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value10);
+    if (value9 != null) {
+      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value9);
     }
     dynamicSize += (_repeatCron?.length ?? 0) as int;
-    final value11 = object.targetGoal;
+    final value10 = object.targetGoal;
     IsarUint8List? _targetGoal;
-    if (value11 != null) {
-      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value11);
+    if (value10 != null) {
+      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value10);
     }
     dynamicSize += (_targetGoal?.length ?? 0) as int;
-    final value12 = object.templateId;
-    final _templateId = value12;
+    final value11 = object.templateId;
+    final _templateId = value11;
     final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
@@ -250,10 +227,9 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
     writer.writeStringList(offsets[6], _localFileAttachmentUris);
     writer.writeBytes(offsets[7], _name);
     writer.writeLong(offsets[8], _parentId);
-    writer.writeDateTimeList(offsets[9], _reminders);
-    writer.writeBytes(offsets[10], _repeatCron);
-    writer.writeBytes(offsets[11], _targetGoal);
-    writer.writeLong(offsets[12], _templateId);
+    writer.writeBytes(offsets[9], _repeatCron);
+    writer.writeBytes(offsets[10], _targetGoal);
+    writer.writeLong(offsets[11], _templateId);
   }
 
   @override
@@ -270,10 +246,9 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       localFileAttachmentUris: reader.readStringList(offsets[6]),
       name: reader.readString(offsets[7]),
       parentId: reader.readLongOrNull(offsets[8]),
-      reminders: reader.readDateTimeList(offsets[9]),
-      repeatCron: reader.readStringOrNull(offsets[10]),
-      targetGoal: reader.readStringOrNull(offsets[11]),
-      templateId: reader.readLongOrNull(offsets[12]),
+      repeatCron: reader.readStringOrNull(offsets[9]),
+      targetGoal: reader.readStringOrNull(offsets[10]),
+      templateId: reader.readLongOrNull(offsets[11]),
     );
     return object;
   }
@@ -303,12 +278,10 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       case 8:
         return (reader.readLongOrNull(offset)) as P;
       case 9:
-        return (reader.readDateTimeList(offset)) as P;
+        return (reader.readStringOrNull(offset)) as P;
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
-        return (reader.readStringOrNull(offset)) as P;
-      case 12:
         return (reader.readLongOrNull(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -1121,70 +1094,6 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> remindersIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'reminders',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> remindersAnyIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'reminders',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> remindersAnyEqualTo(
-      DateTime? value) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.eq,
-      property: 'reminders',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> remindersAnyGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.gt,
-      include: include,
-      property: 'reminders',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> remindersAnyLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.lt,
-      include: include,
-      property: 'reminders',
-      value: value,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> remindersAnyBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition.between(
-      property: 'reminders',
-      lower: lower,
-      includeLower: includeLower,
-      upper: upper,
-      includeUpper: includeUpper,
-    ));
-  }
-
   QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronIsNull() {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.isNull,
@@ -1757,10 +1666,6 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
 
   QueryBuilder<Habit, int?, QQueryOperations> parentIdProperty() {
     return addPropertyNameInternal('parentId');
-  }
-
-  QueryBuilder<Habit, List<DateTime>?, QQueryOperations> remindersProperty() {
-    return addPropertyNameInternal('reminders');
   }
 
   QueryBuilder<Habit, String?, QQueryOperations> repeatCronProperty() {

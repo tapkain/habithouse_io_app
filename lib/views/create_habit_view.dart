@@ -34,12 +34,13 @@ class CreateHabitView extends HookConsumerWidget {
     WidgetRef ref,
   ) {
     return CreateHabitFormBuilder(
-      model: editHabit?.createHabitFormModel() ??
-          CreateHabit(
-            backgroundColor: getRandomColor(),
-            emoji: getRandomEmoji(),
-            repeatFrequency: everyDay,
-          ),
+      model: editHabit != null
+          ? Mapper.makeHabitForm(editHabit)
+          : CreateHabit(
+              backgroundColor: getRandomColor(),
+              emoji: getRandomEmoji(),
+              repeatFrequency: everyDay,
+            ),
       builder: (context, formModel, child) => ReactiveCreateHabitFormConsumer(
         builder: (context, formModel, child) => Scaffold(
           appBar: ModalAppBar(
@@ -121,11 +122,11 @@ class CreateHabitView extends HookConsumerWidget {
     if (editHabitId != null) {
       final editHabit = ref.read(habitByIdProvider(editHabitId!))!;
       habitsNotifier.putHabit(
-        editHabit.copyWithCreateHabitForm(form),
+        Mapper.mapHabitFormToHabit(editHabit, form),
       );
     } else {
       habitsNotifier.putHabit(
-        Habit.fromCreateHabitForm(form),
+        Mapper.makeHabitFromHabitForm(form),
       );
     }
 

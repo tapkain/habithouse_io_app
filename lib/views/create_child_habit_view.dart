@@ -63,17 +63,11 @@ class CreateChildHabitView extends HookConsumerWidget {
     if (editHabitId != null) {
       final editHabit = ref.read(habitByIdProvider(editHabitId!))!;
       childHabitsNotifier.putHabit(
-        editHabit.copyWithCreateChildHabitForm(
-          form,
-          parentHabitId,
-        ),
+        Mapper.mapChildHabitFormToHabit(editHabit, form, parentHabitId),
       );
     } else {
       childHabitsNotifier.putHabit(
-        Habit.fromCreateChildHabitForm(
-          form,
-          parentHabitId,
-        ),
+        Mapper.makeHabitFromChildHabitForm(form, parentHabitId),
       );
     }
 

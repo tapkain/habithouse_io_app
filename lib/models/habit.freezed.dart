@@ -28,7 +28,7 @@ class _$HabitTearOff {
       String? description,
       bool isArchived = false,
       String? emojiIcon,
-      List<DateTime>? reminders,
+      List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
       String? repeatCron,
       String? targetGoal,
@@ -72,7 +72,7 @@ mixin _$Habit {
   bool get isArchived => throw _privateConstructorUsedError;
   String? get emojiIcon =>
       throw _privateConstructorUsedError; // time during the day when app will notify about the routine
-  List<DateTime>? get reminders =>
+  List<TimeOfDay>? get reminders =>
       throw _privateConstructorUsedError; // list of file uris
   List<String>? get localFileAttachmentUris =>
       throw _privateConstructorUsedError; // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
@@ -98,7 +98,7 @@ abstract class $HabitCopyWith<$Res> {
       String? description,
       bool isArchived,
       String? emojiIcon,
-      List<DateTime>? reminders,
+      List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
       String? repeatCron,
       String? targetGoal,
@@ -170,7 +170,7 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
       reminders: reminders == freezed
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>?,
+              as List<TimeOfDay>?,
       localFileAttachmentUris: localFileAttachmentUris == freezed
           ? _value.localFileAttachmentUris
           : localFileAttachmentUris // ignore: cast_nullable_to_non_nullable
@@ -206,7 +206,7 @@ abstract class _$HabitCopyWith<$Res> implements $HabitCopyWith<$Res> {
       String? description,
       bool isArchived,
       String? emojiIcon,
-      List<DateTime>? reminders,
+      List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
       String? repeatCron,
       String? targetGoal,
@@ -279,7 +279,7 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
       reminders: reminders == freezed
           ? _value.reminders
           : reminders // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>?,
+              as List<TimeOfDay>?,
       localFileAttachmentUris: localFileAttachmentUris == freezed
           ? _value.localFileAttachmentUris
           : localFileAttachmentUris // ignore: cast_nullable_to_non_nullable
@@ -302,7 +302,7 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_Habit extends _Habit {
+class _$_Habit implements _Habit {
   const _$_Habit(
       {@Id() this.id = isarAutoIncrementId,
       this.templateId,
@@ -317,8 +317,7 @@ class _$_Habit extends _Habit {
       this.localFileAttachmentUris,
       this.repeatCron,
       this.targetGoal,
-      this.backgroundColor})
-      : super._();
+      this.backgroundColor});
 
   @JsonKey()
   @override // local isar db unique autoincrement id
@@ -342,7 +341,7 @@ class _$_Habit extends _Habit {
   @override
   final String? emojiIcon;
   @override // time during the day when app will notify about the routine
-  final List<DateTime>? reminders;
+  final List<TimeOfDay>? reminders;
   @override // list of file uris
   final List<String>? localFileAttachmentUris;
   @override // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
@@ -410,7 +409,7 @@ class _$_Habit extends _Habit {
       __$HabitCopyWithImpl<_Habit>(this, _$identity);
 }
 
-abstract class _Habit extends Habit {
+abstract class _Habit implements Habit {
   const factory _Habit(
       {@Id() int id,
       int? templateId,
@@ -421,12 +420,11 @@ abstract class _Habit extends Habit {
       String? description,
       bool isArchived,
       String? emojiIcon,
-      List<DateTime>? reminders,
+      List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
       String? repeatCron,
       String? targetGoal,
       int? backgroundColor}) = _$_Habit;
-  const _Habit._() : super._();
 
   @override // local isar db unique autoincrement id
   @Id()
@@ -448,7 +446,7 @@ abstract class _Habit extends Habit {
   @override
   String? get emojiIcon;
   @override // time during the day when app will notify about the routine
-  List<DateTime>? get reminders;
+  List<TimeOfDay>? get reminders;
   @override // list of file uris
   List<String>? get localFileAttachmentUris;
   @override // cron string to know how often to repeat this habit (daily, weekly, every monday etc)

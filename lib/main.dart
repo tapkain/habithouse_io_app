@@ -105,7 +105,7 @@ class HabithouseIO extends HookConsumerWidget {
       ),
       debugShowCheckedModeBanner: false,
       darkTheme: FlexThemeData.light(
-        scheme: FlexScheme.blueWhale,
+        scheme: FlexScheme.amber,
         useSubThemes: true,
         blendLevel: 5,
       ).copyWith(
@@ -114,7 +114,7 @@ class HabithouseIO extends HookConsumerWidget {
         ),
       ),
       theme: FlexThemeData.light(
-        scheme: FlexScheme.blueWhale,
+        scheme: FlexScheme.sakura,
         useSubThemes: true,
       ),
       themeMode: ThemeMode.system,

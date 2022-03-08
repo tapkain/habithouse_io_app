@@ -5,6 +5,7 @@ import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/habit.dart';
 import 'package:habithouse_io/state/auth_notifier.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:habithouse_io/widgets/date_list_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,25 +17,34 @@ class HomeView extends HookConsumerWidget {
     final habits = ref.watch(habitsProvider);
     final viewDate = ref.watch(viewDateProvider);
 
+    // TODO: finish sliver app bar
     return Scaffold(
-      appBar: AppBar(
-        title: Text('habithouse'),
-      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => context.go('/habits/create'),
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: padding),
-          Container(
-            alignment: Alignment.center,
-            height: padding * 12,
-            child: const DateListView(),
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar(
+            // stretch: true,
+            title: Text('habithouse'),
+            expandedHeight: 200,
+
+            flexibleSpace: FlexibleSpaceBar(
+              // background: Text('habithouse'),
+              title: Text('habithouse'),
+            ),
           ),
-          Expanded(
-            child: ListView(
-              children: habits.map((e) => HomeHabitWidget(habit: e)).toList(),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: DateListView().preferredSize.height,
+              child: const DateListView(),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: padding)),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              habits.map((e) => HomeHabitWidget(habit: e)).toList(),
             ),
           ),
         ],
@@ -62,11 +72,15 @@ class HomeHabitWidget extends StatelessWidget {
             ? null
             : Text(
                 habit.emojiIcon!,
-                style: Theme.of(context).textTheme.headline4,
+                style: context.textTheme().headline4,
               ),
         title: Text(
           habit.name,
-          style: Theme.of(context).textTheme.headline6,
+          style: context.textTheme().headline6!.copyWith(
+                color: getTextColorFor(
+                  Color(habit.backgroundColor ?? 1),
+                ),
+              ),
         ),
         trailing: const Icon(Icons.chevron_right),
       ),

@@ -63,7 +63,11 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
                 dense: true,
                 title: Text(inputDecoration?.labelText ?? 'Repeat'),
                 trailing: Text(
-                  parseWeekdays(field.value ?? everyDay),
+                  parseWeekdays(
+                    field.value == null || field.value!.isEmpty
+                        ? everyDay
+                        : field.value!,
+                  ),
                   style: Theme.of(field.context).textTheme.subtitle2,
                 ),
               ),

@@ -2,10 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:time/src/extensions.dart';
 
-class DateListView extends HookConsumerWidget {
+class DateListView extends HookConsumerWidget implements PreferredSizeWidget {
   const DateListView({Key? key}) : super(key: key);
 
   @override
@@ -13,6 +14,9 @@ class DateListView extends HookConsumerWidget {
     final viewDate = ref.watch(viewDateProvider);
     return _DateCustomList(viewDate: viewDate);
   }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(padding * 6);
 }
 
 class _DateCustomList extends StatefulWidget {
@@ -83,19 +87,18 @@ class _DateCustomListState extends State<_DateCustomList> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
           height: padding * 6,
-          child: _buildListSection(theme),
+          child: _buildListSection(context),
         ),
       ],
     );
   }
 
-  Widget _buildListSection(ThemeData theme) => Stack(
+  Widget _buildListSection(BuildContext context) => Stack(
         children: [
           _buildList(),
           Align(
@@ -106,7 +109,7 @@ class _DateCustomListState extends State<_DateCustomList> {
                 leftArrowOpacity,
                 Icon(
                   Icons.chevron_left,
-                  color: theme.colorScheme.onSecondary,
+                  color: context.theme().colorScheme.onSecondary,
                 ),
               ),
             ),
@@ -119,7 +122,7 @@ class _DateCustomListState extends State<_DateCustomList> {
                 rightArrowOpacity,
                 Icon(
                   Icons.chevron_right,
-                  color: theme.colorScheme.onSecondary,
+                  color: context.theme().colorScheme.onSecondary,
                 ),
               ),
             ),
@@ -143,7 +146,7 @@ class _DateCustomListState extends State<_DateCustomList> {
               height: padding * 5,
               width: padding * 5,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
+                color: context.theme().colorScheme.secondary,
                 borderRadius: BorderRadius.circular(padding * 2.5),
               ),
               child: icon,
@@ -201,7 +204,6 @@ class _DateListItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     return Container(
       width: padding * 6,
       padding: isToday ? const EdgeInsets.all(1) : EdgeInsets.zero,
@@ -209,10 +211,10 @@ class _DateListItem extends HookConsumerWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(padding),
         color: isToday
-            ? theme.colorScheme.secondary
+            ? context.theme().colorScheme.secondary
             : isNow
-                ? theme.splashColor
-                : theme.colorScheme.background,
+                ? context.theme().splashColor
+                : context.theme().colorScheme.background,
       ),
       child: InkWell(
         onTap: () => ref.read(viewDateProvider.state).state = date.copyWith(
@@ -228,17 +230,19 @@ class _DateListItem extends HookConsumerWidget {
           children: [
             Text(
               DateFormat('EEE').format(date),
-              style: theme.textTheme.subtitle2!.copyWith(
-                color: isToday ? theme.colorScheme.onSecondary : null,
-              ),
+              style: context.textTheme().subtitle2!.copyWith(
+                    color: isToday
+                        ? context.theme().colorScheme.onSecondary
+                        : null,
+                  ),
             ),
             Text(
               date.day.toString(),
-              style: theme.textTheme.subtitle1!.copyWith(
-                color: isToday
-                    ? theme.colorScheme.onSecondary
-                    : theme.colorScheme.secondary,
-              ),
+              style: context.textTheme().subtitle1!.copyWith(
+                    color: isToday
+                        ? context.theme().colorScheme.onSecondary
+                        : context.theme().colorScheme.secondary,
+                  ),
             ),
           ],
         ),

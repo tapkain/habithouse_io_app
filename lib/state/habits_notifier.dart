@@ -8,11 +8,12 @@ class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
   HabitsNotifier(this.storage, this.viewDate)
       : super(BuiltList(storage.fetchHabitsAfterDate(viewDate)));
 
-  void putHabit(Habit h) async {
-    state = BuiltList([...state, await storage.putHabit(h)]);
+  void putHabit(Habit habit) async {
+    final stateMap = Map.fromIterables(state.map((h) => h.id), state);
+    final newHabit = await storage.putHabit(habit);
+    stateMap[newHabit.id] = newHabit;
+    state = BuiltList(stateMap.values);
   }
-
-  Habit? getById(int id) => storage.fetchHabitById(id);
 
   final DateTime viewDate;
   final IStorage storage;
@@ -26,8 +27,9 @@ final habitsProvider = StateNotifierProvider<HabitsNotifier, BuiltList<Habit>>(
 );
 
 final habitByIdProvider = StateProvider.family<Habit?, int>((ref, habitId) {
-  final habitsNotifier = ref.watch(habitsProvider.notifier);
-  return habitsNotifier.getById(habitId);
+  final habits = ref.watch(habitsProvider);
+  final index = habits.indexWhere((h) => h.id == habitId);
+  return index == -1 ? null : habits[index];
 });
 
 final viewDateProvider = StateProvider((_) => DateTime.now().copyWith(

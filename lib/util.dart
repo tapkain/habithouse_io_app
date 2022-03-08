@@ -10,3 +10,15 @@ Emoji getRandomEmoji() {
   const emojis = ['🌟', '🎯', '🧘', '📚', '🪴', '👀', '💅', '🌇', '📲'];
   return Emoji('random', emojis[Random().nextInt(emojis.length - 1)]);
 }
+
+Color getTextColorFor(Color background) {
+  if (ThemeData.estimateBrightnessForColor(background) == Brightness.dark) {
+    return Colors.white;
+  }
+  return Colors.black;
+}
+
+extension BuildContextUtils on BuildContext {
+  ThemeData theme() => Theme.of(this);
+  TextTheme textTheme() => Theme.of(this).textTheme;
+}

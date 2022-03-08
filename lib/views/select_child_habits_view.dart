@@ -31,7 +31,7 @@ class SelectChildHabitsView extends HookConsumerWidget {
                 selectedChildHabitsNotifier.selected.toList(),
               );
 
-              GoRouter.of(context).pop();
+              context.pop();
             },
             child: Text('Done'),
           ),

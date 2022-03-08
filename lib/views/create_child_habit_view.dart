@@ -71,6 +71,6 @@ class CreateChildHabitView extends HookConsumerWidget {
       );
     }
 
-    GoRouter.of(context).pop();
+    context.pop();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
@@ -6,7 +5,6 @@ import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/service/service.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/util.dart';
-import 'package:habithouse_io/widgets/reactive_frequency_picker.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -46,19 +44,10 @@ class CreateHabitView extends HookConsumerWidget {
         builder: (context, formModel, child) => Scaffold(
           appBar: ModalAppBar(
             appBarColor: formModel.backgroundColorValue!,
-            title: Text(
-              editHabit == null ? 'New Routine' : 'Edit Routine',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            title: Text(editHabit == null ? 'New Routine' : 'Edit Routine'),
             leading: TextButton(
-              onPressed: () => GoRouter.of(context).pop(),
-              child: Text(
-                'Cancel',
-                style: Theme.of(context)
-                    .textTheme
-                    .button!
-                    .copyWith(fontWeight: FontWeight.bold),
-              ),
+              onPressed: () => context.pop(),
+              child: const Text('Cancel'),
             ),
             trailing: TextButton(
               onPressed: formModel.form.valid
@@ -66,11 +55,11 @@ class CreateHabitView extends HookConsumerWidget {
                   : null,
               child: Text(
                 'Save',
-                style: Theme.of(context).textTheme.button!.copyWith(
+                style: context.textTheme().button!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: formModel.form.valid
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Theme.of(context).disabledColor,
+                          ? getTextColorFor(formModel.backgroundColorValue!)
+                          : context.theme().disabledColor,
                     ),
               ),
             ),
@@ -131,7 +120,7 @@ class CreateHabitView extends HookConsumerWidget {
       );
     }
 
-    GoRouter.of(context).pop();
+    context.pop();
   }
 }
 

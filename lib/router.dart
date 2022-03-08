@@ -16,6 +16,10 @@ final routerProvider = Provider((ref) {
     initialLocation: '/habits',
     routes: [
       GoRoute(
+        path: '/',
+        redirect: (_) => '/habits',
+      ),
+      GoRoute(
         path: '/habits',
         builder: (context, state) => const HomeView(),
         routes: [

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
@@ -13,9 +14,12 @@ class HomeView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final habits = ref.watch(habitsProvider);
+    final viewDate = ref.watch(viewDateProvider);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('habithouse'),
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => context.go('/habits/create'),
@@ -25,7 +29,7 @@ class HomeView extends HookConsumerWidget {
           const SizedBox(height: padding),
           Container(
             alignment: Alignment.center,
-            height: padding * 5,
+            height: padding * 12,
             child: const DateListView(),
           ),
           Expanded(
@@ -50,7 +54,7 @@ class HomeHabitWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).toggleableActiveColor,
+      color: Color(habit.backgroundColor ?? 1),
       elevation: 1,
       child: ListTile(
         onTap: () => context.go('/habits/view/${habit.id}'),

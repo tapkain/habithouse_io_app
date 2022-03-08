@@ -33,7 +33,10 @@ class PreviewHabitView extends HookConsumerWidget {
         ),
         if (childHabits.isNotEmpty)
           SliverToBoxAdapter(
-            child: ElevatedButton(onPressed: () {}, child: Text('Start FLOW')),
+            child: ElevatedButton(
+              onPressed: () {},
+              child: Text('Start ${habit.name}'),
+            ),
           ),
         SliverList(
           delegate: SliverChildBuilderDelegate(

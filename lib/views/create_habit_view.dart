@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/models.dart';
+import 'package:habithouse_io/service/service.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/util.dart';
 import 'package:habithouse_io/widgets/reactive_frequency_picker.dart';
@@ -164,14 +165,18 @@ class _HabitReminderFormSectionState extends State<HabitReminderFormSection> {
             dense: true,
             onTap: () => setState(() => switchValue = true),
             contentPadding: EdgeInsets.zero,
-            trailing: Switch(
-              onChanged: (value) => setState(() {
-                switchValue = value;
-                if (!switchValue) {
-                  formArray.clear();
-                }
-              }),
-              value: switchValue,
+            trailing: HookConsumer(
+              builder: (context, ref, _) => Switch(
+                onChanged: (value) => setState(() {
+                  switchValue = value;
+                  if (switchValue) {
+                    ref.read(localNotificationsProvider).requestPermission();
+                  } else {
+                    formArray.clear();
+                  }
+                }),
+                value: switchValue,
+              ),
             ),
           ),
           if (switchValue) ...[

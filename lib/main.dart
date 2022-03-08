@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:habithouse_io/repository/isar_storage.dart';
 import 'package:habithouse_io/repository/storage.dart';
 import 'package:habithouse_io/router.dart';
+import 'package:habithouse_io/service/service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -70,9 +71,14 @@ void main() {
       );
 
       final isar = await IsarStorage.initialize();
+      final localNotifications = LocalNotificationsService();
+      await localNotifications.initialize();
 
       runApp(ProviderScope(
-        overrides: [storageProvider.overrideWithValue(IsarStorage(isar))],
+        overrides: [
+          storageProvider.overrideWithValue(IsarStorage(isar)),
+          localNotificationsProvider.overrideWithValue(localNotifications),
+        ],
         observers: [HabithouseProviderObserver()],
         child: const HabithouseIO(),
       ));

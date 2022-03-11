@@ -1,9 +1,27 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
 import 'package:habithouse_io/state/select_child_habits_notifier.dart';
+import 'package:habithouse_io/util.dart';
+import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+final selectChildHabitSearchTokenProvider = StateProvider.autoDispose<String>(
+  (_) => '',
+);
+
+final filteredSelectedChildHabitsProvider = StateProvider.family
+    .autoDispose<BuiltList<HabitOption>, int>((ref, habitId) {
+  final selectedChildHabits = ref.watch(selectChildHabitsProvider(habitId));
+  final selectedChildHabitsNotifier =
+      ref.watch(selectChildHabitsProvider(habitId).notifier);
+  final searchToken = ref.watch(selectChildHabitSearchTokenProvider);
+  return searchToken.isEmpty
+      ? selectedChildHabits
+      : BuiltList(selectedChildHabitsNotifier.searchByName(searchToken));
+});
 
 class SelectChildHabitsView extends HookConsumerWidget {
   const SelectChildHabitsView({required this.habitId, Key? key})
@@ -13,40 +31,67 @@ class SelectChildHabitsView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedChildHabits = ref.watch(selectChildHabitsProvider(habitId));
+    final selectedChildHabits =
+        ref.watch(filteredSelectedChildHabitsProvider(habitId));
+    final searchToken = ref.watch(selectChildHabitSearchTokenProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add Habit'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              final selectedChildHabitsNotifier =
-                  ref.read(selectChildHabitsProvider(habitId).notifier);
-              final childHabitsNotifier =
-                  ref.read(childHabitsProvider(habitId).notifier);
+      body: CustomScrollView(
+        slivers: [
+          SliverModalAppBar(
+            title: const Text('Add Habit'),
+            trailing: TextButton(
+              onPressed: () {
+                final selectedChildHabitsNotifier =
+                    ref.read(selectChildHabitsProvider(habitId).notifier);
+                final childHabitsNotifier =
+                    ref.read(childHabitsProvider(habitId).notifier);
 
-              childHabitsNotifier.putHabits(
-                habitId,
-                selectedChildHabitsNotifier.selected.toList(),
-              );
+                childHabitsNotifier.putHabits(
+                  habitId,
+                  selectedChildHabitsNotifier.selected.toList(),
+                );
 
-              context.pop();
-            },
-            child: Text('Done'),
+                context.pop();
+              },
+              child: const Text('Done'),
+            ),
           ),
-        ],
-      ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: () =>
-                context.go('${GoRouter.of(context).location}/create'),
-            child: Text('Add custom habit'),
+          SliverAppBar(
+            backgroundColor: context.theme().colorScheme.background,
+            automaticallyImplyLeading: false,
+            pinned: true,
+            title: SearchBox(
+              hintText: 'Search or add new habit',
+              onChanged: (token) => ref
+                  .read(selectChildHabitSearchTokenProvider.notifier)
+                  .state = token,
+            ),
           ),
-          Expanded(
-            child: ListView(
-              children: selectedChildHabits
+          SliverToBoxAdapter(
+            child: AnimatedContainer(
+              height: searchToken.isEmpty ? 0 : 80,
+              duration: 300.milliseconds,
+              child: ListTile(
+                onTap: () =>
+                    context.go('${GoRouter.of(context).location}/create'),
+                leading: Text(
+                  '🎯',
+                  style: context.textTheme().emoji(),
+                ),
+                title: Text(searchToken),
+                subtitle: const Text('Create custom habit'),
+                trailing: TextButton(
+                  child: const Text('CREATE'),
+                  onPressed: () =>
+                      context.go('${GoRouter.of(context).location}/create'),
+                ),
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              selectedChildHabits
                   .map((e) => SelectChildHabitListTile(
                         habit: e,
                         parentHabitId: habitId,
@@ -73,7 +118,10 @@ class SelectChildHabitListTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
-      leading: Text(habit.habit.emojiIcon ?? ''),
+      leading: Text(
+        habit.habit.emojiIcon ?? '',
+        style: context.textTheme().emoji(),
+      ),
       title: Text(habit.habit.name),
       subtitle: Text(habit.habit.description ?? ''),
       trailing: TextButton(

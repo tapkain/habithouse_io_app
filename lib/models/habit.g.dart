@@ -17,7 +17,7 @@ extension GetHabitCollection on Isar {
 final HabitSchema = CollectionSchema(
   name: 'Habit',
   schema:
-      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
+      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"isChallenge","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
   nativeAdapter: const _HabitNativeAdapter(),
   webAdapter: const _HabitWebAdapter(),
   idName: 'id',
@@ -28,12 +28,13 @@ final HabitSchema = CollectionSchema(
     'durationSeconds': 3,
     'emojiIcon': 4,
     'isArchived': 5,
-    'localFileAttachmentUris': 6,
-    'name': 7,
-    'parentId': 8,
-    'repeatCron': 9,
-    'targetGoal': 10,
-    'templateId': 11
+    'isChallenge': 6,
+    'localFileAttachmentUris': 7,
+    'name': 8,
+    'parentId': 9,
+    'repeatCron': 10,
+    'targetGoal': 11,
+    'templateId': 12
   },
   listProperties: {'localFileAttachmentUris'},
   indexIds: {},
@@ -67,6 +68,7 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
     IsarNative.jsObjectSet(jsObj, 'emojiIcon', object.emojiIcon);
     IsarNative.jsObjectSet(jsObj, 'id', object.id);
     IsarNative.jsObjectSet(jsObj, 'isArchived', object.isArchived);
+    IsarNative.jsObjectSet(jsObj, 'isChallenge', object.isChallenge);
     IsarNative.jsObjectSet(
         jsObj, 'localFileAttachmentUris', object.localFileAttachmentUris);
     IsarNative.jsObjectSet(jsObj, 'name', object.name);
@@ -92,6 +94,7 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
       emojiIcon: IsarNative.jsObjectGet(jsObj, 'emojiIcon'),
       id: IsarNative.jsObjectGet(jsObj, 'id') ?? double.negativeInfinity,
       isArchived: IsarNative.jsObjectGet(jsObj, 'isArchived') ?? false,
+      isChallenge: IsarNative.jsObjectGet(jsObj, 'isChallenge') ?? false,
       localFileAttachmentUris:
           (IsarNative.jsObjectGet(jsObj, 'localFileAttachmentUris') as List?)
               ?.map((e) => e ?? '')
@@ -129,6 +132,8 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
             as P;
       case 'isArchived':
         return (IsarNative.jsObjectGet(jsObj, 'isArchived') ?? false) as P;
+      case 'isChallenge':
+        return (IsarNative.jsObjectGet(jsObj, 'isChallenge') ?? false) as P;
       case 'localFileAttachmentUris':
         return ((IsarNative.jsObjectGet(jsObj, 'localFileAttachmentUris')
                 as List?)
@@ -181,37 +186,39 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
     dynamicSize += (_emojiIcon?.length ?? 0) as int;
     final value5 = object.isArchived;
     final _isArchived = value5;
-    final value6 = object.localFileAttachmentUris;
-    dynamicSize += (value6?.length ?? 0) * 8;
-    List<IsarUint8List?>? bytesList6;
-    if (value6 != null) {
-      bytesList6 = [];
-      for (var str in value6) {
+    final value6 = object.isChallenge;
+    final _isChallenge = value6;
+    final value7 = object.localFileAttachmentUris;
+    dynamicSize += (value7?.length ?? 0) * 8;
+    List<IsarUint8List?>? bytesList7;
+    if (value7 != null) {
+      bytesList7 = [];
+      for (var str in value7) {
         final bytes = IsarBinaryWriter.utf8Encoder.convert(str);
-        bytesList6.add(bytes);
+        bytesList7.add(bytes);
         dynamicSize += bytes.length as int;
       }
     }
-    final _localFileAttachmentUris = bytesList6;
-    final value7 = object.name;
-    final _name = IsarBinaryWriter.utf8Encoder.convert(value7);
+    final _localFileAttachmentUris = bytesList7;
+    final value8 = object.name;
+    final _name = IsarBinaryWriter.utf8Encoder.convert(value8);
     dynamicSize += (_name.length) as int;
-    final value8 = object.parentId;
-    final _parentId = value8;
-    final value9 = object.repeatCron;
+    final value9 = object.parentId;
+    final _parentId = value9;
+    final value10 = object.repeatCron;
     IsarUint8List? _repeatCron;
-    if (value9 != null) {
-      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value9);
+    if (value10 != null) {
+      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value10);
     }
     dynamicSize += (_repeatCron?.length ?? 0) as int;
-    final value10 = object.targetGoal;
+    final value11 = object.targetGoal;
     IsarUint8List? _targetGoal;
-    if (value10 != null) {
-      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value10);
+    if (value11 != null) {
+      _targetGoal = IsarBinaryWriter.utf8Encoder.convert(value11);
     }
     dynamicSize += (_targetGoal?.length ?? 0) as int;
-    final value11 = object.templateId;
-    final _templateId = value11;
+    final value12 = object.templateId;
+    final _templateId = value12;
     final size = staticSize + dynamicSize;
 
     rawObj.buffer = alloc(size);
@@ -224,12 +231,13 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
     writer.writeLong(offsets[3], _durationSeconds);
     writer.writeBytes(offsets[4], _emojiIcon);
     writer.writeBool(offsets[5], _isArchived);
-    writer.writeStringList(offsets[6], _localFileAttachmentUris);
-    writer.writeBytes(offsets[7], _name);
-    writer.writeLong(offsets[8], _parentId);
-    writer.writeBytes(offsets[9], _repeatCron);
-    writer.writeBytes(offsets[10], _targetGoal);
-    writer.writeLong(offsets[11], _templateId);
+    writer.writeBool(offsets[6], _isChallenge);
+    writer.writeStringList(offsets[7], _localFileAttachmentUris);
+    writer.writeBytes(offsets[8], _name);
+    writer.writeLong(offsets[9], _parentId);
+    writer.writeBytes(offsets[10], _repeatCron);
+    writer.writeBytes(offsets[11], _targetGoal);
+    writer.writeLong(offsets[12], _templateId);
   }
 
   @override
@@ -243,12 +251,13 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       emojiIcon: reader.readStringOrNull(offsets[4]),
       id: id,
       isArchived: reader.readBool(offsets[5]),
-      localFileAttachmentUris: reader.readStringList(offsets[6]),
-      name: reader.readString(offsets[7]),
-      parentId: reader.readLongOrNull(offsets[8]),
-      repeatCron: reader.readStringOrNull(offsets[9]),
-      targetGoal: reader.readStringOrNull(offsets[10]),
-      templateId: reader.readLongOrNull(offsets[11]),
+      isChallenge: reader.readBool(offsets[6]),
+      localFileAttachmentUris: reader.readStringList(offsets[7]),
+      name: reader.readString(offsets[8]),
+      parentId: reader.readLongOrNull(offsets[9]),
+      repeatCron: reader.readStringOrNull(offsets[10]),
+      targetGoal: reader.readStringOrNull(offsets[11]),
+      templateId: reader.readLongOrNull(offsets[12]),
     );
     return object;
   }
@@ -272,16 +281,18 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       case 5:
         return (reader.readBool(offset)) as P;
       case 6:
-        return (reader.readStringList(offset)) as P;
+        return (reader.readBool(offset)) as P;
       case 7:
-        return (reader.readString(offset)) as P;
+        return (reader.readStringList(offset)) as P;
       case 8:
-        return (reader.readLongOrNull(offset)) as P;
+        return (reader.readString(offset)) as P;
       case 9:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readLongOrNull(offset)) as P;
       case 10:
         return (reader.readStringOrNull(offset)) as P;
       case 11:
+        return (reader.readStringOrNull(offset)) as P;
+      case 12:
         return (reader.readLongOrNull(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
@@ -806,6 +817,15 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
       property: 'isArchived',
+      value: value,
+    ));
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> isChallengeEqualTo(
+      bool value) {
+    return addFilterConditionInternal(FilterCondition(
+      type: ConditionType.eq,
+      property: 'isChallenge',
       value: value,
     ));
   }
@@ -1432,6 +1452,14 @@ extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
     return addSortByInternal('isArchived', Sort.desc);
   }
 
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByIsChallenge() {
+    return addSortByInternal('isChallenge', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> sortByIsChallengeDesc() {
+    return addSortByInternal('isChallenge', Sort.desc);
+  }
+
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByName() {
     return addSortByInternal('name', Sort.asc);
   }
@@ -1530,6 +1558,14 @@ extension HabitQueryWhereSortThenBy on QueryBuilder<Habit, Habit, QSortThenBy> {
     return addSortByInternal('isArchived', Sort.desc);
   }
 
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByIsChallenge() {
+    return addSortByInternal('isChallenge', Sort.asc);
+  }
+
+  QueryBuilder<Habit, Habit, QAfterSortBy> thenByIsChallengeDesc() {
+    return addSortByInternal('isChallenge', Sort.desc);
+  }
+
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByName() {
     return addSortByInternal('name', Sort.asc);
   }
@@ -1602,6 +1638,10 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
     return addDistinctByInternal('isArchived');
   }
 
+  QueryBuilder<Habit, Habit, QDistinct> distinctByIsChallenge() {
+    return addDistinctByInternal('isChallenge');
+  }
+
   QueryBuilder<Habit, Habit, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('name', caseSensitive: caseSensitive);
@@ -1653,6 +1693,10 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
 
   QueryBuilder<Habit, bool, QQueryOperations> isArchivedProperty() {
     return addPropertyNameInternal('isArchived');
+  }
+
+  QueryBuilder<Habit, bool, QQueryOperations> isChallengeProperty() {
+    return addPropertyNameInternal('isChallenge');
   }
 
   QueryBuilder<Habit, List<String>?, QQueryOperations>

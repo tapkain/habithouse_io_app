@@ -1,30 +1,9 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
-import 'package:habithouse_io/models/habit.dart';
+import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:dartx/dartx.dart';
-
-final _premadeHabits = [
-  Habit(
-    emojiIcon: '🧘',
-    name: 'Meditation',
-    description: 'Meditation is gud',
-    createdAt: DateTime.now(),
-  ),
-  Habit(
-    emojiIcon: '🚿',
-    name: 'Cold Shower',
-    description: 'Cold Shomer is too cold',
-    createdAt: DateTime.now(),
-  ),
-  Habit(
-    emojiIcon: '🍺',
-    name: 'Drink Beer',
-    description: 'Makes u ugly',
-    createdAt: DateTime.now(),
-  ),
-];
 
 @immutable
 class HabitOption {
@@ -38,13 +17,24 @@ class SelectChildHabitsNotifier extends StateNotifier<BuiltList<HabitOption>> {
   SelectChildHabitsNotifier(BuiltList<Habit> habits) : super(BuiltList()) {
     final list = [
       ...habits.map((e) => HabitOption(e, true)),
-      ..._premadeHabits.map((e) => HabitOption(e, false)),
+      ...templateHabits.map((e) => HabitOption(e, false)),
     ];
-    state = BuiltList(list.distinctBy((e) => e.habit.name));
+    state = BuiltList(list.distinctBy((e) => e.habit.templateId));
   }
 
   void toggle(Habit habit) {
-    final index = state.indexWhere((e) => e.habit.name == habit.name);
+    var index = -1;
+
+    if (habit.templateId != null) {
+      index = state.indexWhere((e) => e.habit.templateId == habit.templateId);
+    } else {
+      index = state.indexWhere((e) => e.habit.name == habit.name);
+    }
+
+    if (index == -1) {
+      return;
+    }
+
     final old = state[index];
     state = state.rebuild(
       (e) => e
@@ -57,6 +47,10 @@ class SelectChildHabitsNotifier extends StateNotifier<BuiltList<HabitOption>> {
   void putHabit(Habit h) {
     state = BuiltList([HabitOption(h, true), ...state]);
   }
+
+  Iterable<HabitOption> searchByName(String nameToken) => state.where(
+        (h) => h.habit.name.toLowerCase().contains(nameToken.toLowerCase()),
+      );
 
   BuiltList<Habit> get selected => state
       .where((e) => e.isSelected)

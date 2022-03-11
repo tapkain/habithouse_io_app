@@ -1,8 +1,7 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habithouse_io/repository/isar_storage.dart';
-import 'package:habithouse_io/repository/storage.dart';
+import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:habithouse_io/service/service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -73,9 +72,15 @@ void main() {
       final isar = await IsarStorage.initialize();
       final localNotifications = LocalNotificationsService();
       await localNotifications.initialize();
+      final prefs = IsarSharedPrefs(isar);
+
+      prefs.onFirstLaunch(() {
+        // TODO: write template habits here
+      });
 
       runApp(ProviderScope(
         overrides: [
+          sharedPrefsProvider.overrideWithValue(prefs),
           storageProvider.overrideWithValue(IsarStorage(isar)),
           localNotificationsProvider.overrideWithValue(localNotifications),
         ],

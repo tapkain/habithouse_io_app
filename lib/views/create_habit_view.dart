@@ -19,16 +19,13 @@ class CreateHabitView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (editHabitId != null) {
       final editHabit = ref.watch(habitByIdProvider(editHabitId!));
-      return editHabit == null
-          ? Container()
-          : buildView(context, editHabit, ref);
+      return editHabit == null ? Container() : buildView(editHabit, ref);
     }
 
-    return buildView(context, null, ref);
+    return buildView(null, ref);
   }
 
   Widget buildView(
-    BuildContext context,
     Habit? editHabit,
     WidgetRef ref,
   ) {

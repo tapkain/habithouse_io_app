@@ -17,6 +17,9 @@ class Habit with _$Habit {
     // used for distinquishing templated habits vs user generated ones
     int? templateId,
 
+    // true if this habit is part of a challenge
+    @Default(false) bool isChallenge,
+
     // if null, habit is a routine which contains other habits
     int? parentId,
     required String name,

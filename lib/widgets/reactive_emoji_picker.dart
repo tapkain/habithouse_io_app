@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 
@@ -12,14 +13,22 @@ class ReactiveEmojiPicker<T> extends ReactiveFormField<T, Emoji> {
           formControlName: formControlName,
           formControl: formControl,
           builder: (field) {
+            final primaryColor = field.context.theme().colorScheme.primary;
+
             // ignore: prefer_function_declarations_over_variables
             final onTap = () {
               showModalBottomSheet(
                   context: field.context,
                   builder: (context) => EmojiPicker(
-                        config: const Config(
+                        config: Config(
+                          bgColor: context.theme().colorScheme.background,
+                          indicatorColor: primaryColor,
+                          iconColorSelected: primaryColor,
+                          progressIndicatorColor: primaryColor,
+                          backspaceColor: primaryColor,
                           initCategory: Category.ACTIVITIES,
                           showRecentsTab: false,
+                          enableSkinTones: true,
                         ),
                         onEmojiSelected: (_, emoji) {
                           field.didChange(emoji);

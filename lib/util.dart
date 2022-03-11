@@ -22,3 +22,7 @@ extension BuildContextUtils on BuildContext {
   ThemeData theme() => Theme.of(this);
   TextTheme textTheme() => Theme.of(this).textTheme;
 }
+
+extension TextThemeUtils on TextTheme {
+  TextStyle? emoji() => headline4;
+}

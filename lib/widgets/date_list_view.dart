@@ -87,15 +87,7 @@ class _DateCustomListState extends State<_DateCustomList> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          height: padding * 6,
-          child: _buildListSection(context),
-        ),
-      ],
-    );
+    return _buildListSection(context);
   }
 
   Widget _buildListSection(BuildContext context) => Stack(

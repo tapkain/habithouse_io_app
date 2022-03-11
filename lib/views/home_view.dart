@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/habit.dart';
@@ -9,6 +10,31 @@ import 'package:habithouse_io/util.dart';
 import 'package:habithouse_io/widgets/date_list_view.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+class HabitViewSlivePersistentHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return AppBar(
+      title: Text('HABITHOUSE'),
+    );
+  }
+
+  @override
+  double get maxExtent => 100;
+
+  @override
+  double get minExtent => 40;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
+}
+
 class HomeView extends HookConsumerWidget {
   const HomeView({Key? key}) : super(key: key);
 
@@ -17,7 +43,6 @@ class HomeView extends HookConsumerWidget {
     final habits = ref.watch(habitsProvider);
     final viewDate = ref.watch(viewDateProvider);
 
-    // TODO: finish sliver app bar
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -25,20 +50,21 @@ class HomeView extends HookConsumerWidget {
       ),
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar(
-            // stretch: true,
-            title: Text('habithouse'),
-            expandedHeight: 200,
-
-            flexibleSpace: FlexibleSpaceBar(
-              // background: Text('habithouse'),
-              title: Text('habithouse'),
+          SliverAppBar(
+            stretch: true,
+            title: Text(
+              DateFormat()
+                  .addPattern(DateFormat.ABBR_WEEKDAY + ',')
+                  .addPattern(DateFormat.ABBR_MONTH)
+                  .addPattern(DateFormat.DAY)
+                  .format(viewDate),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(child: SizedBox(height: padding)),
+          const SliverToBoxAdapter(
             child: SizedBox(
-              height: DateListView().preferredSize.height,
-              child: const DateListView(),
+              height: padding * 6,
+              child: DateListView(),
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: padding)),
@@ -72,7 +98,7 @@ class HomeHabitWidget extends StatelessWidget {
             ? null
             : Text(
                 habit.emojiIcon!,
-                style: context.textTheme().headline4,
+                style: context.textTheme().emoji(),
               ),
         title: Text(
           habit.name,

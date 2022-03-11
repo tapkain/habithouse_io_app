@@ -48,3 +48,10 @@ final childHabitsProvider = StateNotifierProvider.family
     habitId,
   ),
 );
+
+final childHabitByIdProvider =
+    StateProvider.family.autoDispose<Habit?, int>((ref, habitId) {
+  final habits = ref.watch(childHabitsProvider(habitId));
+  final index = habits.indexWhere((h) => h.id == habitId);
+  return index == -1 ? null : habits[index];
+});

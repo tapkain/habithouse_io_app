@@ -1,6 +1,5 @@
 import 'package:habithouse_io/config.dart';
-import 'package:habithouse_io/models/habit.dart';
-import 'package:habithouse_io/models/habit_entry.dart';
+import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/repository/storage.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -71,7 +70,11 @@ class IsarStorage implements IStorage {
   static Future<Isar> initialize() async {
     final dir = await getApplicationSupportDirectory();
     final isar = await Isar.open(
-      schemas: [HabitSchema, HabitEntrySchema],
+      schemas: [
+        HabitSchema,
+        HabitEntrySchema,
+        SharedPrefsSchema,
+      ],
       directory: dir.path,
       name: Config.localDbName,
       inspector: Config.isDebug,

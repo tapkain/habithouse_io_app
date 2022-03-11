@@ -21,6 +21,7 @@ class _$HabitTearOff {
   _Habit call(
       {@Id() int id = isarAutoIncrementId,
       int? templateId,
+      bool isChallenge = false,
       int? parentId,
       required String name,
       required DateTime createdAt,
@@ -36,6 +37,7 @@ class _$HabitTearOff {
     return _Habit(
       id: id,
       templateId: templateId,
+      isChallenge: isChallenge,
       parentId: parentId,
       name: name,
       createdAt: createdAt,
@@ -62,6 +64,8 @@ mixin _$Habit {
   int get id =>
       throw _privateConstructorUsedError; // used for distinquishing templated habits vs user generated ones
   int? get templateId =>
+      throw _privateConstructorUsedError; // true if this habit is part of a challenge
+  bool get isChallenge =>
       throw _privateConstructorUsedError; // if null, habit is a routine which contains other habits
   int? get parentId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
@@ -91,6 +95,7 @@ abstract class $HabitCopyWith<$Res> {
   $Res call(
       {@Id() int id,
       int? templateId,
+      bool isChallenge,
       int? parentId,
       String name,
       DateTime createdAt,
@@ -117,6 +122,7 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? templateId = freezed,
+    Object? isChallenge = freezed,
     Object? parentId = freezed,
     Object? name = freezed,
     Object? createdAt = freezed,
@@ -139,6 +145,10 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
           ? _value.templateId
           : templateId // ignore: cast_nullable_to_non_nullable
               as int?,
+      isChallenge: isChallenge == freezed
+          ? _value.isChallenge
+          : isChallenge // ignore: cast_nullable_to_non_nullable
+              as bool,
       parentId: parentId == freezed
           ? _value.parentId
           : parentId // ignore: cast_nullable_to_non_nullable
@@ -199,6 +209,7 @@ abstract class _$HabitCopyWith<$Res> implements $HabitCopyWith<$Res> {
   $Res call(
       {@Id() int id,
       int? templateId,
+      bool isChallenge,
       int? parentId,
       String name,
       DateTime createdAt,
@@ -226,6 +237,7 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? templateId = freezed,
+    Object? isChallenge = freezed,
     Object? parentId = freezed,
     Object? name = freezed,
     Object? createdAt = freezed,
@@ -248,6 +260,10 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
           ? _value.templateId
           : templateId // ignore: cast_nullable_to_non_nullable
               as int?,
+      isChallenge: isChallenge == freezed
+          ? _value.isChallenge
+          : isChallenge // ignore: cast_nullable_to_non_nullable
+              as bool,
       parentId: parentId == freezed
           ? _value.parentId
           : parentId // ignore: cast_nullable_to_non_nullable
@@ -306,6 +322,7 @@ class _$_Habit implements _Habit {
   const _$_Habit(
       {@Id() this.id = isarAutoIncrementId,
       this.templateId,
+      this.isChallenge = false,
       this.parentId,
       required this.name,
       required this.createdAt,
@@ -325,6 +342,9 @@ class _$_Habit implements _Habit {
   final int id;
   @override // used for distinquishing templated habits vs user generated ones
   final int? templateId;
+  @JsonKey()
+  @override // true if this habit is part of a challenge
+  final bool isChallenge;
   @override // if null, habit is a routine which contains other habits
   final int? parentId;
   @override
@@ -353,7 +373,7 @@ class _$_Habit implements _Habit {
 
   @override
   String toString() {
-    return 'Habit(id: $id, templateId: $templateId, parentId: $parentId, name: $name, createdAt: $createdAt, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatCron: $repeatCron, targetGoal: $targetGoal, backgroundColor: $backgroundColor)';
+    return 'Habit(id: $id, templateId: $templateId, isChallenge: $isChallenge, parentId: $parentId, name: $name, createdAt: $createdAt, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatCron: $repeatCron, targetGoal: $targetGoal, backgroundColor: $backgroundColor)';
   }
 
   @override
@@ -364,6 +384,8 @@ class _$_Habit implements _Habit {
             const DeepCollectionEquality().equals(other.id, id) &&
             const DeepCollectionEquality()
                 .equals(other.templateId, templateId) &&
+            const DeepCollectionEquality()
+                .equals(other.isChallenge, isChallenge) &&
             const DeepCollectionEquality().equals(other.parentId, parentId) &&
             const DeepCollectionEquality().equals(other.name, name) &&
             const DeepCollectionEquality().equals(other.createdAt, createdAt) &&
@@ -390,6 +412,7 @@ class _$_Habit implements _Habit {
       runtimeType,
       const DeepCollectionEquality().hash(id),
       const DeepCollectionEquality().hash(templateId),
+      const DeepCollectionEquality().hash(isChallenge),
       const DeepCollectionEquality().hash(parentId),
       const DeepCollectionEquality().hash(name),
       const DeepCollectionEquality().hash(createdAt),
@@ -413,6 +436,7 @@ abstract class _Habit implements Habit {
   const factory _Habit(
       {@Id() int id,
       int? templateId,
+      bool isChallenge,
       int? parentId,
       required String name,
       required DateTime createdAt,
@@ -431,6 +455,8 @@ abstract class _Habit implements Habit {
   int get id;
   @override // used for distinquishing templated habits vs user generated ones
   int? get templateId;
+  @override // true if this habit is part of a challenge
+  bool get isChallenge;
   @override // if null, habit is a routine which contains other habits
   int? get parentId;
   @override

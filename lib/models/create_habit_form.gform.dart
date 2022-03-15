@@ -137,6 +137,10 @@ class CreateHabitForm implements FormModel<CreateHabit> {
 
   static String remindersControlName = "reminders";
 
+  static String startDateControlName = "startDate";
+
+  static String endDateControlName = "endDate";
+
   final CreateHabit? createHabit;
 
   final FormGroup form;
@@ -149,12 +153,16 @@ class CreateHabitForm implements FormModel<CreateHabit> {
       pathBuilder(backgroundColorControlName);
   String repeatFrequencyControlPath() =>
       pathBuilder(repeatFrequencyControlName);
+  String startDateControlPath() => pathBuilder(startDateControlName);
+  String endDateControlPath() => pathBuilder(endDateControlName);
   String remindersControlPath() => pathBuilder(remindersControlName);
   String get nameValue => nameControl.value as String;
   Emoji? get emojiValue => emojiControl?.value;
   Color? get backgroundColorValue => backgroundColorControl?.value;
   List<int> get repeatFrequencyValue =>
       repeatFrequencyControl.value as List<int>;
+  DateTime? get startDateValue => startDateControl?.value;
+  DateTime? get endDateValue => endDateControl?.value;
   List<TimeOfDay> get remindersValue =>
       remindersControl.value?.whereType<TimeOfDay>().toList() ?? [];
   bool get containsName {
@@ -193,6 +201,24 @@ class CreateHabitForm implements FormModel<CreateHabit> {
     }
   }
 
+  bool get containsStartDate {
+    try {
+      form.control(startDateControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool get containsEndDate {
+    try {
+      form.control(endDateControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   bool get containsReminders {
     try {
       form.control(remindersControlPath());
@@ -206,11 +232,15 @@ class CreateHabitForm implements FormModel<CreateHabit> {
   Object? get emojiErrors => emojiControl?.errors;
   Object? get backgroundColorErrors => backgroundColorControl?.errors;
   Object? get repeatFrequencyErrors => repeatFrequencyControl.errors;
+  Object? get startDateErrors => startDateControl?.errors;
+  Object? get endDateErrors => endDateControl?.errors;
   Object? get remindersErrors => remindersControl.errors;
   void get nameFocus => form.focus(nameControlPath());
   void get emojiFocus => form.focus(emojiControlPath());
   void get backgroundColorFocus => form.focus(backgroundColorControlPath());
   void get repeatFrequencyFocus => form.focus(repeatFrequencyControlPath());
+  void get startDateFocus => form.focus(startDateControlPath());
+  void get endDateFocus => form.focus(endDateControlPath());
   void get remindersFocus => form.focus(remindersControlPath());
   void emojiRemove({bool updateParent = true, bool emitEvent = true}) {
     if (containsEmoji) {
@@ -259,6 +289,52 @@ class CreateHabitForm implements FormModel<CreateHabit> {
     }
   }
 
+  void startDateRemove({bool updateParent = true, bool emitEvent = true}) {
+    if (containsStartDate) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          startDateControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            startDateControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
+  void endDateRemove({bool updateParent = true, bool emitEvent = true}) {
+    if (containsEndDate) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          endDateControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            endDateControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
   void nameValueUpdate(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.updateValue(value,
@@ -280,6 +356,18 @@ class CreateHabitForm implements FormModel<CreateHabit> {
   void repeatFrequencyValueUpdate(List<int> value,
       {bool updateParent = true, bool emitEvent = true}) {
     repeatFrequencyControl.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void startDateValueUpdate(DateTime? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    startDateControl?.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void endDateValueUpdate(DateTime? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    endDateControl?.updateValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -310,6 +398,18 @@ class CreateHabitForm implements FormModel<CreateHabit> {
   void repeatFrequencyValuePatch(List<int> value,
       {bool updateParent = true, bool emitEvent = true}) {
     repeatFrequencyControl.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void startDateValuePatch(DateTime? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    startDateControl?.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void endDateValuePatch(DateTime? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    endDateControl?.patchValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -347,6 +447,20 @@ class CreateHabitForm implements FormModel<CreateHabit> {
           bool? disabled}) =>
       repeatFrequencyControl.reset(
           value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void startDateValueReset(DateTime? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      startDateControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void endDateValueReset(DateTime? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      endDateControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
   void remindersValueReset(List<TimeOfDay> value,
           {bool updateParent = true,
           bool emitEvent = true,
@@ -364,6 +478,12 @@ class CreateHabitForm implements FormModel<CreateHabit> {
       : null;
   FormControl<List<int>> get repeatFrequencyControl =>
       form.control(repeatFrequencyControlPath()) as FormControl<List<int>>;
+  FormControl<DateTime>? get startDateControl => containsStartDate
+      ? form.control(startDateControlPath()) as FormControl<DateTime>?
+      : null;
+  FormControl<DateTime>? get endDateControl => containsEndDate
+      ? form.control(endDateControlPath()) as FormControl<DateTime>?
+      : null;
   FormArray<TimeOfDay> get remindersControl =>
       form.control(remindersControlPath()) as FormArray<TimeOfDay>;
   void addRemindersItem(TimeOfDay value,
@@ -402,7 +522,9 @@ class CreateHabitForm implements FormModel<CreateHabit> {
       emoji: emojiValue,
       backgroundColor: backgroundColorValue,
       repeatFrequency: repeatFrequencyValue,
-      reminders: remindersValue);
+      reminders: remindersValue,
+      startDate: startDateValue,
+      endDate: endDateValue);
   void updateValue(CreateHabit value,
           {bool updateParent = true, bool emitEvent = true}) =>
       form.updateValue(
@@ -466,7 +588,21 @@ class CreateHabitForm implements FormModel<CreateHabit> {
             validators: [],
             asyncValidators: [],
             asyncValidatorsDebounceTime: 250,
-            disabled: false)
+            disabled: false),
+        startDateControlName: FormControl<DateTime>(
+            value: createHabit?.startDate,
+            validators: [],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        endDateControlName: FormControl<DateTime>(
+            value: createHabit?.endDate,
+            validators: [],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false)
       },
           validators: [],
           asyncValidators: [],

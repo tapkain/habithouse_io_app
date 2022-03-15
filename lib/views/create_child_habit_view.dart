@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
 import 'package:habithouse_io/state/select_child_habits_notifier.dart';
+import 'package:habithouse_io/util.dart';
+import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -11,10 +14,12 @@ class CreateChildHabitView extends HookConsumerWidget {
     required this.parentHabitId,
     this.editHabitExtra,
     this.editHabitId,
+    this.habitTemplateId,
     Key? key,
   }) : super(key: key);
 
   final int? editHabitId;
+  final int? habitTemplateId;
   final Habit? editHabitExtra;
   final int parentHabitId;
 
@@ -28,27 +33,58 @@ class CreateChildHabitView extends HookConsumerWidget {
     return buildView(null, ref);
   }
 
-  Widget buildView(Habit? editHabit, WidgetRef ref) => Scaffold(
-        body: CreateChildHabitFormBuilder(
-          model: CreateChildHabit(
-            name: editHabit?.name ?? '',
-          ),
-          builder: (context, formModel, child) => ListView(
-            children: [
-              Text('Habit name'),
-              ReactiveTextField<String>(
-                formControl: formModel.nameControl,
-                decoration: const InputDecoration(labelText: 'name'),
+  Widget buildView(Habit? editHabit, WidgetRef ref) =>
+      CreateChildHabitFormBuilder(
+        model: editHabit != null
+            ? Mapper.makeChildHabitForm(editHabit)
+            : CreateChildHabit(),
+        builder: (context, formModel, child) =>
+            ReactiveCreateChildHabitFormConsumer(
+          builder: (context, formModel, child) => Scaffold(
+            appBar: ModalAppBar(
+              title: Text(editHabit == null ? 'New Habit' : 'Edit Habit'),
+              leading: TextButton(
+                onPressed: () => context.pop(),
+                child: const Text('Cancel'),
               ),
-              ReactiveCreateChildHabitFormConsumer(
-                builder: (context, form, child) => ElevatedButton(
-                  child: Text('Submit'),
-                  onPressed: form.form.valid
-                      ? () => submitForm(context, ref, form)
-                      : null,
+              trailing: TextButton(
+                onPressed: formModel.form.valid
+                    ? () => submitForm(context, ref, formModel)
+                    : null,
+                child: Text(
+                  'Save',
+                  style: context.textTheme().button!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: formModel.form.valid
+                            ? getTextColorFor(
+                                context.theme().colorScheme.primary)
+                            : context.theme().disabledColor,
+                      ),
                 ),
               ),
-            ],
+            ),
+            body: ListView(
+              padding: const EdgeInsets.all(padding * 2),
+              children: [
+                ReactiveTextField<String>(
+                  autofocus: true,
+                  formControl: formModel.nameControl,
+                  decoration: const InputDecoration(labelText: 'Habit name'),
+                ),
+                const Divider(),
+                ReactiveEmojiPicker(
+                  formControl: formModel.emojiControl,
+                ),
+                ReactiveCreateChildHabitFormConsumer(
+                  builder: (context, form, child) => ElevatedButton(
+                    child: Text('Submit'),
+                    onPressed: form.form.valid
+                        ? () => submitForm(context, ref, form)
+                        : null,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

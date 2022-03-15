@@ -70,7 +70,9 @@ void main() {
       );
 
       final isar = await IsarStorage.initialize();
-      final localNotifications = LocalNotificationsService();
+      final scheduler = ReminderScheduler();
+      scheduler.initialize();
+      final localNotifications = LocalNotificationsService(scheduler);
       await localNotifications.initialize();
       final prefs = IsarSharedPrefs(isar);
 

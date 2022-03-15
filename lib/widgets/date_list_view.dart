@@ -209,13 +209,7 @@ class _DateListItem extends HookConsumerWidget {
                 : context.theme().colorScheme.background,
       ),
       child: InkWell(
-        onTap: () => ref.read(viewDateProvider.state).state = date.copyWith(
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-          microsecond: 0,
-        ),
+        onTap: () => ref.read(viewDateProvider.state).state = date.date,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,

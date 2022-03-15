@@ -11,6 +11,9 @@ class CreateHabit {
   final String name;
   final Emoji? emoji;
   final Color? backgroundColor;
+  // TODO: implement on view
+  final DateTime? startDate;
+  final DateTime? endDate;
   final List<int> repeatFrequency;
   final List<TimeOfDay> reminders;
 
@@ -24,5 +27,7 @@ class CreateHabit {
     @FormControlAnnotation() this.backgroundColor = Colors.black,
     @FormControlAnnotation() this.repeatFrequency = const [],
     @FormArrayAnnotation() this.reminders = const [],
+    @FormControlAnnotation(validators: [startDateValidator]) this.startDate,
+    @FormControlAnnotation() this.endDate,
   });
 }

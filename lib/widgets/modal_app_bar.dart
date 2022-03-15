@@ -28,18 +28,19 @@ class ModalAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     required this.title,
     required this.trailing,
-    required this.appBarColor,
+    this.appBarColor,
     Key? key,
   }) : super(key: key);
 
   final Widget? leading;
   final Widget title;
   final Widget trailing;
-  final Color appBarColor;
+  final Color? appBarColor;
 
   @override
   Widget build(BuildContext context) {
-    final textColor = getTextColorFor(appBarColor);
+    final bgColor = appBarColor ?? context.theme().colorScheme.primary;
+    final textColor = getTextColorFor(bgColor);
     final buttonTextStyle = context.textTheme().button!.copyWith(
           color: textColor,
           fontWeight: FontWeight.bold,
@@ -49,7 +50,7 @@ class ModalAppBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = context.theme();
 
     return Container(
-      color: appBarColor,
+      color: bgColor,
       child: NavigationToolbar(
         leading: _applyTextStyle(
           leading ??

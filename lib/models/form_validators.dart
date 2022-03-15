@@ -1,3 +1,4 @@
+import 'package:dartx/dartx.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 Map<String, dynamic>? requiredValidator(AbstractControl<dynamic> control) {
@@ -16,4 +17,22 @@ Map<String, dynamic>? emojiValidator(AbstractControl<dynamic> control) {
 Map<String, dynamic>? maxEmojiLengthValidator(
     AbstractControl<dynamic> control) {
   return Validators.maxLength(5)(control);
+}
+
+Map<String, dynamic>? startDateValidator(AbstractControl<dynamic> control) {
+  const validationMessageDateBefore = 'dateBefore';
+  if (control.value == null) {
+    return null;
+  }
+
+  final now = DateTime.now();
+  var value = control.value as DateTime;
+  value = value.copyWith(
+    hour: 0,
+    minute: 0,
+  );
+
+  return value.isAfter(now)
+      ? null
+      : <String, dynamic>{validationMessageDateBefore: {}};
 }

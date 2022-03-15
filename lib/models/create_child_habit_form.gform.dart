@@ -133,6 +133,8 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
 
   static String nameControlName = "name";
 
+  static String emojiControlName = "emoji";
+
   final CreateChildHabit? createChildHabit;
 
   final FormGroup form;
@@ -140,7 +142,9 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
   final String? path;
 
   String nameControlPath() => pathBuilder(nameControlName);
+  String emojiControlPath() => pathBuilder(emojiControlName);
   String get nameValue => nameControl.value as String;
+  Emoji? get emojiValue => emojiControl?.value;
   bool get containsName {
     try {
       form.control(nameControlPath());
@@ -150,17 +154,63 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
     }
   }
 
+  bool get containsEmoji {
+    try {
+      form.control(emojiControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Object? get nameErrors => nameControl.errors;
+  Object? get emojiErrors => emojiControl?.errors;
   void get nameFocus => form.focus(nameControlPath());
+  void get emojiFocus => form.focus(emojiControlPath());
+  void emojiRemove({bool updateParent = true, bool emitEvent = true}) {
+    if (containsEmoji) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          emojiControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            emojiControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
   void nameValueUpdate(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.updateValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
+  void emojiValueUpdate(Emoji? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    emojiControl?.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
   void nameValuePatch(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void emojiValuePatch(Emoji? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    emojiControl?.patchValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -171,9 +221,20 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
           bool? disabled}) =>
       nameControl.reset(
           value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void emojiValueReset(Emoji? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      emojiControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
   FormControl<String> get nameControl =>
       form.control(nameControlPath()) as FormControl<String>;
-  CreateChildHabit get model => CreateChildHabit(name: nameValue);
+  FormControl<Emoji>? get emojiControl => containsEmoji
+      ? form.control(emojiControlPath()) as FormControl<Emoji>?
+      : null;
+  CreateChildHabit get model =>
+      CreateChildHabit(name: nameValue, emoji: emojiValue);
   void updateValue(CreateChildHabit value,
           {bool updateParent = true, bool emitEvent = true}) =>
       form.updateValue(
@@ -199,7 +260,14 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
   FormGroup formElements() => FormGroup({
         nameControlName: FormControl<String>(
             value: createChildHabit?.name,
-            validators: [],
+            validators: [requiredValidator],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        emojiControlName: FormControl<Emoji>(
+            value: createChildHabit?.emoji,
+            validators: [emojiValidator, maxEmojiLengthValidator],
             asyncValidators: [],
             asyncValidatorsDebounceTime: 250,
             disabled: false,

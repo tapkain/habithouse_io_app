@@ -32,10 +32,4 @@ final habitByIdProvider = StateProvider.family<Habit?, int>((ref, habitId) {
   return index == -1 ? null : habits[index];
 });
 
-final viewDateProvider = StateProvider((_) => DateTime.now().copyWith(
-      hour: 0,
-      minute: 0,
-      second: 0,
-      millisecond: 0,
-      microsecond: 0,
-    ));
+final viewDateProvider = StateProvider((_) => DateTime.now().date);

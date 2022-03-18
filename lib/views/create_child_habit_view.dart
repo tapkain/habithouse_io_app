@@ -12,25 +12,31 @@ import 'package:reactive_forms/reactive_forms.dart';
 class CreateChildHabitView extends HookConsumerWidget {
   const CreateChildHabitView({
     required this.parentHabitId,
-    this.editHabitExtra,
     this.editHabitId,
-    this.habitTemplateId,
+    this.editHabitExtra,
     Key? key,
   }) : super(key: key);
 
   final int? editHabitId;
-  final int? habitTemplateId;
   final Habit? editHabitExtra;
   final int parentHabitId;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (editHabitId != null) {
-      final editHabit = ref.watch(childHabitByIdProvider(editHabitId!));
-      return editHabit == null ? Container() : buildView(editHabit, ref);
+  Habit? editHabit(WidgetRef ref) {
+    if (editHabitExtra != null) {
+      return editHabitExtra;
     }
 
-    return buildView(null, ref);
+    if (editHabitId != null) {
+      return ref.watch(childHabitByIdProvider(editHabitId!));
+    }
+
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final habit = editHabit(ref);
+    return buildView(habit, ref);
   }
 
   Widget buildView(Habit? editHabit, WidgetRef ref) =>
@@ -75,13 +81,20 @@ class CreateChildHabitView extends HookConsumerWidget {
                 ReactiveEmojiPicker(
                   formControl: formModel.emojiControl,
                 ),
-                ReactiveCreateChildHabitFormConsumer(
-                  builder: (context, form, child) => ElevatedButton(
-                    child: Text('Submit'),
-                    onPressed: form.form.valid
-                        ? () => submitForm(context, ref, form)
-                        : null,
+                const Divider(),
+                ReactiveTextField<int>(
+                  keyboardType: TextInputType.number,
+                  formControl: formModel.durationSecondsControl,
+                  decoration: InputDecoration(
+                    labelText: 'Duration',
+                    labelStyle: context.textTheme().button,
                   ),
+                ),
+                ElevatedButton(
+                  child: Text('Submit'),
+                  onPressed: formModel.form.valid
+                      ? () => submitForm(context, ref, formModel)
+                      : null,
                 ),
               ],
             ),

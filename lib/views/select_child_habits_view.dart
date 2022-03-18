@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
 import 'package:habithouse_io/state/select_child_habits_notifier.dart';
 import 'package:habithouse_io/util.dart';
@@ -28,6 +29,12 @@ class SelectChildHabitsView extends HookConsumerWidget {
       : super(key: key);
 
   final int habitId;
+
+  void onCreateHabitPressed(BuildContext context, String habitName) =>
+      context.go(
+        '${GoRouter.of(context).location}/create',
+        extra: Habit(name: habitName, createdAt: DateTime.now()),
+      );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,8 +80,7 @@ class SelectChildHabitsView extends HookConsumerWidget {
               height: searchToken.isEmpty ? 0 : 80,
               duration: 300.milliseconds,
               child: ListTile(
-                onTap: () =>
-                    context.go('${GoRouter.of(context).location}/create'),
+                onTap: () => onCreateHabitPressed(context, searchToken),
                 leading: Text(
                   '🎯',
                   style: context.textTheme().emoji(),
@@ -83,8 +89,7 @@ class SelectChildHabitsView extends HookConsumerWidget {
                 subtitle: const Text('Create custom habit'),
                 trailing: TextButton(
                   child: const Text('CREATE'),
-                  onPressed: () =>
-                      context.go('${GoRouter.of(context).location}/create'),
+                  onPressed: () => onCreateHabitPressed(context, searchToken),
                 ),
               ),
             ),
@@ -118,6 +123,10 @@ class SelectChildHabitListTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ListTile(
+      onTap: () => context.go(
+        '${GoRouter.of(context).location}/create',
+        extra: habit.habit.copyWith(templateId: null),
+      ),
       leading: Text(
         habit.habit.emojiIcon ?? '',
         style: context.textTheme().emoji(),

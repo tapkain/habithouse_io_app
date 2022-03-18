@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
+void showTimePickerDialog(
+  BuildContext context,
+  AbstractControl<TimeOfDay> formControl,
+) async {
+  final result = await showDialog<TimeOfDay>(
+      context: context,
+      builder: (_) => TimePickerDialog(
+            initialTime: formControl.value ?? TimeOfDay.now(),
+          ));
+
+  if (result != null) {
+    formControl.updateValue(result);
+  }
+}
+
 class ReactiveReminderPicker<T> extends ReactiveFormField<T, TimeOfDay> {
   ReactiveReminderPicker({
     String? formControlName,
@@ -15,10 +30,9 @@ class ReactiveReminderPicker<T> extends ReactiveFormField<T, TimeOfDay> {
             // ignore: prefer_function_declarations_over_variables
             final onTap = () async {
               final result = await showDialog<TimeOfDay>(
-                  context: field.context,
-                  builder: (_) => TimePickerDialog(
-                        initialTime: value,
-                      ));
+                context: field.context,
+                builder: (_) => TimePickerDialog(initialTime: value),
+              );
 
               if (result != null) {
                 field.didChange(result);

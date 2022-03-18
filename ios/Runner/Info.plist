@@ -43,5 +43,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	
+	<!--https://pub.dev/packages/image_picker-->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access required to pick images</string>
 </dict>
 </plist>

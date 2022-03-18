@@ -31,7 +31,7 @@ class _$HabitTearOff {
       String? emojiIcon,
       List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
-      String? repeatCron,
+      List<int> repeatDays = everyDay,
       String? targetGoal,
       int? backgroundColor}) {
     return _Habit(
@@ -47,7 +47,7 @@ class _$HabitTearOff {
       emojiIcon: emojiIcon,
       reminders: reminders,
       localFileAttachmentUris: localFileAttachmentUris,
-      repeatCron: repeatCron,
+      repeatDays: repeatDays,
       targetGoal: targetGoal,
       backgroundColor: backgroundColor,
     );
@@ -66,7 +66,7 @@ mixin _$Habit {
   int? get templateId =>
       throw _privateConstructorUsedError; // true if this habit is part of a challenge
   bool get isChallenge =>
-      throw _privateConstructorUsedError; // if null, habit is a routine which contains other habits
+      throw _privateConstructorUsedError; // if null, habit is a routine which could contain other habits
   int? get parentId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   DateTime get createdAt =>
@@ -79,8 +79,8 @@ mixin _$Habit {
   List<TimeOfDay>? get reminders =>
       throw _privateConstructorUsedError; // list of file uris
   List<String>? get localFileAttachmentUris =>
-      throw _privateConstructorUsedError; // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
-  String? get repeatCron => throw _privateConstructorUsedError;
+      throw _privateConstructorUsedError; // days on which this habit will be repeated (DateTime.monday etc)
+  List<int> get repeatDays => throw _privateConstructorUsedError;
   String? get targetGoal => throw _privateConstructorUsedError;
   int? get backgroundColor => throw _privateConstructorUsedError;
 
@@ -105,7 +105,7 @@ abstract class $HabitCopyWith<$Res> {
       String? emojiIcon,
       List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
-      String? repeatCron,
+      List<int> repeatDays,
       String? targetGoal,
       int? backgroundColor});
 }
@@ -132,7 +132,7 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
     Object? emojiIcon = freezed,
     Object? reminders = freezed,
     Object? localFileAttachmentUris = freezed,
-    Object? repeatCron = freezed,
+    Object? repeatDays = freezed,
     Object? targetGoal = freezed,
     Object? backgroundColor = freezed,
   }) {
@@ -185,10 +185,10 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
           ? _value.localFileAttachmentUris
           : localFileAttachmentUris // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      repeatCron: repeatCron == freezed
-          ? _value.repeatCron
-          : repeatCron // ignore: cast_nullable_to_non_nullable
-              as String?,
+      repeatDays: repeatDays == freezed
+          ? _value.repeatDays
+          : repeatDays // ignore: cast_nullable_to_non_nullable
+              as List<int>,
       targetGoal: targetGoal == freezed
           ? _value.targetGoal
           : targetGoal // ignore: cast_nullable_to_non_nullable
@@ -219,7 +219,7 @@ abstract class _$HabitCopyWith<$Res> implements $HabitCopyWith<$Res> {
       String? emojiIcon,
       List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
-      String? repeatCron,
+      List<int> repeatDays,
       String? targetGoal,
       int? backgroundColor});
 }
@@ -247,7 +247,7 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
     Object? emojiIcon = freezed,
     Object? reminders = freezed,
     Object? localFileAttachmentUris = freezed,
-    Object? repeatCron = freezed,
+    Object? repeatDays = freezed,
     Object? targetGoal = freezed,
     Object? backgroundColor = freezed,
   }) {
@@ -300,10 +300,10 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
           ? _value.localFileAttachmentUris
           : localFileAttachmentUris // ignore: cast_nullable_to_non_nullable
               as List<String>?,
-      repeatCron: repeatCron == freezed
-          ? _value.repeatCron
-          : repeatCron // ignore: cast_nullable_to_non_nullable
-              as String?,
+      repeatDays: repeatDays == freezed
+          ? _value.repeatDays
+          : repeatDays // ignore: cast_nullable_to_non_nullable
+              as List<int>,
       targetGoal: targetGoal == freezed
           ? _value.targetGoal
           : targetGoal // ignore: cast_nullable_to_non_nullable
@@ -332,7 +332,7 @@ class _$_Habit implements _Habit {
       this.emojiIcon,
       this.reminders,
       this.localFileAttachmentUris,
-      this.repeatCron,
+      this.repeatDays = everyDay,
       this.targetGoal,
       this.backgroundColor});
 
@@ -345,7 +345,7 @@ class _$_Habit implements _Habit {
   @JsonKey()
   @override // true if this habit is part of a challenge
   final bool isChallenge;
-  @override // if null, habit is a routine which contains other habits
+  @override // if null, habit is a routine which could contain other habits
   final int? parentId;
   @override
   final String name;
@@ -364,8 +364,9 @@ class _$_Habit implements _Habit {
   final List<TimeOfDay>? reminders;
   @override // list of file uris
   final List<String>? localFileAttachmentUris;
-  @override // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
-  final String? repeatCron;
+  @JsonKey()
+  @override // days on which this habit will be repeated (DateTime.monday etc)
+  final List<int> repeatDays;
   @override
   final String? targetGoal;
   @override
@@ -373,7 +374,7 @@ class _$_Habit implements _Habit {
 
   @override
   String toString() {
-    return 'Habit(id: $id, templateId: $templateId, isChallenge: $isChallenge, parentId: $parentId, name: $name, createdAt: $createdAt, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatCron: $repeatCron, targetGoal: $targetGoal, backgroundColor: $backgroundColor)';
+    return 'Habit(id: $id, templateId: $templateId, isChallenge: $isChallenge, parentId: $parentId, name: $name, createdAt: $createdAt, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatDays: $repeatDays, targetGoal: $targetGoal, backgroundColor: $backgroundColor)';
   }
 
   @override
@@ -400,7 +401,7 @@ class _$_Habit implements _Habit {
             const DeepCollectionEquality().equals(
                 other.localFileAttachmentUris, localFileAttachmentUris) &&
             const DeepCollectionEquality()
-                .equals(other.repeatCron, repeatCron) &&
+                .equals(other.repeatDays, repeatDays) &&
             const DeepCollectionEquality()
                 .equals(other.targetGoal, targetGoal) &&
             const DeepCollectionEquality()
@@ -422,7 +423,7 @@ class _$_Habit implements _Habit {
       const DeepCollectionEquality().hash(emojiIcon),
       const DeepCollectionEquality().hash(reminders),
       const DeepCollectionEquality().hash(localFileAttachmentUris),
-      const DeepCollectionEquality().hash(repeatCron),
+      const DeepCollectionEquality().hash(repeatDays),
       const DeepCollectionEquality().hash(targetGoal),
       const DeepCollectionEquality().hash(backgroundColor));
 
@@ -446,7 +447,7 @@ abstract class _Habit implements Habit {
       String? emojiIcon,
       List<TimeOfDay>? reminders,
       List<String>? localFileAttachmentUris,
-      String? repeatCron,
+      List<int> repeatDays,
       String? targetGoal,
       int? backgroundColor}) = _$_Habit;
 
@@ -457,7 +458,7 @@ abstract class _Habit implements Habit {
   int? get templateId;
   @override // true if this habit is part of a challenge
   bool get isChallenge;
-  @override // if null, habit is a routine which contains other habits
+  @override // if null, habit is a routine which could contain other habits
   int? get parentId;
   @override
   String get name;
@@ -475,8 +476,8 @@ abstract class _Habit implements Habit {
   List<TimeOfDay>? get reminders;
   @override // list of file uris
   List<String>? get localFileAttachmentUris;
-  @override // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
-  String? get repeatCron;
+  @override // days on which this habit will be repeated (DateTime.monday etc)
+  List<int> get repeatDays;
   @override
   String? get targetGoal;
   @override

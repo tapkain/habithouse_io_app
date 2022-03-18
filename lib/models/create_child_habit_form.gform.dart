@@ -135,6 +135,10 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
 
   static String emojiControlName = "emoji";
 
+  static String descriptionControlName = "description";
+
+  static String durationSecondsControlName = "durationSeconds";
+
   final CreateChildHabit? createChildHabit;
 
   final FormGroup form;
@@ -143,8 +147,13 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
 
   String nameControlPath() => pathBuilder(nameControlName);
   String emojiControlPath() => pathBuilder(emojiControlName);
+  String descriptionControlPath() => pathBuilder(descriptionControlName);
+  String durationSecondsControlPath() =>
+      pathBuilder(durationSecondsControlName);
   String get nameValue => nameControl.value as String;
   Emoji? get emojiValue => emojiControl?.value;
+  String? get descriptionValue => descriptionControl?.value;
+  int? get durationSecondsValue => durationSecondsControl?.value;
   bool get containsName {
     try {
       form.control(nameControlPath());
@@ -163,10 +172,32 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
     }
   }
 
+  bool get containsDescription {
+    try {
+      form.control(descriptionControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool get containsDurationSeconds {
+    try {
+      form.control(durationSecondsControlPath());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Object? get nameErrors => nameControl.errors;
   Object? get emojiErrors => emojiControl?.errors;
+  Object? get descriptionErrors => descriptionControl?.errors;
+  Object? get durationSecondsErrors => durationSecondsControl?.errors;
   void get nameFocus => form.focus(nameControlPath());
   void get emojiFocus => form.focus(emojiControlPath());
+  void get descriptionFocus => form.focus(descriptionControlPath());
+  void get durationSecondsFocus => form.focus(durationSecondsControlPath());
   void emojiRemove({bool updateParent = true, bool emitEvent = true}) {
     if (containsEmoji) {
       final controlPath = path;
@@ -190,6 +221,53 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
     }
   }
 
+  void descriptionRemove({bool updateParent = true, bool emitEvent = true}) {
+    if (containsDescription) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          descriptionControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            descriptionControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
+  void durationSecondsRemove(
+      {bool updateParent = true, bool emitEvent = true}) {
+    if (containsDurationSeconds) {
+      final controlPath = path;
+      if (controlPath == null) {
+        form.removeControl(
+          durationSecondsControlName,
+          updateParent: updateParent,
+          emitEvent: emitEvent,
+        );
+      } else {
+        final formGroup = form.control(controlPath);
+
+        if (formGroup is FormGroup) {
+          formGroup.removeControl(
+            durationSecondsControlName,
+            updateParent: updateParent,
+            emitEvent: emitEvent,
+          );
+        }
+      }
+    }
+  }
+
   void nameValueUpdate(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.updateValue(value,
@@ -202,6 +280,18 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
+  void descriptionValueUpdate(String? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    descriptionControl?.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void durationSecondsValueUpdate(int? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    durationSecondsControl?.updateValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
   void nameValuePatch(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.patchValue(value,
@@ -211,6 +301,18 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
   void emojiValuePatch(Emoji? value,
       {bool updateParent = true, bool emitEvent = true}) {
     emojiControl?.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void descriptionValuePatch(String? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    descriptionControl?.patchValue(value,
+        updateParent: updateParent, emitEvent: emitEvent);
+  }
+
+  void durationSecondsValuePatch(int? value,
+      {bool updateParent = true, bool emitEvent = true}) {
+    durationSecondsControl?.patchValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -228,13 +330,36 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
           bool? disabled}) =>
       emojiControl?.reset(
           value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void descriptionValueReset(String? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      descriptionControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
+  void durationSecondsValueReset(int? value,
+          {bool updateParent = true,
+          bool emitEvent = true,
+          bool removeFocus = false,
+          bool? disabled}) =>
+      durationSecondsControl?.reset(
+          value: value, updateParent: updateParent, emitEvent: emitEvent);
   FormControl<String> get nameControl =>
       form.control(nameControlPath()) as FormControl<String>;
   FormControl<Emoji>? get emojiControl => containsEmoji
       ? form.control(emojiControlPath()) as FormControl<Emoji>?
       : null;
-  CreateChildHabit get model =>
-      CreateChildHabit(name: nameValue, emoji: emojiValue);
+  FormControl<String>? get descriptionControl => containsDescription
+      ? form.control(descriptionControlPath()) as FormControl<String>?
+      : null;
+  FormControl<int>? get durationSecondsControl => containsDurationSeconds
+      ? form.control(durationSecondsControlPath()) as FormControl<int>?
+      : null;
+  CreateChildHabit get model => CreateChildHabit(
+      name: nameValue,
+      emoji: emojiValue,
+      description: descriptionValue,
+      durationSeconds: durationSecondsValue);
   void updateValue(CreateChildHabit value,
           {bool updateParent = true, bool emitEvent = true}) =>
       form.updateValue(
@@ -268,6 +393,20 @@ class CreateChildHabitForm implements FormModel<CreateChildHabit> {
         emojiControlName: FormControl<Emoji>(
             value: createChildHabit?.emoji,
             validators: [emojiValidator, maxEmojiLengthValidator],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        descriptionControlName: FormControl<String>(
+            value: createChildHabit?.description,
+            validators: [maxDescriptionLengthValidator],
+            asyncValidators: [],
+            asyncValidatorsDebounceTime: 250,
+            disabled: false,
+            touched: false),
+        durationSecondsControlName: FormControl<int>(
+            value: createChildHabit?.durationSeconds,
+            validators: [],
             asyncValidators: [],
             asyncValidatorsDebounceTime: 250,
             disabled: false,

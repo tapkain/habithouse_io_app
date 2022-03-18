@@ -19,6 +19,11 @@ Map<String, dynamic>? maxEmojiLengthValidator(
   return Validators.maxLength(5)(control);
 }
 
+Map<String, dynamic>? maxDescriptionLengthValidator(
+    AbstractControl<dynamic> control) {
+  return Validators.maxLength(200)(control);
+}
+
 Map<String, dynamic>? startDateValidator(AbstractControl<dynamic> control) {
   const validationMessageDateBefore = 'dateBefore';
   if (control.value == null) {

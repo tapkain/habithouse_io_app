@@ -17,7 +17,7 @@ extension GetHabitCollection on Isar {
 final HabitSchema = CollectionSchema(
   name: 'Habit',
   schema:
-      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"isChallenge","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"repeatCron","type":"String"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
+      '{"name":"Habit","idName":"id","properties":[{"name":"backgroundColor","type":"Long"},{"name":"createdAt","type":"Long"},{"name":"description","type":"String"},{"name":"durationSeconds","type":"Long"},{"name":"emojiIcon","type":"String"},{"name":"isArchived","type":"Bool"},{"name":"isChallenge","type":"Bool"},{"name":"localFileAttachmentUris","type":"StringList"},{"name":"name","type":"String"},{"name":"parentId","type":"Long"},{"name":"repeatDays","type":"LongList"},{"name":"targetGoal","type":"String"},{"name":"templateId","type":"Long"}],"indexes":[],"links":[]}',
   nativeAdapter: const _HabitNativeAdapter(),
   webAdapter: const _HabitWebAdapter(),
   idName: 'id',
@@ -32,11 +32,11 @@ final HabitSchema = CollectionSchema(
     'localFileAttachmentUris': 7,
     'name': 8,
     'parentId': 9,
-    'repeatCron': 10,
+    'repeatDays': 10,
     'targetGoal': 11,
     'templateId': 12
   },
-  listProperties: {'localFileAttachmentUris'},
+  listProperties: {'localFileAttachmentUris', 'repeatDays'},
   indexIds: {},
   indexTypes: {},
   linkIds: {},
@@ -73,7 +73,7 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
         jsObj, 'localFileAttachmentUris', object.localFileAttachmentUris);
     IsarNative.jsObjectSet(jsObj, 'name', object.name);
     IsarNative.jsObjectSet(jsObj, 'parentId', object.parentId);
-    IsarNative.jsObjectSet(jsObj, 'repeatCron', object.repeatCron);
+    IsarNative.jsObjectSet(jsObj, 'repeatDays', object.repeatDays);
     IsarNative.jsObjectSet(jsObj, 'targetGoal', object.targetGoal);
     IsarNative.jsObjectSet(jsObj, 'templateId', object.templateId);
     return jsObj;
@@ -102,7 +102,11 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
               .cast<String>(),
       name: IsarNative.jsObjectGet(jsObj, 'name') ?? '',
       parentId: IsarNative.jsObjectGet(jsObj, 'parentId'),
-      repeatCron: IsarNative.jsObjectGet(jsObj, 'repeatCron'),
+      repeatDays: (IsarNative.jsObjectGet(jsObj, 'repeatDays') as List?)
+              ?.map((e) => e ?? double.negativeInfinity)
+              .toList()
+              .cast<int>() ??
+          [],
       targetGoal: IsarNative.jsObjectGet(jsObj, 'targetGoal'),
       templateId: IsarNative.jsObjectGet(jsObj, 'templateId'),
     );
@@ -144,8 +148,12 @@ class _HabitWebAdapter extends IsarWebTypeAdapter<Habit> {
         return (IsarNative.jsObjectGet(jsObj, 'name') ?? '') as P;
       case 'parentId':
         return (IsarNative.jsObjectGet(jsObj, 'parentId')) as P;
-      case 'repeatCron':
-        return (IsarNative.jsObjectGet(jsObj, 'repeatCron')) as P;
+      case 'repeatDays':
+        return ((IsarNative.jsObjectGet(jsObj, 'repeatDays') as List?)
+                ?.map((e) => e ?? double.negativeInfinity)
+                .toList()
+                .cast<int>() ??
+            []) as P;
       case 'targetGoal':
         return (IsarNative.jsObjectGet(jsObj, 'targetGoal')) as P;
       case 'templateId':
@@ -205,12 +213,9 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
     dynamicSize += (_name.length) as int;
     final value9 = object.parentId;
     final _parentId = value9;
-    final value10 = object.repeatCron;
-    IsarUint8List? _repeatCron;
-    if (value10 != null) {
-      _repeatCron = IsarBinaryWriter.utf8Encoder.convert(value10);
-    }
-    dynamicSize += (_repeatCron?.length ?? 0) as int;
+    final value10 = object.repeatDays;
+    dynamicSize += (value10.length) * 8;
+    final _repeatDays = value10;
     final value11 = object.targetGoal;
     IsarUint8List? _targetGoal;
     if (value11 != null) {
@@ -235,7 +240,7 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
     writer.writeStringList(offsets[7], _localFileAttachmentUris);
     writer.writeBytes(offsets[8], _name);
     writer.writeLong(offsets[9], _parentId);
-    writer.writeBytes(offsets[10], _repeatCron);
+    writer.writeLongList(offsets[10], _repeatDays);
     writer.writeBytes(offsets[11], _targetGoal);
     writer.writeLong(offsets[12], _templateId);
   }
@@ -255,7 +260,7 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       localFileAttachmentUris: reader.readStringList(offsets[7]),
       name: reader.readString(offsets[8]),
       parentId: reader.readLongOrNull(offsets[9]),
-      repeatCron: reader.readStringOrNull(offsets[10]),
+      repeatDays: reader.readLongList(offsets[10]) ?? [],
       targetGoal: reader.readStringOrNull(offsets[11]),
       templateId: reader.readLongOrNull(offsets[12]),
     );
@@ -289,7 +294,7 @@ class _HabitNativeAdapter extends IsarNativeTypeAdapter<Habit> {
       case 9:
         return (reader.readLongOrNull(offset)) as P;
       case 10:
-        return (reader.readStringOrNull(offset)) as P;
+        return (reader.readLongList(offset) ?? []) as P;
       case 11:
         return (reader.readStringOrNull(offset)) as P;
       case 12:
@@ -1114,114 +1119,51 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
     ));
   }
 
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronIsNull() {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.isNull,
-      property: 'repeatCron',
-      value: null,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatDaysAnyEqualTo(
+      int value) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.eq,
-      property: 'repeatCron',
+      property: 'repeatDays',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronGreaterThan(
-    String? value, {
-    bool caseSensitive = true,
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatDaysAnyGreaterThan(
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.gt,
       include: include,
-      property: 'repeatCron',
+      property: 'repeatDays',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronLessThan(
-    String? value, {
-    bool caseSensitive = true,
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatDaysAnyLessThan(
+    int value, {
     bool include = false,
   }) {
     return addFilterConditionInternal(FilterCondition(
       type: ConditionType.lt,
       include: include,
-      property: 'repeatCron',
+      property: 'repeatDays',
       value: value,
-      caseSensitive: caseSensitive,
     ));
   }
 
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronBetween(
-    String? lower,
-    String? upper, {
-    bool caseSensitive = true,
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatDaysAnyBetween(
+    int lower,
+    int upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return addFilterConditionInternal(FilterCondition.between(
-      property: 'repeatCron',
+      property: 'repeatDays',
       lower: lower,
       includeLower: includeLower,
       upper: upper,
       includeUpper: includeUpper,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.startsWith,
-      property: 'repeatCron',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.endsWith,
-      property: 'repeatCron',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronContains(
-      String value,
-      {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.contains,
-      property: 'repeatCron',
-      value: value,
-      caseSensitive: caseSensitive,
-    ));
-  }
-
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> repeatCronMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return addFilterConditionInternal(FilterCondition(
-      type: ConditionType.matches,
-      property: 'repeatCron',
-      value: pattern,
-      caseSensitive: caseSensitive,
     ));
   }
 
@@ -1476,14 +1418,6 @@ extension HabitQueryWhereSortBy on QueryBuilder<Habit, Habit, QSortBy> {
     return addSortByInternal('parentId', Sort.desc);
   }
 
-  QueryBuilder<Habit, Habit, QAfterSortBy> sortByRepeatCron() {
-    return addSortByInternal('repeatCron', Sort.asc);
-  }
-
-  QueryBuilder<Habit, Habit, QAfterSortBy> sortByRepeatCronDesc() {
-    return addSortByInternal('repeatCron', Sort.desc);
-  }
-
   QueryBuilder<Habit, Habit, QAfterSortBy> sortByTargetGoal() {
     return addSortByInternal('targetGoal', Sort.asc);
   }
@@ -1582,14 +1516,6 @@ extension HabitQueryWhereSortThenBy on QueryBuilder<Habit, Habit, QSortThenBy> {
     return addSortByInternal('parentId', Sort.desc);
   }
 
-  QueryBuilder<Habit, Habit, QAfterSortBy> thenByRepeatCron() {
-    return addSortByInternal('repeatCron', Sort.asc);
-  }
-
-  QueryBuilder<Habit, Habit, QAfterSortBy> thenByRepeatCronDesc() {
-    return addSortByInternal('repeatCron', Sort.desc);
-  }
-
   QueryBuilder<Habit, Habit, QAfterSortBy> thenByTargetGoal() {
     return addSortByInternal('targetGoal', Sort.asc);
   }
@@ -1651,11 +1577,6 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
     return addDistinctByInternal('parentId');
   }
 
-  QueryBuilder<Habit, Habit, QDistinct> distinctByRepeatCron(
-      {bool caseSensitive = true}) {
-    return addDistinctByInternal('repeatCron', caseSensitive: caseSensitive);
-  }
-
   QueryBuilder<Habit, Habit, QDistinct> distinctByTargetGoal(
       {bool caseSensitive = true}) {
     return addDistinctByInternal('targetGoal', caseSensitive: caseSensitive);
@@ -1712,8 +1633,8 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
     return addPropertyNameInternal('parentId');
   }
 
-  QueryBuilder<Habit, String?, QQueryOperations> repeatCronProperty() {
-    return addPropertyNameInternal('repeatCron');
+  QueryBuilder<Habit, List<int>, QQueryOperations> repeatDaysProperty() {
+    return addPropertyNameInternal('repeatDays');
   }
 
   QueryBuilder<Habit, String?, QQueryOperations> targetGoalProperty() {

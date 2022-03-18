@@ -35,7 +35,6 @@ class CreateHabitView extends HookConsumerWidget {
           : CreateHabit(
               backgroundColor: getRandomColor(),
               emoji: getRandomEmoji(),
-              repeatFrequency: everyDay,
             ),
       builder: (context, formModel, child) => ReactiveCreateHabitFormConsumer(
         builder: (context, formModel, child) => Scaffold(
@@ -79,19 +78,20 @@ class CreateHabitView extends HookConsumerWidget {
               ),
               const Divider(),
               ReactiveFrequencyPicker(
-                formControl: formModel.repeatFrequencyControl,
+                checkboxFillColor: formModel.backgroundColorValue!,
+                formControl: formModel.repeatDaysControl,
               ),
               const Divider(),
               HabitReminderFormSection(
                 formModel: formModel,
                 remindersControl: formModel.remindersControl,
               ),
-              ElevatedButton(
-                child: Text('Submit'),
-                onPressed: formModel.form.valid
-                    ? () => submitForm(context, ref, formModel)
-                    : null,
-              ),
+              // ElevatedButton(
+              //   child: Text('Submit'),
+              //   onPressed: formModel.form.valid
+              //       ? () => submitForm(context, ref, formModel)
+              //       : null,
+              // ),
             ],
           ),
         ),
@@ -153,6 +153,7 @@ class _HabitReminderFormSectionState extends State<HabitReminderFormSection> {
             contentPadding: EdgeInsets.zero,
             trailing: HookConsumer(
               builder: (context, ref, _) => Switch(
+                activeColor: widget.formModel.backgroundColorValue!,
                 onChanged: (value) => setState(() {
                   switchValue = value;
                   if (switchValue) {
@@ -168,19 +169,31 @@ class _HabitReminderFormSectionState extends State<HabitReminderFormSection> {
           if (switchValue) ...[
             ...ListTile.divideTiles(
               context: context,
-              tiles: widget.formModel.remindersValue
-                  .asMap()
-                  .map((i, reminder) => MapEntry(
-                      i,
-                      ReactiveReminderPicker(
-                        formControlName: i.toString(),
-                      )))
-                  .values,
+              tiles: formArray.controls.map(
+                (control) => Dismissible(
+                  onDismissed: (_) => formArray.remove(control),
+                  background: Container(
+                    color: context.theme().colorScheme.error,
+                  ),
+                  key: ValueKey(control.value!.hashCode),
+                  child: ReactiveReminderPicker(
+                    formControl: control as FormControl,
+                  ),
+                ),
+              ),
             ).toList(),
             TextButton(
-              onPressed: () => widget.formModel.addRemindersItem(
-                const TimeOfDay(hour: 9, minute: 0),
-              ),
+              onPressed: () {
+                widget.formModel.addRemindersItem(
+                  const TimeOfDay(hour: 9, minute: 0),
+                );
+                showTimePickerDialog(
+                  context,
+                  formArray.control(
+                    (formArray.controls.length - 1).toString(),
+                  ) as AbstractControl<TimeOfDay>,
+                );
+              },
               child: Text('Add reminder'),
             ),
           ]

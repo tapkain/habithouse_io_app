@@ -26,6 +26,14 @@ final habitsProvider = StateNotifierProvider<HabitsNotifier, BuiltList<Habit>>(
   ),
 );
 
+final habitsByDateProvider = StateNotifierProvider.family
+    .autoDispose<HabitsNotifier, BuiltList<Habit>, DateTime>(
+  (ref, viewDate) => HabitsNotifier(
+    ref.read(storageProvider),
+    viewDate,
+  ),
+);
+
 final habitByIdProvider = StateProvider.family<Habit?, int>((ref, habitId) {
   final habits = ref.watch(habitsProvider);
   final index = habits.indexWhere((h) => h.id == habitId);

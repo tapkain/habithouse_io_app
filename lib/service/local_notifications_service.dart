@@ -77,8 +77,7 @@ class LocalNotificationsService implements DeepLinkDelegate {
         .map((scheduledDate) => scheduleNotification(form, scheduledDate)));
   }
 
-  Iterable<tz.TZDateTime> scheduledDatesFor(CreateHabit form) => form
-      .repeatFrequency
+  Iterable<tz.TZDateTime> scheduledDatesFor(CreateHabit form) => form.repeatDays
       .map((day) => form.reminders.map((reminder) => scheduler.nextDateFromDay(
             day,
             reminder,

@@ -6,3 +6,5 @@ export 'reactive_emoji_picker.dart';
 export 'reactive_frequency_picker.dart';
 export 'reactive_reminder_picker.dart';
 export 'search_box.dart';
+export 'habit_list_view.dart';
+export 'snapping_list_view.dart';

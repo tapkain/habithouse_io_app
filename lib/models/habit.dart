@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:habithouse_io/models/create_child_habit_form.dart';
 import 'package:habithouse_io/models/create_habit_form.dart';
+import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:isar/isar.dart';
 
 part 'habit.freezed.dart';
@@ -20,7 +21,7 @@ class Habit with _$Habit {
     // true if this habit is part of a challenge
     @Default(false) bool isChallenge,
 
-    // if null, habit is a routine which contains other habits
+    // if null, habit is a routine which could contain other habits
     int? parentId,
     required String name,
     required DateTime createdAt,
@@ -37,8 +38,8 @@ class Habit with _$Habit {
     // list of file uris
     List<String>? localFileAttachmentUris,
 
-    // cron string to know how often to repeat this habit (daily, weekly, every monday etc)
-    String? repeatCron,
+    // days on which this habit will be repeated (DateTime.monday etc)
+    @Default(everyDay) List<int> repeatDays,
     String? targetGoal,
     int? backgroundColor,
   }) = _Habit;

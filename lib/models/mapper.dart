@@ -20,6 +20,7 @@ abstract class Mapper {
         emoji:
             habit.emojiIcon != null ? Emoji('emoji', habit.emojiIcon!) : null,
         reminders: habit.reminders ?? [],
+        repeatDays: habit.repeatDays,
       );
 
   static Habit mapHabitFormToHabit(Habit habit, CreateHabitForm form) =>
@@ -28,6 +29,7 @@ abstract class Mapper {
         backgroundColor: form.backgroundColorValue?.value,
         emojiIcon: form.emojiValue?.emoji,
         reminders: form.remindersValue,
+        repeatDays: form.repeatDaysValue,
       );
 
   static Habit makeHabitFromChildHabitForm(

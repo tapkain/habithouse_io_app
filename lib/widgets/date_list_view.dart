@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/util.dart';
+import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:time/src/extensions.dart';
 
@@ -209,7 +210,10 @@ class _DateListItem extends HookConsumerWidget {
                 : context.theme().colorScheme.background,
       ),
       child: InkWell(
-        onTap: () => ref.read(viewDateProvider.state).state = date.date,
+        onTap: () {
+          ref.read(pageDateProvider.state).state = date.date;
+          ref.read(viewDateProvider.state).state = date.date;
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,

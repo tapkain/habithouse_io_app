@@ -10,6 +10,8 @@ part 'create_child_habit_form.gform.dart';
 class CreateChildHabit {
   final String name;
   final Emoji? emoji;
+  final String? description;
+  final int? durationSeconds;
 
   CreateChildHabit({
     @FormControlAnnotation(validators: [requiredValidator]) this.name = '',
@@ -18,5 +20,8 @@ class CreateChildHabit {
       maxEmojiLengthValidator
     ])
         this.emoji,
+    @FormControlAnnotation(validators: [maxDescriptionLengthValidator])
+        this.description = '',
+    @FormControlAnnotation() this.durationSeconds,
   });
 }

@@ -45,6 +45,7 @@ final routerProvider = Provider((ref) {
                   child: CreateChildHabitView(
                     parentHabitId: int.parse(state.params['habitid']!),
                     editHabitId: int.parse(state.params['childhabitid']!),
+                    editHabitExtra: state.extra as Habit?,
                   ),
                 ),
               ),
@@ -61,6 +62,7 @@ final routerProvider = Provider((ref) {
                     pageBuilder: (context, state) => ModalPage(
                       child: CreateChildHabitView(
                         parentHabitId: int.parse(state.params['habitid']!),
+                        editHabitExtra: state.extra as Habit?,
                       ),
                     ),
                   ),

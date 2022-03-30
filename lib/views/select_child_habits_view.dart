@@ -33,7 +33,11 @@ class SelectChildHabitsView extends HookConsumerWidget {
   void onCreateHabitPressed(BuildContext context, String habitName) =>
       context.go(
         '${GoRouter.of(context).location}/create',
-        extra: Habit(name: habitName, createdAt: DateTime.now()),
+        extra: Habit(
+          name: habitName,
+          createdAt: DateTime.now(),
+          startDate: DateTime.now(),
+        ),
       );
 
   @override
@@ -125,7 +129,7 @@ class SelectChildHabitListTile extends HookConsumerWidget {
     return ListTile(
       onTap: () => context.go(
         '${GoRouter.of(context).location}/create',
-        extra: habit.habit.copyWith(templateId: null),
+        extra: habit.habit,
       ),
       leading: Text(
         habit.habit.emojiIcon ?? '',

@@ -27,7 +27,7 @@ class PreviewHabitView extends HookConsumerWidget {
 
     return Scaffold(
       appBar: ModalAppBar(
-        appBarColor: Color(habit.backgroundColor ?? 1),
+        appBarColor: Color(habit.backgroundColor),
         title: Text(habit.name),
         trailing: TextButton(
           onPressed: () => context.go('${GoRouter.of(context).location}/edit'),

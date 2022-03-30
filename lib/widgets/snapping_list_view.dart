@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'dart:math';
+import 'infinite_list_view.dart';
 
 class SnappingListView extends StatefulWidget {
   final Axis scrollDirection;
@@ -74,27 +75,11 @@ class _SnappingListViewState extends State<SnappingListView> {
         }
         return false;
       }),
-      child: CustomScrollView(
-        center: const ValueKey('center'),
-        scrollDirection: widget.scrollDirection,
-        controller: widget.controller,
+      child: InfiniteListView(
+        itemBuilder: sizedItemBuilder,
         physics: scrollPhysics,
-        slivers: [
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => sizedItemBuilder(context, -index - 1),
-            ),
-          ),
-          SliverToBoxAdapter(
-            key: const ValueKey('center'),
-            child: sizedItemBuilder(context, 0),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) => sizedItemBuilder(context, index + 1),
-            ),
-          ),
-        ],
+        controller: widget.controller,
+        scrollDirection: widget.scrollDirection,
       ),
     );
   }

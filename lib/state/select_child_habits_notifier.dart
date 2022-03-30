@@ -19,17 +19,11 @@ class SelectChildHabitsNotifier extends StateNotifier<BuiltList<HabitOption>> {
       ...habits.map((e) => HabitOption(e, true)),
       ...templateHabits.map((e) => HabitOption(e, false)),
     ];
-    state = BuiltList(list.distinctBy((e) => e.habit.templateId));
+    state = BuiltList(list.distinctBy((e) => e.habit.hashCode));
   }
 
   void toggle(Habit habit) {
-    var index = -1;
-
-    if (habit.templateId != null) {
-      index = state.indexWhere((e) => e.habit.templateId == habit.templateId);
-    } else {
-      index = state.indexWhere((e) => e.habit.name == habit.name);
-    }
+    final index = state.indexWhere((e) => e.habit.hashCode == habit.hashCode);
 
     if (index == -1) {
       return;

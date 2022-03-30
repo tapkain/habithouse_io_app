@@ -16,19 +16,35 @@ class TestHabit {
 abstract class TestData {
   static final habits = [
     TestHabit(
-      Habit(name: 'Habit 1', createdAt: DateTime(2020, 11, 12, 30)),
+      Habit(
+        name: 'Habit 1',
+        createdAt: DateTime(2020, 11, 12, 30),
+        startDate: DateTime(2020, 11, 12, 30),
+      ),
       [],
     ),
     TestHabit(
-      Habit(name: 'Habit 2', createdAt: DateTime(2020, 8, 12, 30)),
+      Habit(
+        name: 'Habit 2',
+        createdAt: DateTime(2020, 8, 12, 30),
+        startDate: DateTime(2020, 8, 12, 30),
+      ),
       [],
     ),
     TestHabit(
-      Habit(name: 'Habit 3', createdAt: DateTime(2020, 1, 12, 30)),
+      Habit(
+        name: 'Habit 3',
+        createdAt: DateTime(2020, 1, 12, 30),
+        startDate: DateTime(2020, 8, 12, 30),
+      ),
       [],
     ),
     TestHabit(
-      Habit(name: 'Habit 4', createdAt: DateTime(2020, 1, 12, 30)),
+      Habit(
+        name: 'Habit 4',
+        createdAt: DateTime(2020, 1, 12, 30),
+        startDate: DateTime(2020, 8, 12, 30),
+      ),
       [],
     ),
   ];

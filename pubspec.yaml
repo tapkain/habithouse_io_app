@@ -50,6 +50,7 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   emoji_picker_flutter: ^1.1.2
   flex_color_picker: ^2.3.0
+  reactive_date_range_picker: ^0.2.0
 
   # Notifications
   # TODO: implement local push notifications

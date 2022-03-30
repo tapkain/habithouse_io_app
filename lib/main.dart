@@ -100,33 +100,34 @@ class HabithouseIO extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
     return OverlaySupport.global(
-        child: MaterialApp.router(
-      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: FlexColorScheme.themedSystemNavigationBar(
-          context,
-          systemNavBarStyle: FlexSystemNavBarStyle.background,
-          useDivider: false,
-          opacity: 0.60,
+      child: MaterialApp.router(
+        builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+          value: FlexColorScheme.themedSystemNavigationBar(
+            context,
+            systemNavBarStyle: FlexSystemNavBarStyle.background,
+            useDivider: false,
+            opacity: 0.60,
+          ),
+          child: child ?? Container(),
         ),
-        child: child ?? Container(),
-      ),
-      debugShowCheckedModeBanner: false,
-      darkTheme: FlexThemeData.light(
-        scheme: FlexScheme.amber,
-        useSubThemes: true,
-        blendLevel: 5,
-      ).copyWith(
-        inputDecorationTheme: const InputDecorationTheme(
-          border: UnderlineInputBorder(),
+        debugShowCheckedModeBanner: false,
+        darkTheme: FlexThemeData.light(
+          scheme: FlexScheme.amber,
+          useSubThemes: true,
+          blendLevel: 5,
+        ).copyWith(
+          inputDecorationTheme: const InputDecorationTheme(
+            border: UnderlineInputBorder(),
+          ),
         ),
+        theme: FlexThemeData.light(
+          scheme: FlexScheme.sakura,
+          useSubThemes: true,
+        ),
+        themeMode: ThemeMode.system,
+        routerDelegate: router.routerDelegate,
+        routeInformationParser: router.routeInformationParser,
       ),
-      theme: FlexThemeData.light(
-        scheme: FlexScheme.sakura,
-        useSubThemes: true,
-      ),
-      themeMode: ThemeMode.system,
-      routerDelegate: router.routerDelegate,
-      routeInformationParser: router.routeInformationParser,
-    ));
+    );
   }
 }

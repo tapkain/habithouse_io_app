@@ -148,38 +148,17 @@ class _DateCustomListState extends State<_DateCustomList> {
         ),
       );
 
-  Widget _buildList() => CustomScrollView(
+  Widget _buildList() => InfiniteListView(
         controller: scrollController,
         scrollDirection: Axis.horizontal,
-        center: const ValueKey('center'),
-        slivers: [
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final date = DateTime.now() - index.days - 1.days;
-              return _DateListItem(
-                date: date,
-                isToday: widget.viewDate.isAtSameDayAs(date),
-              );
-            }),
-          ),
-          SliverToBoxAdapter(
-            key: const ValueKey('center'),
-            child: _DateListItem(
-              date: DateTime.now(),
-              isNow: true,
-              isToday: widget.viewDate.isAtSameDayAs(DateTime.now()),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final date = DateTime.now() + index.days + 1.days;
-              return _DateListItem(
-                date: date,
-                isToday: widget.viewDate.isAtSameDayAs(date),
-              );
-            }),
-          ),
-        ],
+        itemBuilder: (context, index) {
+          final date = DateTime.now() + index.days;
+          return _DateListItem(
+            date: date,
+            isNow: index == 0,
+            isToday: widget.viewDate.isAtSameDayAs(date),
+          );
+        },
       );
 }
 

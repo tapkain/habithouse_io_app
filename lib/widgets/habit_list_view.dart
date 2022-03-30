@@ -28,8 +28,7 @@ class HabitListView extends HookConsumerWidget {
       key: ValueKey(randomKey),
       onItemChanged: (fromIndex, toIndex) {
         final delta = toIndex - fromIndex;
-        final headerViewDate = ref.read(viewDateProvider.state);
-        headerViewDate.state = headerViewDate.state + delta.days;
+        ref.read(viewDateProvider.state).update((state) => state + delta.days);
       },
       scrollDirection: Axis.horizontal,
       itemExtent: MediaQuery.of(context).size.width,
@@ -55,7 +54,7 @@ class HomeHabitWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color(habit.backgroundColor ?? 1),
+      color: Color(habit.backgroundColor),
       elevation: 1,
       child: ListTile(
         onTap: () => context.go('/habits/view/${habit.id}'),
@@ -68,9 +67,7 @@ class HomeHabitWidget extends StatelessWidget {
         title: Text(
           habit.name,
           style: context.textTheme().headline6!.copyWith(
-                color: getTextColorFor(
-                  Color(habit.backgroundColor ?? 1),
-                ),
+                color: Color(habit.backgroundColor).textColor,
               ),
         ),
         trailing: const Icon(Icons.chevron_right),

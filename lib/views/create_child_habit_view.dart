@@ -41,9 +41,7 @@ class CreateChildHabitView extends HookConsumerWidget {
 
   Widget buildView(Habit? editHabit, WidgetRef ref) =>
       CreateChildHabitFormBuilder(
-        model: editHabit != null
-            ? Mapper.makeChildHabitForm(editHabit)
-            : CreateChildHabit(),
+        model: editHabit?.toCreateChildHabitForm() ?? CreateChildHabit(),
         builder: (context, formModel, child) =>
             ReactiveCreateChildHabitFormConsumer(
           builder: (context, formModel, child) => Scaffold(
@@ -62,8 +60,7 @@ class CreateChildHabitView extends HookConsumerWidget {
                   style: context.textTheme().button!.copyWith(
                         fontWeight: FontWeight.bold,
                         color: formModel.form.valid
-                            ? getTextColorFor(
-                                context.theme().colorScheme.primary)
+                            ? context.theme().colorScheme.primary.textColor
                             : context.theme().disabledColor,
                       ),
                 ),
@@ -110,18 +107,14 @@ class CreateChildHabitView extends HookConsumerWidget {
     final childHabitsNotifier = ref.read(
       selectChildHabitsProvider(parentHabitId).notifier,
     );
+    var habit = form.toHabit(parentHabitId);
 
     if (editHabitId != null) {
       final editHabit = ref.read(childHabitByIdProvider(editHabitId!))!;
-      childHabitsNotifier.putHabit(
-        Mapper.mapChildHabitFormToHabit(editHabit, form, parentHabitId),
-      );
-    } else {
-      childHabitsNotifier.putHabit(
-        Mapper.makeHabitFromChildHabitForm(form, parentHabitId),
-      );
+      habit = form.applyTo(editHabit, parentHabitId);
     }
 
+    childHabitsNotifier.putHabit(habit);
     context.pop();
   }
 }

@@ -122,7 +122,7 @@ class _DayCheckbox extends StatelessWidget {
       children: [
         Checkbox(
           fillColor: MaterialStateProperty.all(fillColor),
-          checkColor: getTextColorFor(fillColor),
+          checkColor: fillColor.textColor,
           value: value,
           onChanged: onChanged,
           shape: const CircleBorder(),

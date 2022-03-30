@@ -40,13 +40,12 @@ class ModalAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final bgColor = appBarColor ?? context.theme().colorScheme.primary;
-    final textColor = getTextColorFor(bgColor);
     final buttonTextStyle = context.textTheme().button!.copyWith(
-          color: textColor,
+          color: bgColor.textColor,
           fontWeight: FontWeight.bold,
         );
     final titleTextStyle =
-        context.textTheme().headline6!.copyWith(color: textColor);
+        context.textTheme().headline6!.copyWith(color: bgColor.textColor);
     final theme = context.theme();
 
     return Container(
@@ -58,19 +57,19 @@ class ModalAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: () => context.pop(),
                 child: const Text('Back'),
               ),
-          textColor,
+          bgColor.textColor,
           buttonTextStyle,
           theme,
         ),
         trailing: _applyTextStyle(
           trailing,
-          textColor,
+          bgColor.textColor,
           buttonTextStyle,
           theme,
         ),
         middle: _applyTextStyle(
           title,
-          textColor,
+          bgColor.textColor,
           titleTextStyle,
           theme,
         ),
@@ -100,13 +99,12 @@ class SliverModalAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bgColor = appBarColor ?? context.theme().colorScheme.primary;
-    final textColor = getTextColorFor(bgColor);
     final buttonTextStyle = context.textTheme().button!.copyWith(
-          color: textColor,
+          color: bgColor.textColor,
           fontWeight: FontWeight.bold,
         );
     final titleTextStyle =
-        context.textTheme().headline6!.copyWith(color: textColor);
+        context.textTheme().headline6!.copyWith(color: bgColor.textColor);
     final theme = context.theme();
 
     return SliverAppBar(
@@ -118,20 +116,20 @@ class SliverModalAppBar extends StatelessWidget {
               onPressed: () => context.pop(),
               child: const Text('Back'),
             ),
-        textColor,
+        bgColor.textColor,
         buttonTextStyle,
         theme,
       ),
       title: _applyTextStyle(
         title,
-        textColor,
+        bgColor.textColor,
         titleTextStyle,
         theme,
       ),
       actions: [
         _applyTextStyle(
           trailing,
-          textColor,
+          bgColor.textColor,
           buttonTextStyle,
           theme,
         ),

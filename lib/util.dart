@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:dartx/dartx.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 extension BuildContextUtils on BuildContext {
@@ -19,5 +21,19 @@ extension ColorUtils on Color {
       return Colors.white;
     }
     return Colors.black;
+  }
+}
+
+extension DateFormatUtils on DateFormat {
+  String formatStartDate(DateTime dateTime) {
+    if (dateTime.isToday) {
+      return 'Today';
+    }
+
+    if (dateTime.isTomorrow) {
+      return 'Tomorrow';
+    }
+
+    return DateFormat.yMMMMd().format(dateTime);
   }
 }

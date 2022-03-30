@@ -24,34 +24,49 @@ class CreateHabitView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (editHabitId != null) {
       final editHabit = ref.watch(habitByIdProvider(editHabitId!));
-      return editHabit == null ? Container() : buildView(editHabit, ref);
+      if (editHabit != null) {
+        return CreateHabitFormView(
+          model: editHabit.toCreateHabitForm(),
+          editHabitId: editHabitId,
+        );
+      }
     }
 
-    return buildView(null, ref);
+    return CreateHabitFormView(
+      model: CreateHabit(
+        backgroundColor: randomColor(),
+        startDate: DateTime.now(),
+      ),
+    );
   }
+}
 
-  Widget buildView(
-    Habit? editHabit,
-    WidgetRef ref,
-  ) {
+class CreateHabitFormView extends HookConsumerWidget {
+  const CreateHabitFormView({
+    required this.model,
+    this.editHabitId,
+    Key? key,
+  }) : super(key: key);
+
+  final CreateHabit model;
+  final int? editHabitId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     return CreateHabitFormBuilder(
-      model: editHabit?.toCreateHabitForm() ??
-          CreateHabit(
-            backgroundColor: randomColor(),
-            startDate: DateTime.now(),
-          ),
+      model: model,
       builder: (context, formModel, child) => ReactiveCreateHabitFormConsumer(
         builder: (context, formModel, child) => Scaffold(
           appBar: ModalAppBar(
             appBarColor: formModel.backgroundColorValue,
-            title: Text(editHabit == null ? 'New Routine' : 'Edit Routine'),
+            title: Text(editHabitId == null ? 'New Routine' : 'Edit Routine'),
             leading: TextButton(
               onPressed: () => context.pop(),
               child: const Text('Cancel'),
             ),
             trailing: TextButton(
               onPressed: formModel.form.valid
-                  ? () => submitForm(context, ref, formModel)
+                  ? () => submit(context, ref, formModel)
                   : null,
               child: Text(
                 'Save',
@@ -102,7 +117,8 @@ class CreateHabitView extends HookConsumerWidget {
                       children: [
                         ListTile(
                           title: Text('Start date'),
-                          trailing: Text(formatStartDate(picker.value!)),
+                          trailing:
+                              Text(DateFormat().formatStartDate(picker.value!)),
                           contentPadding: EdgeInsets.zero,
                           dense: true,
                           onTap: picker.showPicker,
@@ -132,8 +148,7 @@ class CreateHabitView extends HookConsumerWidget {
                   formControl: formModel.repeatDaysControl,
                 ),
                 const Divider(),
-                HabitReminderFormSection(
-                  formModel: formModel,
+                ReactiveRemindersPicker(
                   remindersControl: formModel.remindersControl,
                 ),
               ],
@@ -144,35 +159,7 @@ class CreateHabitView extends HookConsumerWidget {
     );
   }
 
-  void onShowDateRangePickerPressed(
-    BuildContext context,
-    CreateHabitForm formModel,
-  ) async {
-    final dateRange = await showDateRangePicker(
-      context: context,
-      currentDate: formModel.startDateValue,
-      firstDate: DateTime.now().date,
-      lastDate: _lastDate(),
-    );
-
-    if (dateRange != null) {
-      formModel.dateTimeRangeControl?.updateValue(dateRange);
-    }
-  }
-
-  String formatStartDate(DateTime dateTime) {
-    if (dateTime.isToday) {
-      return 'Today';
-    }
-
-    if (dateTime.isTomorrow) {
-      return 'Tomorrow';
-    }
-
-    return DateFormat.yMMMMd().format(dateTime);
-  }
-
-  void submitForm(
+  void submit(
     BuildContext context,
     WidgetRef ref,
     CreateHabitForm form,
@@ -188,103 +175,20 @@ class CreateHabitView extends HookConsumerWidget {
     habitsNotifier.putHabit(habit);
     context.pop();
   }
-}
 
-class HabitReminderFormSection extends StatefulWidget {
-  const HabitReminderFormSection({
-    required this.remindersControl,
-    required this.formModel,
-    Key? key,
-  }) : super(key: key);
-
-  final FormArray<TimeOfDay> remindersControl;
-  final CreateHabitForm formModel;
-
-  @override
-  State<HabitReminderFormSection> createState() =>
-      _HabitReminderFormSectionState();
-}
-
-class _HabitReminderFormSectionState extends State<HabitReminderFormSection> {
-  var switchValue = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return ReactiveFormArray<TimeOfDay>(
-      formArray: widget.remindersControl,
-      builder: (context, formArray, child) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            title: Text('Remind me'),
-            dense: true,
-            onTap: () => setState(() => switchValue = true),
-            contentPadding: EdgeInsets.zero,
-            trailing: HookConsumer(
-              builder: (context, ref, _) => Switch(
-                activeColor: widget.formModel.backgroundColorValue,
-                onChanged: (value) => setState(() {
-                  switchValue = value;
-                  if (switchValue) {
-                    ref.read(localNotificationsProvider).requestPermission();
-                  } else {
-                    formArray.clear();
-                  }
-                }),
-                value: switchValue,
-              ),
-            ),
-          ),
-          if (switchValue) ...[
-            ...ListTile.divideTiles(
-              context: context,
-              tiles: formArray.controls.map(
-                (control) => Dismissible(
-                  onDismissed: (_) => formArray.remove(control),
-                  background: Container(
-                    color: context.theme.colorScheme.error,
-                  ),
-                  key: ValueKey(control.value!.hashCode),
-                  child: ReactiveTimePicker(
-                    builder: (context, picker, child) => ListTile(
-                      onTap: picker.showPicker,
-                      contentPadding: EdgeInsets.zero,
-                      dense: true,
-                      title: Text(picker.value!.format(context)),
-                      trailing: const Icon(Icons.chevron_right),
-                    ),
-                    formControl: control as FormControl<TimeOfDay>,
-                  ),
-                ),
-              ),
-            ).toList(),
-            TextButton(
-              onPressed: () => onAddReminderPressed(formArray),
-              child: Text('Add reminder'),
-            ),
-          ]
-        ],
-      ),
-    );
-  }
-
-  void onAddReminderPressed(FormArray<TimeOfDay> formArray) async {
-    widget.formModel.addRemindersItem(
-      const TimeOfDay(hour: 9, minute: 0),
+  void onShowDateRangePickerPressed(
+    BuildContext context,
+    CreateHabitForm formModel,
+  ) async {
+    final dateRange = await showDateRangePicker(
+      context: context,
+      currentDate: formModel.startDateValue,
+      firstDate: DateTime.now().date,
+      lastDate: _lastDate(),
     );
 
-    final formControl = formArray.control(
-      (formArray.controls.length - 1).toString(),
-    ) as AbstractControl<TimeOfDay>;
-
-    final result = await showDialog<TimeOfDay>(
-        context: context,
-        builder: (_) => TimePickerDialog(
-              initialTime: formControl.value ?? TimeOfDay.now(),
-            ));
-
-    if (result != null) {
-      formControl.updateValue(result);
+    if (dateRange != null) {
+      formModel.dateTimeRangeControl?.updateValue(dateRange);
     }
   }
 }

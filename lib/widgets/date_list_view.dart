@@ -102,7 +102,7 @@ class _DateCustomListState extends State<_DateCustomList> {
                 leftArrowOpacity,
                 Icon(
                   Icons.chevron_left,
-                  color: context.theme().colorScheme.onSecondary,
+                  color: context.theme.colorScheme.onSecondary,
                 ),
               ),
             ),
@@ -115,7 +115,7 @@ class _DateCustomListState extends State<_DateCustomList> {
                 rightArrowOpacity,
                 Icon(
                   Icons.chevron_right,
-                  color: context.theme().colorScheme.onSecondary,
+                  color: context.theme.colorScheme.onSecondary,
                 ),
               ),
             ),
@@ -139,7 +139,7 @@ class _DateCustomListState extends State<_DateCustomList> {
               height: padding * 5,
               width: padding * 5,
               decoration: BoxDecoration(
-                color: context.theme().colorScheme.secondary,
+                color: context.theme.colorScheme.secondary,
                 borderRadius: BorderRadius.circular(padding * 2.5),
               ),
               child: icon,
@@ -183,10 +183,10 @@ class _DateListItem extends HookConsumerWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(padding),
         color: isToday
-            ? context.theme().colorScheme.secondary
+            ? context.theme.colorScheme.secondary
             : isNow
-                ? context.theme().splashColor
-                : context.theme().colorScheme.background,
+                ? context.theme.splashColor
+                : context.theme.colorScheme.background,
       ),
       child: InkWell(
         onTap: () {
@@ -199,19 +199,17 @@ class _DateListItem extends HookConsumerWidget {
           children: [
             Text(
               DateFormat('EEE').format(date),
-              style: context.textTheme().subtitle2!.copyWith(
-                    color: isToday
-                        ? context.theme().colorScheme.onSecondary
-                        : null,
-                  ),
+              style: context.textTheme.subtitle2!.copyWith(
+                color: isToday ? context.theme.colorScheme.onSecondary : null,
+              ),
             ),
             Text(
               date.day.toString(),
-              style: context.textTheme().subtitle1!.copyWith(
-                    color: isToday
-                        ? context.theme().colorScheme.onSecondary
-                        : context.theme().colorScheme.secondary,
-                  ),
+              style: context.textTheme.subtitle1!.copyWith(
+                color: isToday
+                    ? context.theme.colorScheme.onSecondary
+                    : context.theme.colorScheme.secondary,
+              ),
             ),
           ],
         ),

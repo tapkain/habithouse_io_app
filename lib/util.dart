@@ -2,12 +2,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 extension BuildContextUtils on BuildContext {
-  ThemeData theme() => Theme.of(this);
-  TextTheme textTheme() => Theme.of(this).textTheme;
+  ThemeData get theme => Theme.of(this);
+  TextTheme get textTheme => Theme.of(this).textTheme;
 }
 
 extension TextThemeUtils on TextTheme {
-  TextStyle? emoji() => headline4;
+  TextStyle? get emoji => headline4;
 }
 
 Color randomColor() =>

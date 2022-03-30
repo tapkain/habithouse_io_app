@@ -62,13 +62,13 @@ class HomeHabitWidget extends StatelessWidget {
             ? null
             : Text(
                 habit.emojiIcon!,
-                style: context.textTheme().emoji(),
+                style: context.textTheme.emoji,
               ),
         title: Text(
           habit.name,
-          style: context.textTheme().headline6!.copyWith(
-                color: Color(habit.backgroundColor).textColor,
-              ),
+          style: context.textTheme.headline6!.copyWith(
+            color: Color(habit.backgroundColor).textColor,
+          ),
         ),
         trailing: const Icon(Icons.chevron_right),
       ),

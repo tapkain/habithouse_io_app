@@ -39,14 +39,14 @@ class ModalAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = appBarColor ?? context.theme().colorScheme.primary;
-    final buttonTextStyle = context.textTheme().button!.copyWith(
-          color: bgColor.textColor,
-          fontWeight: FontWeight.bold,
-        );
+    final bgColor = appBarColor ?? context.theme.colorScheme.primary;
+    final buttonTextStyle = context.textTheme.button!.copyWith(
+      color: bgColor.textColor,
+      fontWeight: FontWeight.bold,
+    );
     final titleTextStyle =
-        context.textTheme().headline6!.copyWith(color: bgColor.textColor);
-    final theme = context.theme();
+        context.textTheme.headline6!.copyWith(color: bgColor.textColor);
+    final theme = context.theme;
 
     return Container(
       color: bgColor,
@@ -98,14 +98,14 @@ class SliverModalAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = appBarColor ?? context.theme().colorScheme.primary;
-    final buttonTextStyle = context.textTheme().button!.copyWith(
-          color: bgColor.textColor,
-          fontWeight: FontWeight.bold,
-        );
+    final bgColor = appBarColor ?? context.theme.colorScheme.primary;
+    final buttonTextStyle = context.textTheme.button!.copyWith(
+      color: bgColor.textColor,
+      fontWeight: FontWeight.bold,
+    );
     final titleTextStyle =
-        context.textTheme().headline6!.copyWith(color: bgColor.textColor);
-    final theme = context.theme();
+        context.textTheme.headline6!.copyWith(color: bgColor.textColor);
+    final theme = context.theme;
 
     return SliverAppBar(
       backgroundColor: bgColor,

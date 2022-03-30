@@ -13,7 +13,7 @@ class ReactiveEmojiPicker<T> extends ReactiveFormField<T, Emoji> {
           formControlName: formControlName,
           formControl: formControl,
           builder: (field) {
-            final primaryColor = field.context.theme().colorScheme.primary;
+            final primaryColor = field.context.theme.colorScheme.primary;
 
             // ignore: prefer_function_declarations_over_variables
             final onTap = () {
@@ -21,7 +21,7 @@ class ReactiveEmojiPicker<T> extends ReactiveFormField<T, Emoji> {
                   context: field.context,
                   builder: (context) => EmojiPicker(
                         config: Config(
-                          bgColor: context.theme().colorScheme.background,
+                          bgColor: context.theme.colorScheme.background,
                           indicatorColor: primaryColor,
                           iconColorSelected: primaryColor,
                           progressIndicatorColor: primaryColor,

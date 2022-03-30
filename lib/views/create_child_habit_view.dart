@@ -57,12 +57,12 @@ class CreateChildHabitView extends HookConsumerWidget {
                     : null,
                 child: Text(
                   'Save',
-                  style: context.textTheme().button!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: formModel.form.valid
-                            ? context.theme().colorScheme.primary.textColor
-                            : context.theme().disabledColor,
-                      ),
+                  style: context.textTheme.button!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: formModel.form.valid
+                        ? context.theme.colorScheme.primary.textColor
+                        : context.theme.disabledColor,
+                  ),
                 ),
               ),
             ),
@@ -84,7 +84,7 @@ class CreateChildHabitView extends HookConsumerWidget {
                   formControl: formModel.durationSecondsControl,
                   decoration: InputDecoration(
                     labelText: 'Duration',
-                    labelStyle: context.textTheme().button,
+                    labelStyle: context.textTheme.button,
                   ),
                 ),
                 ElevatedButton(

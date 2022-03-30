@@ -69,7 +69,7 @@ class SelectChildHabitsView extends HookConsumerWidget {
             ),
           ),
           SliverAppBar(
-            backgroundColor: context.theme().colorScheme.background,
+            backgroundColor: context.theme.colorScheme.background,
             automaticallyImplyLeading: false,
             pinned: true,
             title: SearchBox(
@@ -87,7 +87,7 @@ class SelectChildHabitsView extends HookConsumerWidget {
                 onTap: () => onCreateHabitPressed(context, searchToken),
                 leading: Text(
                   '🎯',
-                  style: context.textTheme().emoji(),
+                  style: context.textTheme.emoji,
                 ),
                 title: Text(searchToken),
                 subtitle: const Text('Create custom habit'),
@@ -133,7 +133,7 @@ class SelectChildHabitListTile extends HookConsumerWidget {
       ),
       leading: Text(
         habit.habit.emojiIcon ?? '',
-        style: context.textTheme().emoji(),
+        style: context.textTheme.emoji,
       ),
       title: Text(habit.habit.name),
       subtitle: Text(habit.habit.description ?? ''),

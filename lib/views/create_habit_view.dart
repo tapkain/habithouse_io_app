@@ -55,23 +55,22 @@ class CreateHabitView extends HookConsumerWidget {
                   : null,
               child: Text(
                 'Save',
-                style: context.textTheme().button!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: formModel.form.valid
-                          ? formModel.backgroundColorValue.textColor
-                          : context.theme().disabledColor,
-                    ),
+                style: context.textTheme.button!.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: formModel.form.valid
+                      ? formModel.backgroundColorValue.textColor
+                      : context.theme.disabledColor,
+                ),
               ),
             ),
           ),
           body: Theme(
-            data: context.theme().copyWith(
-                  colorScheme: ColorScheme.fromSeed(
-                      seedColor: formModel.backgroundColorValue),
-                  primaryColor: formModel.backgroundColorValue,
-                  appBarTheme:
-                      AppBarTheme(color: formModel.backgroundColorValue),
-                ),
+            data: context.theme.copyWith(
+              colorScheme: ColorScheme.fromSeed(
+                  seedColor: formModel.backgroundColorValue),
+              primaryColor: formModel.backgroundColorValue,
+              appBarTheme: AppBarTheme(color: formModel.backgroundColorValue),
+            ),
             child: ListView(
               padding: const EdgeInsets.all(padding * 2),
               children: [
@@ -243,7 +242,7 @@ class _HabitReminderFormSectionState extends State<HabitReminderFormSection> {
                 (control) => Dismissible(
                   onDismissed: (_) => formArray.remove(control),
                   background: Container(
-                    color: context.theme().colorScheme.error,
+                    color: context.theme.colorScheme.error,
                   ),
                   key: ValueKey(control.value!.hashCode),
                   child: ReactiveTimePicker(

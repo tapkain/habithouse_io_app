@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# download isar runtime to enable tests
 wget "https://raw.githubusercontent.com/isar/isar/main/CORE_VERSION" -O .dart_tool/ISAR_VERSION
 core_version=$(cat .dart_tool/ISAR_VERSION)
 github="https://github.com/isar/isar-core/releases/download/${core_version:5}"

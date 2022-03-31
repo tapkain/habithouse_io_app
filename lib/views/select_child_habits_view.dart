@@ -49,24 +49,26 @@ class SelectChildHabitsView extends HookConsumerWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverModalAppBar(
+          SliverAppBar(
             title: const Text('Add Habit'),
-            trailing: TextButton(
-              onPressed: () {
-                final selectedChildHabitsNotifier =
-                    ref.read(selectChildHabitsProvider(habitId).notifier);
-                final childHabitsNotifier =
-                    ref.read(childHabitsProvider(habitId).notifier);
+            actions: [
+              TextButton(
+                onPressed: () {
+                  final selectedChildHabitsNotifier =
+                      ref.read(selectChildHabitsProvider(habitId).notifier);
+                  final childHabitsNotifier =
+                      ref.read(childHabitsProvider(habitId).notifier);
 
-                childHabitsNotifier.putHabits(
-                  habitId,
-                  selectedChildHabitsNotifier.selected.toList(),
-                );
+                  childHabitsNotifier.putHabits(
+                    habitId,
+                    selectedChildHabitsNotifier.selected.toList(),
+                  );
 
-                context.pop();
-              },
-              child: const Text('Done'),
-            ),
+                  context.pop();
+                },
+                child: const Text('Done'),
+              ),
+            ],
           ),
           SliverAppBar(
             backgroundColor: context.theme.colorScheme.background,

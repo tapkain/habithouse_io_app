@@ -364,12 +364,7 @@ class _$_Habit implements _Habit {
         assert(endDate == null ? true : endDate.isAfter(startDate),
             'endDate should be after startDate'),
         assert(emojiIcon == null ? true : emojiIcon.length != 0,
-            'emojiIcon cannot be empty'),
-        assert(
-            emojiIcon == null
-                ? true
-                : emojiIcon.length > 1 && emojiIcon.length < 5,
-            'emojiIcon length should be > 1 && < 5');
+            'emojiIcon cannot be empty');
 
   @JsonKey()
   @override // local isar db unique autoincrement id

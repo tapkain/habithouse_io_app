@@ -40,13 +40,13 @@ class ReactiveEmojiPicker<T> extends ReactiveFormField<T, Emoji> {
               onPointerDown: (_) => field.control.markAsTouched(),
               child: ListTile(
                 onTap: field.control.enabled ? onTap : null,
-                contentPadding: EdgeInsets.zero,
-                dense: true,
                 title: Text(inputDecoration?.labelText ?? 'Choose icon'),
-                trailing: Text(
-                  field.value?.emoji ?? '🎯',
-                  style: Theme.of(field.context).textTheme.headline3,
-                  textAlign: TextAlign.center,
+                trailing: RepaintBoundary(
+                  child: Text(
+                    field.value?.emoji ?? '🎯',
+                    style: Theme.of(field.context).textTheme.headline3,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             );

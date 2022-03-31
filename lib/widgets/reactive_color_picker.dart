@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habithouse_io/const.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 
@@ -68,7 +69,6 @@ class ReactiveColorPicker<T> extends ReactiveFormField<T, Color> {
               onPointerDown: (_) => field.control.markAsTouched(),
               child: ListTile(
                 onTap: field.control.enabled ? onTap : null,
-                contentPadding: EdgeInsets.zero,
                 title: Text(inputDecoration?.labelText ?? 'Choose color'),
                 trailing: Container(
                   width: padding * 5,
@@ -78,7 +78,6 @@ class ReactiveColorPicker<T> extends ReactiveFormField<T, Color> {
                     color: field.value ?? Colors.transparent,
                   ),
                 ),
-                dense: true,
               ),
             );
           },

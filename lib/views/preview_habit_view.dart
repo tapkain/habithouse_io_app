@@ -26,13 +26,16 @@ class PreviewHabitView extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: ModalAppBar(
-        appBarColor: Color(habit.backgroundColor),
+      appBar: AppBar(
+        // appBarColor: Color(habit.backgroundColor),
         title: Text(habit.name),
-        trailing: TextButton(
-          onPressed: () => context.go('${GoRouter.of(context).location}/edit'),
-          child: const Text('Edit'),
-        ),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                context.go('${GoRouter.of(context).location}/edit'),
+            child: const Text('Edit'),
+          ),
+        ],
       ),
       body: buildView(habit, ref),
       floatingActionButton: FloatingActionButton(

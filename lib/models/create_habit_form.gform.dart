@@ -139,8 +139,6 @@ class CreateHabitForm implements FormModel<CreateHabit> {
 
   static String dateTimeRangeControlName = "dateTimeRange";
 
-  static String startDateControlName = "startDate";
-
   final CreateHabit? createHabit;
 
   final FormGroup form;
@@ -153,14 +151,13 @@ class CreateHabitForm implements FormModel<CreateHabit> {
       pathBuilder(backgroundColorControlName);
   String repeatDaysControlPath() => pathBuilder(repeatDaysControlName);
   String dateTimeRangeControlPath() => pathBuilder(dateTimeRangeControlName);
-  String startDateControlPath() => pathBuilder(startDateControlName);
   String remindersControlPath() => pathBuilder(remindersControlName);
   String get nameValue => nameControl.value as String;
   Emoji get emojiValue => emojiControl.value as Emoji;
   Color get backgroundColorValue => backgroundColorControl.value as Color;
   List<int> get repeatDaysValue => repeatDaysControl.value as List<int>;
-  DateTimeRange? get dateTimeRangeValue => dateTimeRangeControl?.value;
-  DateTime get startDateValue => startDateControl.value as DateTime;
+  DateTimeRange get dateTimeRangeValue =>
+      dateTimeRangeControl.value as DateTimeRange;
   List<TimeOfDay> get remindersValue =>
       remindersControl.value?.whereType<TimeOfDay>().toList() ?? [];
   bool get containsName {
@@ -208,15 +205,6 @@ class CreateHabitForm implements FormModel<CreateHabit> {
     }
   }
 
-  bool get containsStartDate {
-    try {
-      form.control(startDateControlPath());
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   bool get containsReminders {
     try {
       form.control(remindersControlPath());
@@ -230,39 +218,14 @@ class CreateHabitForm implements FormModel<CreateHabit> {
   Object? get emojiErrors => emojiControl.errors;
   Object? get backgroundColorErrors => backgroundColorControl.errors;
   Object? get repeatDaysErrors => repeatDaysControl.errors;
-  Object? get dateTimeRangeErrors => dateTimeRangeControl?.errors;
-  Object? get startDateErrors => startDateControl.errors;
+  Object? get dateTimeRangeErrors => dateTimeRangeControl.errors;
   Object? get remindersErrors => remindersControl.errors;
   void get nameFocus => form.focus(nameControlPath());
   void get emojiFocus => form.focus(emojiControlPath());
   void get backgroundColorFocus => form.focus(backgroundColorControlPath());
   void get repeatDaysFocus => form.focus(repeatDaysControlPath());
   void get dateTimeRangeFocus => form.focus(dateTimeRangeControlPath());
-  void get startDateFocus => form.focus(startDateControlPath());
   void get remindersFocus => form.focus(remindersControlPath());
-  void dateTimeRangeRemove({bool updateParent = true, bool emitEvent = true}) {
-    if (containsDateTimeRange) {
-      final controlPath = path;
-      if (controlPath == null) {
-        form.removeControl(
-          dateTimeRangeControlName,
-          updateParent: updateParent,
-          emitEvent: emitEvent,
-        );
-      } else {
-        final formGroup = form.control(controlPath);
-
-        if (formGroup is FormGroup) {
-          formGroup.removeControl(
-            dateTimeRangeControlName,
-            updateParent: updateParent,
-            emitEvent: emitEvent,
-          );
-        }
-      }
-    }
-  }
-
   void nameValueUpdate(String value,
       {bool updateParent = true, bool emitEvent = true}) {
     nameControl.updateValue(value,
@@ -287,15 +250,9 @@ class CreateHabitForm implements FormModel<CreateHabit> {
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
-  void dateTimeRangeValueUpdate(DateTimeRange? value,
+  void dateTimeRangeValueUpdate(DateTimeRange value,
       {bool updateParent = true, bool emitEvent = true}) {
-    dateTimeRangeControl?.updateValue(value,
-        updateParent: updateParent, emitEvent: emitEvent);
-  }
-
-  void startDateValueUpdate(DateTime value,
-      {bool updateParent = true, bool emitEvent = true}) {
-    startDateControl.updateValue(value,
+    dateTimeRangeControl.updateValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -329,15 +286,9 @@ class CreateHabitForm implements FormModel<CreateHabit> {
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
-  void dateTimeRangeValuePatch(DateTimeRange? value,
+  void dateTimeRangeValuePatch(DateTimeRange value,
       {bool updateParent = true, bool emitEvent = true}) {
-    dateTimeRangeControl?.patchValue(value,
-        updateParent: updateParent, emitEvent: emitEvent);
-  }
-
-  void startDateValuePatch(DateTime value,
-      {bool updateParent = true, bool emitEvent = true}) {
-    startDateControl.patchValue(value,
+    dateTimeRangeControl.patchValue(value,
         updateParent: updateParent, emitEvent: emitEvent);
   }
 
@@ -375,19 +326,12 @@ class CreateHabitForm implements FormModel<CreateHabit> {
           bool? disabled}) =>
       repeatDaysControl.reset(
           value: value, updateParent: updateParent, emitEvent: emitEvent);
-  void dateTimeRangeValueReset(DateTimeRange? value,
+  void dateTimeRangeValueReset(DateTimeRange value,
           {bool updateParent = true,
           bool emitEvent = true,
           bool removeFocus = false,
           bool? disabled}) =>
-      dateTimeRangeControl?.reset(
-          value: value, updateParent: updateParent, emitEvent: emitEvent);
-  void startDateValueReset(DateTime value,
-          {bool updateParent = true,
-          bool emitEvent = true,
-          bool removeFocus = false,
-          bool? disabled}) =>
-      startDateControl.reset(
+      dateTimeRangeControl.reset(
           value: value, updateParent: updateParent, emitEvent: emitEvent);
   void remindersValueReset(List<TimeOfDay> value,
           {bool updateParent = true,
@@ -404,11 +348,8 @@ class CreateHabitForm implements FormModel<CreateHabit> {
       form.control(backgroundColorControlPath()) as FormControl<Color>;
   FormControl<List<int>> get repeatDaysControl =>
       form.control(repeatDaysControlPath()) as FormControl<List<int>>;
-  FormControl<DateTimeRange>? get dateTimeRangeControl => containsDateTimeRange
-      ? form.control(dateTimeRangeControlPath()) as FormControl<DateTimeRange>?
-      : null;
-  FormControl<DateTime> get startDateControl =>
-      form.control(startDateControlPath()) as FormControl<DateTime>;
+  FormControl<DateTimeRange> get dateTimeRangeControl =>
+      form.control(dateTimeRangeControlPath()) as FormControl<DateTimeRange>;
   FormArray<TimeOfDay> get remindersControl =>
       form.control(remindersControlPath()) as FormArray<TimeOfDay>;
   void addRemindersItem(TimeOfDay value,
@@ -448,8 +389,7 @@ class CreateHabitForm implements FormModel<CreateHabit> {
       backgroundColor: backgroundColorValue,
       repeatDays: repeatDaysValue,
       reminders: remindersValue,
-      dateTimeRange: dateTimeRangeValue,
-      startDate: startDateValue);
+      dateTimeRange: dateTimeRangeValue);
   void updateValue(CreateHabit value,
           {bool updateParent = true, bool emitEvent = true}) =>
       form.updateValue(
@@ -517,13 +457,6 @@ class CreateHabitForm implements FormModel<CreateHabit> {
         dateTimeRangeControlName: FormControl<DateTimeRange>(
             value: createHabit?.dateTimeRange,
             validators: [],
-            asyncValidators: [],
-            asyncValidatorsDebounceTime: 250,
-            disabled: false,
-            touched: false),
-        startDateControlName: FormControl<DateTime>(
-            value: createHabit?.startDate,
-            validators: [habitStartDateValidator],
             asyncValidators: [],
             asyncValidatorsDebounceTime: 250,
             disabled: false,

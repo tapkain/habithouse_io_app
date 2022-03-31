@@ -30,15 +30,13 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
           HookConsumer(builder: (context, ref, _) {
             return ListTile(
               title: Text('Remind me'),
-              dense: true,
               onTap: () => setState(() {
                 if (!switchValue) {
                   switchValue = true;
                   onSwitchEnabled(ref, formArray);
                 }
               }),
-              contentPadding: EdgeInsets.zero,
-              trailing: Switch(
+              trailing: Switch.adaptive(
                 onChanged: (value) => setState(() {
                   switchValue = value;
                   if (switchValue) {
@@ -52,6 +50,7 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
             );
           }),
           if (switchValue) ...[
+            if (formArray.controls.isNotEmpty) const Divider(),
             ...ListTile.divideTiles(
               context: context,
               tiles: formArray.controls.map(
@@ -64,8 +63,6 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
                   child: ReactiveTimePicker(
                     builder: (context, picker, child) => ListTile(
                       onTap: picker.showPicker,
-                      contentPadding: EdgeInsets.zero,
-                      dense: true,
                       title: Text(picker.value!.format(context)),
                       trailing: const Icon(Icons.chevron_right),
                     ),
@@ -74,9 +71,13 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
                 ),
               ),
             ).toList(),
+            const Divider(),
             TextButton(
+              style: ButtonStyle(
+                  minimumSize:
+                      MaterialStateProperty.all(Size(double.infinity, 50))),
               onPressed: () => onAddReminderPressed(formArray),
-              child: Text('Add reminder'),
+              child: Text('Add reminder'.toUpperCase()),
             ),
           ]
         ],
@@ -104,6 +105,8 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
 
     if (result != null) {
       formControl.updateValue(result);
+    } else {
+      formArray.remove(formControl);
     }
   }
 }

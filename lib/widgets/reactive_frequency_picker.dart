@@ -36,7 +36,6 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
     String? formControlName,
     FormControl<T>? formControl,
     InputDecoration? inputDecoration,
-    required Color checkboxFillColor,
     Key? key,
   }) : super(
           formControlName: formControlName,
@@ -63,8 +62,6 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
               onPointerDown: (_) => field.control.markAsTouched(),
               child: ListTile(
                 onTap: field.control.enabled ? onTap : null,
-                contentPadding: EdgeInsets.zero,
-                dense: true,
                 title: Text(inputDecoration?.labelText ?? 'How often?'),
                 trailing: Text(
                   parseWeekdays(value),
@@ -74,7 +71,6 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
                     ? Row(
                         children: everyDay
                             .map((e) => _DayCheckbox(
-                                  fillColor: checkboxFillColor,
                                   day: e,
                                   value: value.contains(e),
                                   onChanged: (_) => toggleDay(e),
@@ -98,13 +94,11 @@ class _DayCheckbox extends StatelessWidget {
     required this.day,
     required this.value,
     required this.onChanged,
-    required this.fillColor,
     Key? key,
   }) : super(key: key);
 
   final int day;
   final bool value;
-  final Color fillColor;
   final void Function(bool?) onChanged;
 
   String formatDay() {
@@ -121,8 +115,6 @@ class _DayCheckbox extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Checkbox(
-          fillColor: MaterialStateProperty.all(fillColor),
-          checkColor: fillColor.textColor,
           value: value,
           onChanged: onChanged,
           shape: const CircleBorder(),

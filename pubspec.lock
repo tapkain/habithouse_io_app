@@ -826,13 +826,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
-  reactive_date_range_picker:
-    dependency: "direct main"
-    description:
-      name: reactive_date_range_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
   reactive_forms:
     dependency: "direct main"
     description:

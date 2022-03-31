@@ -45,26 +45,28 @@ class CreateChildHabitView extends HookConsumerWidget {
         builder: (context, formModel, child) =>
             ReactiveCreateChildHabitFormConsumer(
           builder: (context, formModel, child) => Scaffold(
-            appBar: ModalAppBar(
+            appBar: AppBar(
               title: Text(editHabit == null ? 'New Habit' : 'Edit Habit'),
               leading: TextButton(
                 onPressed: () => context.pop(),
                 child: const Text('Cancel'),
               ),
-              trailing: TextButton(
-                onPressed: formModel.form.valid
-                    ? () => submitForm(context, ref, formModel)
-                    : null,
-                child: Text(
-                  'Save',
-                  style: context.textTheme.button!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: formModel.form.valid
-                        ? context.theme.colorScheme.primary.textColor
-                        : context.theme.disabledColor,
+              actions: [
+                TextButton(
+                  onPressed: formModel.form.valid
+                      ? () => submitForm(context, ref, formModel)
+                      : null,
+                  child: Text(
+                    'Save',
+                    style: context.textTheme.button!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: formModel.form.valid
+                          ? context.theme.colorScheme.primary.textColor
+                          : context.theme.disabledColor,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
             body: ListView(
               padding: const EdgeInsets.all(padding * 2),

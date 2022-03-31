@@ -25,6 +25,7 @@ final routerProvider = Provider((ref) {
         routes: [
           GoRoute(
             pageBuilder: (context, state) => ModalPage(
+              key: state.pageKey,
               child: PreviewHabitView(
                 habitId: int.parse(state.params['habitid']!),
               ),
@@ -34,6 +35,7 @@ final routerProvider = Provider((ref) {
               GoRoute(
                 path: 'edit',
                 pageBuilder: (context, state) => ModalPage(
+                  key: state.pageKey,
                   child: CreateHabitView(
                     editHabitId: int.parse(state.params['habitid']!),
                   ),
@@ -42,6 +44,7 @@ final routerProvider = Provider((ref) {
               GoRoute(
                 path: 'child/:childhabitid/edit',
                 pageBuilder: (context, state) => ModalPage(
+                  key: state.pageKey,
                   child: CreateChildHabitView(
                     parentHabitId: int.parse(state.params['habitid']!),
                     editHabitId: int.parse(state.params['childhabitid']!),
@@ -52,6 +55,7 @@ final routerProvider = Provider((ref) {
               GoRoute(
                 path: 'select',
                 pageBuilder: (context, state) => ModalPage(
+                  key: state.pageKey,
                   child: SelectChildHabitsView(
                     habitId: int.parse(state.params['habitid']!),
                   ),
@@ -60,6 +64,7 @@ final routerProvider = Provider((ref) {
                   GoRoute(
                     path: 'create',
                     pageBuilder: (context, state) => ModalPage(
+                      key: state.pageKey,
                       child: CreateChildHabitView(
                         parentHabitId: int.parse(state.params['habitid']!),
                         editHabitExtra: state.extra as Habit?,
@@ -72,8 +77,9 @@ final routerProvider = Provider((ref) {
           ),
           GoRoute(
             path: 'create',
-            pageBuilder: (context, state) => const ModalPage(
-              child: CreateHabitView(),
+            pageBuilder: (context, state) => ModalPage(
+              key: state.pageKey,
+              child: const CreateHabitView(),
             ),
           ),
         ],

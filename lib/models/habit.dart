@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:habithouse_io/models/create_child_habit_form.dart';
 import 'package:habithouse_io/models/create_habit_form.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:isar/isar.dart';
 
@@ -14,8 +15,6 @@ const habitNameMaxLength = 30;
 const habitDurationMin = 0;
 const habitDescriptionMinLength = 0;
 const habitDescriptionMaxLength = 300;
-const habitEmojiIconMinLength = 1;
-const habitEmojiIconMaxLength = 5;
 
 @freezed
 @Collection()
@@ -40,10 +39,6 @@ class Habit with _$Habit {
   @Assert(
     'emojiIcon == null ? true : emojiIcon.length != 0',
     'emojiIcon cannot be empty',
-  )
-  @Assert(
-    'emojiIcon == null ? true : emojiIcon.length > $habitEmojiIconMinLength && emojiIcon.length < $habitEmojiIconMaxLength',
-    'emojiIcon length should be > $habitEmojiIconMinLength && < $habitEmojiIconMaxLength',
   )
   factory Habit({
     // local isar db unique autoincrement id
@@ -79,7 +74,7 @@ class Habit with _$Habit {
   }) = _Habit;
 
   factory Habit.initial() => Habit(
-        name: '',
+        name: List.generate(habitNameMinLength + 1, (index) => '-').join(),
         startDate: DateTime.now(),
         createdAt: DateTime.now(),
       );
@@ -89,20 +84,14 @@ extension HabitX on Habit {
   CreateHabit toCreateHabitForm() => CreateHabit(
         name: name,
         backgroundColor: Color(backgroundColor),
-        emoji: Emoji('emoji', emojiIcon!),
+        emoji: Emoji('emoji', emojiIcon ?? '🎯'),
         reminders: reminders,
         repeatDays: repeatDays,
-        dateTimeRange: endDate != null
-            ? DateTimeRange(
-                start: startDate,
-                end: endDate!,
-              )
-            : null,
-        startDate: startDate,
+        dateTimeRange: DateTimeRangeUtils.dateTimeRange(startDate, endDate),
       );
 
   CreateChildHabit toCreateChildHabitForm() => CreateChildHabit(
         name: name,
-        emoji: Emoji('emoji', emojiIcon!),
+        // emoji: Emoji('emoji', emojiIcon!),
       );
 }

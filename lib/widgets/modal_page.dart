@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ModalPage<T> extends Page<T> {
-  const ModalPage({required this.child});
+  const ModalPage({
+    required this.child,
+    required LocalKey key,
+  }) : super(key: key);
 
   final Widget child;
 

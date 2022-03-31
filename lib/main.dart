@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:habithouse_io/service/service.dart';
+import 'package:habithouse_io/theme.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logging/logging.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -111,19 +112,8 @@ class HabithouseIO extends HookConsumerWidget {
           child: child ?? Container(),
         ),
         debugShowCheckedModeBanner: false,
-        darkTheme: FlexThemeData.light(
-          scheme: FlexScheme.amber,
-          useSubThemes: true,
-          blendLevel: 5,
-        ).copyWith(
-          inputDecorationTheme: const InputDecorationTheme(
-            border: UnderlineInputBorder(),
-          ),
-        ),
-        theme: FlexThemeData.light(
-          scheme: FlexScheme.sakura,
-          useSubThemes: true,
-        ),
+        darkTheme: darkTheme(scheme: FlexScheme.redWine),
+        theme: lightTheme(scheme: FlexScheme.redWine),
         themeMode: ThemeMode.system,
         routerDelegate: router.routerDelegate,
         routeInformationParser: router.routeInformationParser,

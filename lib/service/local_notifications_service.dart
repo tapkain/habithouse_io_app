@@ -81,7 +81,7 @@ class LocalNotificationsService implements DeepLinkDelegate {
       .map((day) => form.reminders.map((reminder) => scheduler.nextDateFromDay(
             day,
             reminder,
-            tz.TZDateTime.from(form.startDate, tz.local),
+            tz.TZDateTime.from(form.dateTimeRange.start, tz.local),
           )))
       .flatten();
 

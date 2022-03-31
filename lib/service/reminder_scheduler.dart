@@ -11,7 +11,7 @@ class ReminderScheduler {
   tz.TZDateTime nextDateFromDay(
     int day,
     TimeOfDay time,
-    tz.TZDateTime? startDate,
+    tz.TZDateTime startDate,
   ) {
     var scheduledDate = nextDateFromTime(time, startDate);
     while (scheduledDate.weekday != day) {
@@ -20,18 +20,17 @@ class ReminderScheduler {
     return scheduledDate;
   }
 
-  tz.TZDateTime nextDateFromTime(TimeOfDay time, tz.TZDateTime? startDate) {
-    final now = startDate ?? tz.TZDateTime.now(tz.local);
+  tz.TZDateTime nextDateFromTime(TimeOfDay time, tz.TZDateTime startDate) {
     var scheduledDate = tz.TZDateTime(
       tz.local,
-      now.year,
-      now.month,
-      now.day,
+      startDate.year,
+      startDate.month,
+      startDate.day,
       time.hour,
       time.minute,
     );
 
-    if (scheduledDate.isBefore(now)) {
+    if (scheduledDate.isBefore(startDate)) {
       scheduledDate = scheduledDate.add(1.days);
     }
 

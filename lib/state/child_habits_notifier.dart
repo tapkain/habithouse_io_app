@@ -5,37 +5,39 @@ import 'package:habithouse_io/models/habit.dart';
 import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
 
 class ChildHabitsNotifier extends StateNotifier<BuiltList<Habit>> {
   ChildHabitsNotifier(
     this.storage,
     this.viewDate,
     this.habitId,
-  ) : super(BuiltList(storage.fetchHabitsAfterDate(viewDate, habitId)));
+  ) : super(BuiltList([])) {
+    storage
+        .fetchHabitsForDate(viewDate, habitId)
+        .then((value) => state = BuiltList(value));
+  }
 
   void putHabits(int parentHabitId, List<Habit> habits) {
     // TODO: move this to repo + find a better logic
-    _isar.writeTxn((isar) async {
-      if (state.isNotEmpty) {
-        await isar.habits.deleteAll(state.map((e) => e.id).toList());
-      }
+    // _isar.writeTxn((isar) async {
+    //   if (state.isNotEmpty) {
+    //     await isar.habits.deleteAll(state.map((e) => e.id).toList());
+    //   }
 
-      final ids = await isar.habits.putAll(
-        habits.map((e) => e.copyWith(parentId: parentHabitId)).toList(),
-        replaceOnConflict: true,
-      );
+    //   final ids = await isar.habits.putAll(
+    //     habits.map((e) => e.copyWith(parentId: parentHabitId)).toList(),
+    //     replaceOnConflict: true,
+    //   );
 
-      for (var i = 0; i < ids.length; i++) {
-        habits[i] = habits[i].copyWith(id: ids[i]);
-      }
+    //   for (var i = 0; i < ids.length; i++) {
+    //     habits[i] = habits[i].copyWith(id: ids[i]);
+    //   }
 
-      state = BuiltList(habits);
-    });
+    //   state = BuiltList(habits);
+    // });
   }
 
   final int habitId;
-  final _isar = Isar.getInstance(Config.localDbName)!;
   final DateTime viewDate;
   final IStorage storage;
 }

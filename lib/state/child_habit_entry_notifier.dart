@@ -1,6 +1,5 @@
 import 'package:habithouse_io/models/habit_entry.dart';
 import 'package:habithouse_io/models/models.dart';
-import 'package:habithouse_io/repository/isar_storage.dart';
 import 'package:habithouse_io/repository/storage.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,7 +12,9 @@ class ChildHabitEntryNotifier extends StateNotifier<HabitEntry?> {
     this.storage,
     this.viewDate,
     int habitId,
-  ) : super(storage.fetchEntryForDate(viewDate, habitId));
+  ) : super(null) {
+    storage.fetchEntryForDate(viewDate, habitId).then((value) => state = value);
+  }
 
   Future<void> putEntry(HabitEntry entry) async {
     if (viewDate.copyWith(hour: 23, minute: 59).isBefore(DateTime.now())) {

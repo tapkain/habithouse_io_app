@@ -74,9 +74,9 @@ class ReactiveDateRangePicker
                 ),
                 subtitle: Row(
                   children: [
-                    Text(DateFormat().formatStartDate(field.value!.start)),
+                    Text(DateFormatUtils.formatStartDate(field.value!.start)),
                     const Spacer(),
-                    Text(DateFormat().formatStartDate(field.value!.end)),
+                    Text(DateFormatUtils.formatStartDate(field.value!.end)),
                   ],
                 ),
               );
@@ -100,7 +100,7 @@ class ReactiveDateRangePicker
                   },
                   title: Text('Start date'),
                   trailing:
-                      Text(DateFormat().formatStartDate(field.value!.start)),
+                      Text(DateFormatUtils.formatStartDate(field.value!.start)),
                 ),
                 const Divider(),
                 ListTile(

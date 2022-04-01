@@ -28,7 +28,10 @@ String parseWeekdays(
     return everyDayLabel;
   }
 
-  return customDayLabel;
+  return days
+      .sorted()
+      .map((e) => DateFormatUtils.formatDay(e, 'EEE'))
+      .join(',');
 }
 
 class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
@@ -44,49 +47,28 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
             final value = field.value == null ? everyDay : field.value!;
 
             // ignore: prefer_function_declarations_over_variables
-            final toggleDay = (int day) {
-              final copy = [...value];
-              if (value.contains(day)) {
-                copy.remove(day);
-              } else {
-                copy.add(day);
-              }
-              field.didChange(copy);
-            };
+            final onTap = () async {
+              final result = await showDialog<List<int>>(
+                context: field.context,
+                builder: (_) => _FrequencyPickerDialog(days: field.value!),
+              );
 
-            final state = field as _ReactiveFrequencyPickerState<T>;
-            // ignore: prefer_function_declarations_over_variables
-            final onTap = () => state.setExpanded(true);
+              if (result != null) {
+                field.didChange(result);
+              }
+            };
 
             return Listener(
               onPointerDown: (_) => field.control.markAsTouched(),
               child: ListTile(
                 onTap: field.control.enabled ? onTap : null,
                 title: Text(inputDecoration?.labelText ?? 'How often?'),
-                trailing: Text(
-                  parseWeekdays(value),
-                  style: Theme.of(field.context).textTheme.subtitle2,
-                ),
-                subtitle: state.expanded
-                    ? Row(
-                        children: everyDay
-                            .map((e) => _DayCheckbox(
-                                  day: e,
-                                  value: value.contains(e),
-                                  onChanged: (_) => toggleDay(e),
-                                ))
-                            .toList(),
-                      )
-                    : null,
+                trailing: Text(parseWeekdays(value)),
               ),
             );
           },
           key: key,
         );
-
-  @override
-  ReactiveFormFieldState<T, List<int>> createState() =>
-      _ReactiveFrequencyPickerState<T>();
 }
 
 class _DayCheckbox extends StatelessWidget {
@@ -101,39 +83,80 @@ class _DayCheckbox extends StatelessWidget {
   final bool value;
   final void Function(bool?) onChanged;
 
-  String formatDay() {
-    var date = DateTime(2020, 1, 1);
-    while (date.weekday != day) {
-      date = date.add(1.days);
-    }
-    return DateFormat('EEE').format(date);
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Checkbox(
-          value: value,
-          onChanged: onChanged,
-          shape: const CircleBorder(),
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        Text(formatDay())
-      ],
+    return CheckboxListTile(
+      controlAffinity: ListTileControlAffinity.leading,
+      dense: true,
+      value: value,
+      onChanged: onChanged,
+      title: Text(DateFormatUtils.formatDay(day)),
     );
   }
 }
 
-class _ReactiveFrequencyPickerState<T>
-    extends ReactiveFormFieldState<T, List<int>> {
-  var expanded = false;
-  void setExpanded(bool value) {
-    if (value != expanded) {
-      setState(() => expanded = value);
-    }
+class _FrequencyPickerDialog extends StatefulWidget {
+  const _FrequencyPickerDialog({
+    required this.days,
+    Key? key,
+  }) : super(key: key);
+
+  final List<int> days;
+
+  @override
+  State<_FrequencyPickerDialog> createState() => __FrequencyPickerDialogState();
+}
+
+class __FrequencyPickerDialogState extends State<_FrequencyPickerDialog> {
+  late var selectedDays = widget.days.toList();
+
+  bool isSelected(int day) => selectedDays.contains(day);
+  void toggle(int day) {
+    setState(() {
+      if (isSelected(day)) {
+        selectedDays.remove(day);
+      } else {
+        selectedDays.add(day);
+      }
+    });
   }
 
-  void toggleExpanded() => setExpanded(!expanded);
+  String formatDay(int day) {
+    var date = DateTime(2020, 1, 1);
+    while (date.weekday != day) {
+      date = date.add(1.days);
+    }
+    return DateFormat('EEEE').format(date);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Select weekdays'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: everyDay
+              .map(
+                (e) => _DayCheckbox(
+                  day: e,
+                  value: isSelected(e),
+                  onChanged: (_) => toggle(e),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text('CANCEL'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(selectedDays),
+          child: Text('OK'),
+        ),
+      ],
+    );
+  }
 }

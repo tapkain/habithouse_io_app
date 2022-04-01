@@ -9,7 +9,8 @@ abstract class Config {
   static const bool isDebug = kDebugMode;
   static const loggingLevel = Level.FINE;
   static const localDbName = 'isar';
-  static const transientDb = false;
+  static const transientDb = true;
+  static const populateDb = true;
   static const sentryDsn = String.fromEnvironment('SENTRY_DSN');
 
   static const localNotificationSettings = fln.InitializationSettings(

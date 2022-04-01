@@ -1,3 +1,6 @@
+// ignore_for_file: invalid_annotation_target
+
+import 'package:dartx/dartx.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -5,7 +8,6 @@ import 'package:habithouse_io/models/create_child_habit_form.dart';
 import 'package:habithouse_io/models/create_habit_form.dart';
 import 'package:habithouse_io/util.dart';
 import 'package:habithouse_io/widgets/widgets.dart';
-import 'package:isar/isar.dart';
 
 part 'habit.freezed.dart';
 part 'habit.g.dart';
@@ -17,7 +19,6 @@ const habitDescriptionMinLength = 0;
 const habitDescriptionMaxLength = 300;
 
 @freezed
-@Collection()
 class Habit with _$Habit {
   @Assert('name.length != 0', 'name cannot be empty')
   @Assert(
@@ -37,12 +38,15 @@ class Habit with _$Habit {
     'endDate should be after startDate',
   )
   @Assert(
+    '(startDate.date + 1.seconds).isAfter(createdAt.date)',
+    'startDate should be after createdAt',
+  )
+  @Assert(
     'emojiIcon == null ? true : emojiIcon.length != 0',
     'emojiIcon cannot be empty',
   )
   factory Habit({
-    // local isar db unique autoincrement id
-    @Default(isarAutoIncrementId) @Id() int id,
+    @Default(autoIncrementId) int id,
 
     // true if this habit is part of a challenge
     // TODO: implement challenges
@@ -51,9 +55,12 @@ class Habit with _$Habit {
     // if null, habit is a routine which could contain other habits
     int? parentId,
     required String name,
-    required DateTime createdAt,
-    required DateTime startDate,
-    DateTime? endDate,
+    @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+        required DateTime createdAt,
+    @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+        required DateTime startDate,
+    @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
+        DateTime? endDate,
 
     // duration of habit in seconds
     int? durationSeconds,
@@ -62,7 +69,9 @@ class Habit with _$Habit {
     String? emojiIcon,
 
     // time during the day when app will notify about the routine
-    @Default([]) List<TimeOfDay> reminders,
+    @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
+    @Default([])
+        List<TimeOfDay> reminders,
 
     // list of file uris
     @Default([]) List<String> localFileAttachmentUris,
@@ -78,6 +87,8 @@ class Habit with _$Habit {
         startDate: DateTime.now(),
         createdAt: DateTime.now(),
       );
+
+  factory Habit.fromJson(Map<String, dynamic> json) => _$HabitFromJson(json);
 }
 
 extension HabitX on Habit {
@@ -95,3 +106,13 @@ extension HabitX on Habit {
         // emoji: Emoji('emoji', emojiIcon!),
       );
 }
+
+dynamic remindersToJson(List<TimeOfDay> reminders) =>
+    reminders.map((e) => '${e.hour}:${e.minute}').toList();
+List<TimeOfDay> remindersFromJson(dynamic json) => (json as List).map((e) {
+      final value = (e as String).split(':');
+      return TimeOfDay(
+        hour: int.parse(value.first),
+        minute: int.parse(value.last),
+      );
+    }).toList();

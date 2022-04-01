@@ -31,8 +31,8 @@ dependencies:
   hooks_riverpod: ^1.0.3
 
   # Local Storage
-  isar: ^2.1.4
-  isar_flutter_libs: ^2.1.4
+  drift: ^1.5.0
+  sqlite3_flutter_libs: ^0.5.0
 
   # Backend SDK (data, auth, storage bucket)
   supabase_flutter: ^0.2.11
@@ -42,6 +42,7 @@ dependencies:
 
   # Serialization & Immutable data types
   freezed_annotation: ^1.1.0
+  json_annotation: ^4.4.0
 
   # UI
   overlay_support: ^1.2.1
@@ -50,6 +51,7 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   emoji_picker_flutter: ^1.1.2
   flex_color_picker: ^2.3.0
+  drift_db_viewer: ^1.0.3
 
   # Notifications
   # TODO: implement local push notifications
@@ -75,9 +77,10 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^1.0.0
-  isar_generator: ^2.1.4
+  drift_dev: ^1.5.2
   build_runner: ^2.1.7
   freezed: ^1.1.1
+  json_serializable: ^6.1.5
   reactive_forms_generator: ^0.9.5-beta
   flutter_gen_runner: ^4.1.6
   flutter_launcher_icons: ^0.9.2

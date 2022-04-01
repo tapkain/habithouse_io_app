@@ -33,11 +33,13 @@ class HabitListView extends HookConsumerWidget {
       scrollDirection: Axis.horizontal,
       itemExtent: MediaQuery.of(context).size.width,
       itemBuilder: (context, index) {
-        final habits = ref.watch(habitsByDateProvider(viewDate + index.days));
-        return ListView(
-          key: ValueKey(index),
-          children: habits.map((e) => HomeHabitWidget(habit: e)).toList(),
-        );
+        return HookConsumer(builder: (context, ref, child) {
+          final habits = ref.watch(habitsByDateProvider(viewDate + index.days));
+          return ListView(
+            key: ValueKey(index),
+            children: habits.map((e) => HomeHabitWidget(habit: e)).toList(),
+          );
+        });
       },
     );
   }

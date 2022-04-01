@@ -1,10 +1,11 @@
 import 'package:go_router/go_router.dart';
+import 'package:habithouse_io/repository/drift/utils.dart';
 import 'package:habithouse_io/state/auth_notifier.dart';
 import 'package:habithouse_io/views/create_child_habit_view.dart';
 import 'package:habithouse_io/views/create_habit_view.dart';
 import 'package:habithouse_io/views/home_view.dart';
 import 'package:habithouse_io/views/preview_habit_view.dart';
-import 'package:habithouse_io/views/select_child_habits_view.dart';
+import 'package:habithouse_io/views/child_habit_templates_view.dart';
 import 'package:habithouse_io/widgets/modal_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -23,6 +24,13 @@ final routerProvider = Provider((ref) {
         path: '/habits',
         builder: (context, state) => const HomeView(),
         routes: [
+          GoRoute(
+            path: 'dbviewer',
+            pageBuilder: (context, state) => ModalPage(
+              key: state.pageKey,
+              child: dbViewerView(ref),
+            ),
+          ),
           GoRoute(
             pageBuilder: (context, state) => ModalPage(
               key: state.pageKey,
@@ -53,7 +61,7 @@ final routerProvider = Provider((ref) {
                 ),
               ),
               GoRoute(
-                path: 'select',
+                path: 'templates',
                 pageBuilder: (context, state) => ModalPage(
                   key: state.pageKey,
                   child: SelectChildHabitsView(

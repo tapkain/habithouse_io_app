@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/models.dart';
-import 'package:habithouse_io/service/service.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/theme.dart';
 import 'package:habithouse_io/util.dart';
@@ -114,6 +113,13 @@ class CreateHabitFormView extends HookConsumerWidget {
                     remindersControl: formModel.remindersControl,
                   ),
                 ),
+                const SizedBox(height: padding * 2),
+                ElevatedButton(
+                  onPressed: formModel.form.valid
+                      ? () => submit(context, ref, formModel)
+                      : null,
+                  child: Text('Next'),
+                ),
               ],
             ),
           ),
@@ -135,7 +141,12 @@ class CreateHabitFormView extends HookConsumerWidget {
       habit = form.applyTo(editHabit);
     }
 
-    habitsNotifier.putHabit(habit);
-    context.pop();
+    final habitId = await habitsNotifier.putHabit(habit);
+
+    if (editHabitId == null) {
+      context.go('/habits/view/$habitId/templates');
+    } else {
+      context.pop();
+    }
   }
 }

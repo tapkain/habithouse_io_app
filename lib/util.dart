@@ -6,7 +6,7 @@ import 'package:habithouse_io/theme.dart';
 
 extension BuildContextX on BuildContext {
   ThemeData get theme => Theme.of(this);
-  TextTheme get textTheme => Theme.of(this).textTheme;
+  TextTheme get textTheme => theme.textTheme;
   ThemeData flexTheme(Color primary) => theme.brightness == Brightness.dark
       ? darkTheme(primary: primary)
       : lightTheme(primary: primary);
@@ -50,8 +50,8 @@ extension ColorX on Color {
   }
 }
 
-extension DateFormatX on DateFormat {
-  String formatStartDate(DateTime dateTime) {
+abstract class DateFormatUtils {
+  static String formatStartDate(DateTime dateTime) {
     if (dateTime.isToday) {
       return 'Today';
     }
@@ -62,4 +62,25 @@ extension DateFormatX on DateFormat {
 
     return DateFormat.yMMMMd().format(dateTime);
   }
+
+  static String formatDay(int day, [String pattern = 'EEEE']) {
+    var date = DateTime(2020, 1, 1);
+    while (date.weekday != day) {
+      date = date.add(1.days);
+    }
+    return DateFormat(pattern).format(date);
+  }
+}
+
+const autoIncrementId = -800;
+
+abstract class DateTimeUtils {
+  static DateTime? fromJsonN(dynamic json) =>
+      json != null ? DateTime.fromMillisecondsSinceEpoch((json as int)) : null;
+
+  static dynamic toJsonN(DateTime? dateTime) =>
+      dateTime?.millisecondsSinceEpoch;
+
+  static DateTime fromJson(dynamic json) => fromJsonN(json)!;
+  static dynamic toJson(DateTime dateTime) => toJsonN(dateTime);
 }

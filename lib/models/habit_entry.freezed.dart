@@ -14,14 +14,19 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+HabitEntry _$HabitEntryFromJson(Map<String, dynamic> json) {
+  return _HabitEntry.fromJson(json);
+}
+
 /// @nodoc
 class _$HabitEntryTearOff {
   const _$HabitEntryTearOff();
 
   _HabitEntry call(
-      {@Id() int id = isarAutoIncrementId,
+      {int id = autoIncrementId,
       required int habitId,
-      required DateTime createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required DateTime createdAt,
       String? targetGoal}) {
     return _HabitEntry(
       id: id,
@@ -30,6 +35,10 @@ class _$HabitEntryTearOff {
       targetGoal: targetGoal,
     );
   }
+
+  HabitEntry fromJson(Map<String, Object?> json) {
+    return HabitEntry.fromJson(json);
+  }
 }
 
 /// @nodoc
@@ -37,12 +46,13 @@ const $HabitEntry = _$HabitEntryTearOff();
 
 /// @nodoc
 mixin _$HabitEntry {
-  @Id()
   int get id => throw _privateConstructorUsedError;
   int get habitId => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   DateTime get createdAt => throw _privateConstructorUsedError;
   String? get targetGoal => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $HabitEntryCopyWith<HabitEntry> get copyWith =>
       throw _privateConstructorUsedError;
@@ -54,7 +64,11 @@ abstract class $HabitEntryCopyWith<$Res> {
           HabitEntry value, $Res Function(HabitEntry) then) =
       _$HabitEntryCopyWithImpl<$Res>;
   $Res call(
-      {@Id() int id, int habitId, DateTime createdAt, String? targetGoal});
+      {int id,
+      int habitId,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          DateTime createdAt,
+      String? targetGoal});
 }
 
 /// @nodoc
@@ -100,7 +114,11 @@ abstract class _$HabitEntryCopyWith<$Res> implements $HabitEntryCopyWith<$Res> {
       __$HabitEntryCopyWithImpl<$Res>;
   @override
   $Res call(
-      {@Id() int id, int habitId, DateTime createdAt, String? targetGoal});
+      {int id,
+      int habitId,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          DateTime createdAt,
+      String? targetGoal});
 }
 
 /// @nodoc
@@ -142,21 +160,25 @@ class __$HabitEntryCopyWithImpl<$Res> extends _$HabitEntryCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_HabitEntry implements _HabitEntry {
   const _$_HabitEntry(
-      {@Id() this.id = isarAutoIncrementId,
+      {this.id = autoIncrementId,
       required this.habitId,
-      required this.createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required this.createdAt,
       this.targetGoal});
+
+  factory _$_HabitEntry.fromJson(Map<String, dynamic> json) =>
+      _$$_HabitEntryFromJson(json);
 
   @JsonKey()
   @override
-  @Id()
   final int id;
   @override
   final int habitId;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   final DateTime createdAt;
   @override
   final String? targetGoal;
@@ -190,21 +212,30 @@ class _$_HabitEntry implements _HabitEntry {
   @override
   _$HabitEntryCopyWith<_HabitEntry> get copyWith =>
       __$HabitEntryCopyWithImpl<_HabitEntry>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_HabitEntryToJson(this);
+  }
 }
 
 abstract class _HabitEntry implements HabitEntry {
   const factory _HabitEntry(
-      {@Id() int id,
+      {int id,
       required int habitId,
-      required DateTime createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required DateTime createdAt,
       String? targetGoal}) = _$_HabitEntry;
 
+  factory _HabitEntry.fromJson(Map<String, dynamic> json) =
+      _$_HabitEntry.fromJson;
+
   @override
-  @Id()
   int get id;
   @override
   int get habitId;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   DateTime get createdAt;
   @override
   String? get targetGoal;

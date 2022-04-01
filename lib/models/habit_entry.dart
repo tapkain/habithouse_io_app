@@ -1,16 +1,21 @@
+// ignore_for_file: invalid_annotation_target
+
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:isar/isar.dart';
+import 'package:habithouse_io/util.dart';
 
 part 'habit_entry.freezed.dart';
 part 'habit_entry.g.dart';
 
 @freezed
-@Collection()
 class HabitEntry with _$HabitEntry {
   const factory HabitEntry({
-    @Default(isarAutoIncrementId) @Id() int id,
+    @Default(autoIncrementId) int id,
     required int habitId,
-    required DateTime createdAt,
+    @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+        required DateTime createdAt,
     String? targetGoal,
   }) = _HabitEntry;
+
+  factory HabitEntry.fromJson(Map<String, dynamic> json) =>
+      _$HabitEntryFromJson(json);
 }

@@ -14,23 +14,31 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Habit _$HabitFromJson(Map<String, dynamic> json) {
+  return _Habit.fromJson(json);
+}
+
 /// @nodoc
 class _$HabitTearOff {
   const _$HabitTearOff();
 
   _Habit call(
-      {@Id() int id = isarAutoIncrementId,
+      {int id = autoIncrementId,
       bool isChallenge = false,
       int? parentId,
       required String name,
-      required DateTime createdAt,
-      required DateTime startDate,
-      DateTime? endDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required DateTime createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required DateTime startDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
+          DateTime? endDate,
       int? durationSeconds,
       String? description,
       bool isArchived = false,
       String? emojiIcon,
-      List<TimeOfDay> reminders = const [],
+      @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
+          List<TimeOfDay> reminders = const [],
       List<String> localFileAttachmentUris = const [],
       List<int> repeatDays = everyDay,
       String? targetGoal,
@@ -54,6 +62,10 @@ class _$HabitTearOff {
       backgroundColor: backgroundColor,
     );
   }
+
+  Habit fromJson(Map<String, Object?> json) {
+    return Habit.fromJson(json);
+  }
 }
 
 /// @nodoc
@@ -61,8 +73,6 @@ const $Habit = _$HabitTearOff();
 
 /// @nodoc
 mixin _$Habit {
-// local isar db unique autoincrement id
-  @Id()
   int get id =>
       throw _privateConstructorUsedError; // true if this habit is part of a challenge
 // TODO: implement challenges
@@ -70,8 +80,11 @@ mixin _$Habit {
       throw _privateConstructorUsedError; // if null, habit is a routine which could contain other habits
   int? get parentId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   DateTime get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   DateTime get startDate => throw _privateConstructorUsedError;
+  @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
   DateTime? get endDate =>
       throw _privateConstructorUsedError; // duration of habit in seconds
   int? get durationSeconds => throw _privateConstructorUsedError;
@@ -79,6 +92,7 @@ mixin _$Habit {
   bool get isArchived => throw _privateConstructorUsedError;
   String? get emojiIcon =>
       throw _privateConstructorUsedError; // time during the day when app will notify about the routine
+  @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
   List<TimeOfDay> get reminders =>
       throw _privateConstructorUsedError; // list of file uris
   List<String> get localFileAttachmentUris =>
@@ -87,6 +101,7 @@ mixin _$Habit {
   String? get targetGoal => throw _privateConstructorUsedError;
   int get backgroundColor => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $HabitCopyWith<Habit> get copyWith => throw _privateConstructorUsedError;
 }
@@ -96,18 +111,22 @@ abstract class $HabitCopyWith<$Res> {
   factory $HabitCopyWith(Habit value, $Res Function(Habit) then) =
       _$HabitCopyWithImpl<$Res>;
   $Res call(
-      {@Id() int id,
+      {int id,
       bool isChallenge,
       int? parentId,
       String name,
-      DateTime createdAt,
-      DateTime startDate,
-      DateTime? endDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          DateTime createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          DateTime startDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
+          DateTime? endDate,
       int? durationSeconds,
       String? description,
       bool isArchived,
       String? emojiIcon,
-      List<TimeOfDay> reminders,
+      @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
+          List<TimeOfDay> reminders,
       List<String> localFileAttachmentUris,
       List<int> repeatDays,
       String? targetGoal,
@@ -216,18 +235,22 @@ abstract class _$HabitCopyWith<$Res> implements $HabitCopyWith<$Res> {
       __$HabitCopyWithImpl<$Res>;
   @override
   $Res call(
-      {@Id() int id,
+      {int id,
       bool isChallenge,
       int? parentId,
       String name,
-      DateTime createdAt,
-      DateTime startDate,
-      DateTime? endDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          DateTime createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          DateTime startDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
+          DateTime? endDate,
       int? durationSeconds,
       String? description,
       bool isArchived,
       String? emojiIcon,
-      List<TimeOfDay> reminders,
+      @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
+          List<TimeOfDay> reminders,
       List<String> localFileAttachmentUris,
       List<int> repeatDays,
       String? targetGoal,
@@ -332,21 +355,25 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_Habit implements _Habit {
   _$_Habit(
-      {@Id() this.id = isarAutoIncrementId,
+      {this.id = autoIncrementId,
       this.isChallenge = false,
       this.parentId,
       required this.name,
-      required this.createdAt,
-      required this.startDate,
-      this.endDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required this.createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required this.startDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
+          this.endDate,
       this.durationSeconds,
       this.description,
       this.isArchived = false,
       this.emojiIcon,
-      this.reminders = const [],
+      @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
+          this.reminders = const [],
       this.localFileAttachmentUris = const [],
       this.repeatDays = everyDay,
       this.targetGoal,
@@ -363,12 +390,16 @@ class _$_Habit implements _Habit {
             'desc length should be > 0 && < 300'),
         assert(endDate == null ? true : endDate.isAfter(startDate),
             'endDate should be after startDate'),
+        assert((startDate.date + 1.seconds).isAfter(createdAt.date),
+            'startDate should be after createdAt'),
         assert(emojiIcon == null ? true : emojiIcon.length != 0,
             'emojiIcon cannot be empty');
 
+  factory _$_Habit.fromJson(Map<String, dynamic> json) =>
+      _$$_HabitFromJson(json);
+
   @JsonKey()
-  @override // local isar db unique autoincrement id
-  @Id()
+  @override
   final int id;
   @JsonKey()
   @override // true if this habit is part of a challenge
@@ -379,10 +410,13 @@ class _$_Habit implements _Habit {
   @override
   final String name;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   final DateTime createdAt;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   final DateTime startDate;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
   final DateTime? endDate;
   @override // duration of habit in seconds
   final int? durationSeconds;
@@ -393,8 +427,8 @@ class _$_Habit implements _Habit {
   final bool isArchived;
   @override
   final String? emojiIcon;
-  @JsonKey()
   @override // time during the day when app will notify about the routine
+  @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
   final List<TimeOfDay> reminders;
   @JsonKey()
   @override // list of file uris
@@ -468,29 +502,39 @@ class _$_Habit implements _Habit {
   @override
   _$HabitCopyWith<_Habit> get copyWith =>
       __$HabitCopyWithImpl<_Habit>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_HabitToJson(this);
+  }
 }
 
 abstract class _Habit implements Habit {
   factory _Habit(
-      {@Id() int id,
+      {int id,
       bool isChallenge,
       int? parentId,
       required String name,
-      required DateTime createdAt,
-      required DateTime startDate,
-      DateTime? endDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required DateTime createdAt,
+      @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
+          required DateTime startDate,
+      @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
+          DateTime? endDate,
       int? durationSeconds,
       String? description,
       bool isArchived,
       String? emojiIcon,
-      List<TimeOfDay> reminders,
+      @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
+          List<TimeOfDay> reminders,
       List<String> localFileAttachmentUris,
       List<int> repeatDays,
       String? targetGoal,
       int backgroundColor}) = _$_Habit;
 
-  @override // local isar db unique autoincrement id
-  @Id()
+  factory _Habit.fromJson(Map<String, dynamic> json) = _$_Habit.fromJson;
+
+  @override
   int get id;
   @override // true if this habit is part of a challenge
 // TODO: implement challenges
@@ -500,10 +544,13 @@ abstract class _Habit implements Habit {
   @override
   String get name;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   DateTime get createdAt;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJson, toJson: DateTimeUtils.toJson)
   DateTime get startDate;
   @override
+  @JsonKey(fromJson: DateTimeUtils.fromJsonN, toJson: DateTimeUtils.toJsonN)
   DateTime? get endDate;
   @override // duration of habit in seconds
   int? get durationSeconds;
@@ -514,6 +561,7 @@ abstract class _Habit implements Habit {
   @override
   String? get emojiIcon;
   @override // time during the day when app will notify about the routine
+  @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
   List<TimeOfDay> get reminders;
   @override // list of file uris
   List<String> get localFileAttachmentUris;

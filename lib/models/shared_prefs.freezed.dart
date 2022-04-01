@@ -14,16 +14,23 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more informations: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+SharedPrefs _$SharedPrefsFromJson(Map<String, dynamic> json) {
+  return _SharedPrefs.fromJson(json);
+}
+
 /// @nodoc
 class _$SharedPrefsTearOff {
   const _$SharedPrefsTearOff();
 
-  _SharedPrefs call(
-      {@Id() int id = isarAutoIncrementId, bool isFirstLaunch = true}) {
+  _SharedPrefs call({int id = autoIncrementId, bool isFirstLaunch = true}) {
     return _SharedPrefs(
       id: id,
       isFirstLaunch: isFirstLaunch,
     );
+  }
+
+  SharedPrefs fromJson(Map<String, Object?> json) {
+    return SharedPrefs.fromJson(json);
   }
 }
 
@@ -32,10 +39,10 @@ const $SharedPrefs = _$SharedPrefsTearOff();
 
 /// @nodoc
 mixin _$SharedPrefs {
-  @Id()
   int get id => throw _privateConstructorUsedError;
   bool get isFirstLaunch => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $SharedPrefsCopyWith<SharedPrefs> get copyWith =>
       throw _privateConstructorUsedError;
@@ -46,7 +53,7 @@ abstract class $SharedPrefsCopyWith<$Res> {
   factory $SharedPrefsCopyWith(
           SharedPrefs value, $Res Function(SharedPrefs) then) =
       _$SharedPrefsCopyWithImpl<$Res>;
-  $Res call({@Id() int id, bool isFirstLaunch});
+  $Res call({int id, bool isFirstLaunch});
 }
 
 /// @nodoc
@@ -82,7 +89,7 @@ abstract class _$SharedPrefsCopyWith<$Res>
           _SharedPrefs value, $Res Function(_SharedPrefs) then) =
       __$SharedPrefsCopyWithImpl<$Res>;
   @override
-  $Res call({@Id() int id, bool isFirstLaunch});
+  $Res call({int id, bool isFirstLaunch});
 }
 
 /// @nodoc
@@ -114,14 +121,15 @@ class __$SharedPrefsCopyWithImpl<$Res> extends _$SharedPrefsCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_SharedPrefs implements _SharedPrefs {
-  const _$_SharedPrefs(
-      {@Id() this.id = isarAutoIncrementId, this.isFirstLaunch = true});
+  const _$_SharedPrefs({this.id = autoIncrementId, this.isFirstLaunch = true});
+
+  factory _$_SharedPrefs.fromJson(Map<String, dynamic> json) =>
+      _$$_SharedPrefsFromJson(json);
 
   @JsonKey()
   @override
-  @Id()
   final int id;
   @JsonKey()
   @override
@@ -152,14 +160,20 @@ class _$_SharedPrefs implements _SharedPrefs {
   @override
   _$SharedPrefsCopyWith<_SharedPrefs> get copyWith =>
       __$SharedPrefsCopyWithImpl<_SharedPrefs>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_SharedPrefsToJson(this);
+  }
 }
 
 abstract class _SharedPrefs implements SharedPrefs {
-  const factory _SharedPrefs({@Id() int id, bool isFirstLaunch}) =
-      _$_SharedPrefs;
+  const factory _SharedPrefs({int id, bool isFirstLaunch}) = _$_SharedPrefs;
+
+  factory _SharedPrefs.fromJson(Map<String, dynamic> json) =
+      _$_SharedPrefs.fromJson;
 
   @override
-  @Id()
   int get id;
   @override
   bool get isFirstLaunch;

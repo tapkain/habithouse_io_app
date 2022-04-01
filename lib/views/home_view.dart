@@ -1,5 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -62,6 +63,13 @@ class HomeView extends HookConsumerWidget {
         SliverAppBar(
           title: Text(appBarTitleText(viewDate)),
           stretch: true,
+          actions: [
+            if (kDebugMode)
+              IconButton(
+                onPressed: () => context.go('/habits/dbviewer'),
+                icon: const Icon(Icons.perm_data_setting_outlined),
+              )
+          ],
         ),
         const SliverToBoxAdapter(child: SizedBox(height: padding)),
         const SliverToBoxAdapter(

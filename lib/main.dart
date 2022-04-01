@@ -1,6 +1,7 @@
 import 'package:catcher/catcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:habithouse_io/repository/drift/database.dart';
 import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:habithouse_io/service/service.dart';
@@ -70,21 +71,21 @@ void main() {
         debug: Config.isDebug,
       );
 
-      final isar = await IsarStorage.initialize();
+      final appDb = AppDb();
       final scheduler = ReminderScheduler();
       scheduler.initialize();
       final localNotifications = LocalNotificationsService(scheduler);
       await localNotifications.initialize();
-      final prefs = IsarSharedPrefs(isar);
+      // final prefs = IsarSharedPrefs(isar);
 
-      prefs.onFirstLaunch(() {
-        // TODO: write template habits here
-      });
+      // prefs.onFirstLaunch(() {
+      //   // TODO: write template habits here
+      // });
 
       runApp(ProviderScope(
         overrides: [
-          sharedPrefsProvider.overrideWithValue(prefs),
-          storageProvider.overrideWithValue(IsarStorage(isar)),
+          // sharedPrefsProvider.overrideWithValue(prefs),
+          storageProvider.overrideWithValue(appDb),
           localNotificationsProvider.overrideWithValue(localNotifications),
         ],
         observers: [HabithouseProviderObserver()],

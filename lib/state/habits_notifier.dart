@@ -11,14 +11,18 @@ import 'package:time/src/extensions.dart';
 // history browsing - filter additionally by habit entries
 
 class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
-  HabitsNotifier(this.storage, this.viewDate)
-      : super(BuiltList(storage.fetchHabitsAfterDate(viewDate)));
+  HabitsNotifier(this.storage, this.viewDate) : super(BuiltList([])) {
+    storage
+        .fetchHabitsForDate(viewDate)
+        .then((value) => state = BuiltList(value));
+  }
 
-  void putHabit(Habit habit) async {
+  Future<int> putHabit(Habit habit) async {
     final stateMap = Map.fromIterables(state.map((h) => h.id), state);
     final newHabit = await storage.putHabit(habit);
     stateMap[newHabit.id] = newHabit;
     state = BuiltList(stateMap.values);
+    return newHabit.id;
   }
 
   final DateTime viewDate;

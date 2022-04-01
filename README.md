@@ -13,6 +13,5 @@
 
 ### Testing
 ```
-sh tool/setup_tests.sh
 flutter test
 ```

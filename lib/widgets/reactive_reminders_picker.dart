@@ -53,29 +53,37 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
             if (formArray.controls.isNotEmpty) const Divider(),
             ...ListTile.divideTiles(
               context: context,
-              tiles: formArray.controls.map(
-                (control) => Dismissible(
-                  onDismissed: (_) => formArray.remove(control),
-                  background: Container(
-                    color: context.theme.colorScheme.error,
-                  ),
-                  key: ValueKey(control.value!.hashCode),
-                  child: ReactiveTimePicker(
-                    builder: (context, picker, child) => ListTile(
-                      onTap: picker.showPicker,
-                      title: Text(picker.value!.format(context)),
-                      trailing: const Icon(Icons.chevron_right),
+              tiles: formArray.controls
+                  .asMap()
+                  .map(
+                    (index, control) => MapEntry(
+                      index,
+                      Dismissible(
+                        onDismissed: (_) => formArray.removeAt(index),
+                        background: Container(
+                          color: context.theme.colorScheme.error,
+                        ),
+                        key: ValueKey(hashValues(control.value!, index + 1)),
+                        child: ReactiveTimePicker(
+                          builder: (context, picker, child) => ListTile(
+                            onTap: picker.showPicker,
+                            title: Text(picker.value!.format(context)),
+                            trailing: const Icon(Icons.chevron_right),
+                          ),
+                          formControl: control as FormControl<TimeOfDay>,
+                        ),
+                      ),
                     ),
-                    formControl: control as FormControl<TimeOfDay>,
-                  ),
-                ),
-              ),
+                  )
+                  .values,
             ).toList(),
             const Divider(),
             TextButton(
               style: ButtonStyle(
-                  minimumSize:
-                      MaterialStateProperty.all(Size(double.infinity, 50))),
+                minimumSize: MaterialStateProperty.all(
+                  const Size(double.infinity, 50),
+                ),
+              ),
               onPressed: () => onAddReminderPressed(formArray),
               child: Text('Add reminder'.toUpperCase()),
             ),
@@ -92,7 +100,7 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
 
   void onAddReminderPressed(FormArray<TimeOfDay> formArray) async {
     final formControl = FormControl<TimeOfDay>(
-      value: const TimeOfDay(hour: 9, minute: 0),
+      value: TimeOfDay.now(),
     );
 
     formArray.add(formControl);
@@ -106,7 +114,7 @@ class _ReactiveRemindersPickerState extends State<ReactiveRemindersPicker> {
     if (result != null) {
       formControl.updateValue(result);
     } else {
-      formArray.remove(formControl);
+      formArray.removeAt(formArray.controls.length - 1);
     }
   }
 }

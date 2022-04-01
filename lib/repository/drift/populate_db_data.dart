@@ -21,8 +21,8 @@ List<Habit> generateHabits(DateTime now) => [
       ),
       Habit(
         name: 'now; never',
-        createdAt: now - 1.days,
-        startDate: now,
+        createdAt: now - 2.days,
+        startDate: now - 1.days,
         emojiIcon: '🔥',
         backgroundColor: Colors.yellow.value,
       ),

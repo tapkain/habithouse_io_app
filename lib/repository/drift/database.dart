@@ -74,9 +74,10 @@ class AppDb extends _$AppDb implements IStorage {
               value == null ? null : m.HabitEntry.fromJson(value.toJson()));
 
   @override
-  Future<m.HabitEntry> putEntry(m.HabitEntry entry) {
-    // TODO: implement putEntry
-    throw UnimplementedError();
+  Future<m.HabitEntry> putEntry(m.HabitEntry entry) async {
+    final id =
+        await into(habitEntryTable).insertOnConflictUpdate(entry.toCompanion());
+    return entry.copyWith(id: id);
   }
 
   @override
@@ -95,18 +96,64 @@ class AppDb extends _$AppDb implements IStorage {
   Future<List<m.Habit>> fetchHabitsForDate(
     DateTime date, [
     int? parentHabitId,
+  ]) =>
+      _habitsForDateQuery(date, parentHabitId).get().then(
+          (value) => value.map((e) => m.Habit.fromJson(e.toJson())).toList());
+
+  SimpleSelectStatement<$HabitTableTable, HabitTableData> _habitsForDateQuery(
+    DateTime date, [
+    int? parentHabitId,
   ]) {
     var query = select(habitTable)
-      ..where((tbl) => tbl.startDate.isSmallerOrEqualValue(date))
-      ..where((tbl) => tbl.endDate.isBiggerOrEqualValue(date));
+      ..where((tbl) => tbl.startDate.julianday
+          .roundToInt()
+          .isSmallerOrEqual(date.julianday.roundToInt()))
+      ..where((tbl) => tbl.endDate.isNull().caseMatch<bool>(
+            when: {const Constant(true): const Constant(true)},
+            orElse: tbl.endDate.julianday
+                .roundToInt()
+                .isBiggerOrEqual(date.julianday.roundToInt()),
+          ));
 
     if (parentHabitId == null) {
       query = query..where((tbl) => tbl.parentId.isNull());
     } else {
       query = query..where((tbl) => tbl.parentId.equals(parentHabitId));
     }
+    return query;
+  }
 
-    return query.get().then(
-        (value) => value.map((e) => m.Habit.fromJson(e.toJson())).toList());
+  @override
+  Stream<List<m.Habit>> watchHabitsForDate(
+    DateTime date, [
+    int? parentHabitId,
+  ]) =>
+      _habitsForDateQuery(date, parentHabitId).watch().map(
+          (value) => value.map((e) => m.Habit.fromJson(e.toJson())).toList());
+}
+
+extension DateTimeExpressionsX on Expression<DateTime?> {
+  Expression<double?> get julianday {
+    return FunctionCallExpression(
+      'julianday',
+      [
+        this,
+        const Constant<String>('unixepoch'),
+        const Constant<String>('localtime'),
+      ],
+    );
+  }
+}
+
+extension DateTimeJulianday on DateTime {
+  Expression<double?> get julianday {
+    return FunctionCallExpression(
+      'julianday',
+      [
+        Constant(millisecondsSinceEpoch ~/ 1000),
+        const Constant<String>('unixepoch'),
+        const Constant<String>('localtime'),
+      ],
+    );
   }
 }

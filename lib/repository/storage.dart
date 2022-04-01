@@ -13,6 +13,8 @@ abstract class IStorage {
     DateTime date,
     int habitId,
   );
+
+  Stream<List<Habit>> watchHabitsForDate(DateTime date, [int? parentHabitId]);
 }
 
 final storageProvider = Provider<IStorage>((_) => throw UnimplementedError());

@@ -5,9 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 abstract class IStorage {
   Future<Habit?> fetchHabitById(int id);
   Future<Habit> putHabit(Habit h);
-  Future<void> deleteHabit(int habitId);
+  Future<bool> deleteHabit(int habitId);
   Future<List<Habit>> fetchHabitsForDate(DateTime date, [int? parentHabitId]);
-  Future<void> deleteEntry(int entryId);
+  Future<bool> deleteEntry(int entryId);
   Future<HabitEntry> putEntry(HabitEntry entry);
   Future<HabitEntry?> fetchEntryForDate(
     DateTime date,

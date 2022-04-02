@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:dartx/dartx.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:habithouse_io/config.dart';
 import 'package:habithouse_io/repository/drift/habit_entry_table.dart';
 import 'package:habithouse_io/repository/drift/habit_table.dart';
 import 'package:habithouse_io/repository/drift/populate_db_data.dart';
+import 'package:habithouse_io/repository/drift/shared_prefs_table.dart';
 import 'package:habithouse_io/repository/storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
@@ -18,22 +18,29 @@ part 'database.g.dart';
 @DriftDatabase(tables: [
   HabitEntryTable,
   HabitTable,
+  SharedPrefsTable,
 ])
 class AppDb extends _$AppDb implements IStorage {
-  AppDb()
-      : super(
-          Config.transientDb
-              ? NativeDatabase.memory(logStatements: true)
-              : _openConnection(),
+  AppDb({
+    required bool transientDb,
+    required this.populateDb,
+    required bool logStatements,
+  }) : super(
+          transientDb
+              ? NativeDatabase.memory(logStatements: logStatements)
+              : _openConnection(logStatements),
         );
+
+  final bool populateDb;
 
   @override
   int get schemaVersion => 1;
 
-  static LazyDatabase _openConnection() => LazyDatabase(() async {
+  static LazyDatabase _openConnection(bool logStatements) =>
+      LazyDatabase(() async {
         final dbFolder = await getApplicationDocumentsDirectory();
         final file = File(p.join(dbFolder.path, 'db.sqlite'));
-        return NativeDatabase(file);
+        return NativeDatabase(file, logStatements: logStatements);
       });
 
   @override
@@ -44,7 +51,7 @@ class AppDb extends _$AppDb implements IStorage {
         onCreate: (Migrator m) async {
           await m.createAll();
 
-          if (Config.populateDb) {
+          if (populateDb) {
             final habitList = generateHabits(DateTime.now().date);
             await transaction(() => Future.wait(
                   habitList.map(
@@ -57,12 +64,16 @@ class AppDb extends _$AppDb implements IStorage {
       );
 
   @override
-  Future<void> deleteEntry(int entryId) =>
-      (delete(habitEntryTable)..where((tbl) => tbl.id.equals(entryId))).go();
+  Future<bool> deleteEntry(int entryId) =>
+      (delete(habitEntryTable)..where((tbl) => tbl.id.equals(entryId)))
+          .go()
+          .then((value) => value == 1);
 
   @override
-  Future<void> deleteHabit(int habitId) =>
-      (delete(habitTable)..where((tbl) => tbl.id.equals(habitId))).go();
+  Future<bool> deleteHabit(int habitId) =>
+      (delete(habitTable)..where((tbl) => tbl.id.equals(habitId)))
+          .go()
+          .then((value) => value == 1);
 
   @override
   Future<m.HabitEntry?> fetchEntryForDate(DateTime date, int habitId) =>

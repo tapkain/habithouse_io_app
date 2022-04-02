@@ -1,4 +1,5 @@
 import 'package:catcher/catcher.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:habithouse_io/repository/drift/database.dart';
@@ -71,20 +72,24 @@ void main() {
         debug: Config.isDebug,
       );
 
-      final appDb = AppDb();
+      final appDb = AppDb(
+        populateDb: Config.populateDb,
+        transientDb: Config.transientDb,
+        logStatements: kDebugMode,
+      );
       final scheduler = ReminderScheduler();
       scheduler.initialize();
       final localNotifications = LocalNotificationsService(scheduler);
       await localNotifications.initialize();
-      // final prefs = IsarSharedPrefs(isar);
+      final prefs = DriftSharedPrefs(appDb);
 
-      // prefs.onFirstLaunch(() {
-      //   // TODO: write template habits here
-      // });
+      prefs.onFirstLaunch(() {
+        // TODO: write template habits here
+      });
 
       runApp(ProviderScope(
         overrides: [
-          // sharedPrefsProvider.overrideWithValue(prefs),
+          sharedPrefsProvider.overrideWithValue(prefs),
           storageProvider.overrideWithValue(appDb),
           localNotificationsProvider.overrideWithValue(localNotifications),
         ],

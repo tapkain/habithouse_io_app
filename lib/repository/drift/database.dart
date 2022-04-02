@@ -11,6 +11,7 @@ import 'package:habithouse_io/repository/storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:habithouse_io/models/models.dart' as m;
+import 'list_converter.dart';
 
 part 'database.g.dart';
 
@@ -113,7 +114,8 @@ class AppDb extends _$AppDb implements IStorage {
             orElse: tbl.endDate.julianday
                 .roundToInt()
                 .isBiggerOrEqual(date.julianday.roundToInt()),
-          ));
+          ))
+      ..where((tbl) => tbl.repeatDays.contains(date.weekday.toString()));
 
     if (parentHabitId == null) {
       query = query..where((tbl) => tbl.parentId.isNull());

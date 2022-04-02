@@ -18,6 +18,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
   final String? description;
   final String? emojiIcon;
   final int? backgroundColor;
+  final List<int> repeatDays;
   HabitTableData(
       {required this.id,
       this.parentId,
@@ -28,7 +29,8 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       this.durationSeconds,
       this.description,
       this.emojiIcon,
-      this.backgroundColor});
+      this.backgroundColor,
+      required this.repeatDays});
   factory HabitTableData.fromData(Map<String, dynamic> data, {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     return HabitTableData(
@@ -52,6 +54,8 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}emoji_icon']),
       backgroundColor: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}background_color']),
+      repeatDays: $HabitTableTable.$converter0.mapToDart(const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}repeat_days']))!,
     );
   }
   @override
@@ -78,6 +82,10 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
     }
     if (!nullToAbsent || backgroundColor != null) {
       map['background_color'] = Variable<int?>(backgroundColor);
+    }
+    {
+      final converter = $HabitTableTable.$converter0;
+      map['repeat_days'] = Variable<String>(converter.mapToSql(repeatDays)!);
     }
     return map;
   }
@@ -106,6 +114,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       backgroundColor: backgroundColor == null && nullToAbsent
           ? const Value.absent()
           : Value(backgroundColor),
+      repeatDays: Value(repeatDays),
     );
   }
 
@@ -123,6 +132,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       description: serializer.fromJson<String?>(json['description']),
       emojiIcon: serializer.fromJson<String?>(json['emojiIcon']),
       backgroundColor: serializer.fromJson<int?>(json['backgroundColor']),
+      repeatDays: serializer.fromJson<List<int>>(json['repeatDays']),
     );
   }
   @override
@@ -139,6 +149,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       'description': serializer.toJson<String?>(description),
       'emojiIcon': serializer.toJson<String?>(emojiIcon),
       'backgroundColor': serializer.toJson<int?>(backgroundColor),
+      'repeatDays': serializer.toJson<List<int>>(repeatDays),
     };
   }
 
@@ -152,7 +163,8 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           int? durationSeconds,
           String? description,
           String? emojiIcon,
-          int? backgroundColor}) =>
+          int? backgroundColor,
+          List<int>? repeatDays}) =>
       HabitTableData(
         id: id ?? this.id,
         parentId: parentId ?? this.parentId,
@@ -164,6 +176,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
         description: description ?? this.description,
         emojiIcon: emojiIcon ?? this.emojiIcon,
         backgroundColor: backgroundColor ?? this.backgroundColor,
+        repeatDays: repeatDays ?? this.repeatDays,
       );
   @override
   String toString() {
@@ -177,14 +190,25 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           ..write('durationSeconds: $durationSeconds, ')
           ..write('description: $description, ')
           ..write('emojiIcon: $emojiIcon, ')
-          ..write('backgroundColor: $backgroundColor')
+          ..write('backgroundColor: $backgroundColor, ')
+          ..write('repeatDays: $repeatDays')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, parentId, name, createdAt, startDate,
-      endDate, durationSeconds, description, emojiIcon, backgroundColor);
+  int get hashCode => Object.hash(
+      id,
+      parentId,
+      name,
+      createdAt,
+      startDate,
+      endDate,
+      durationSeconds,
+      description,
+      emojiIcon,
+      backgroundColor,
+      repeatDays);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -198,7 +222,8 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           other.durationSeconds == this.durationSeconds &&
           other.description == this.description &&
           other.emojiIcon == this.emojiIcon &&
-          other.backgroundColor == this.backgroundColor);
+          other.backgroundColor == this.backgroundColor &&
+          other.repeatDays == this.repeatDays);
 }
 
 class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
@@ -212,6 +237,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
   final Value<String?> description;
   final Value<String?> emojiIcon;
   final Value<int?> backgroundColor;
+  final Value<List<int>> repeatDays;
   const HabitTableCompanion({
     this.id = const Value.absent(),
     this.parentId = const Value.absent(),
@@ -223,6 +249,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     this.description = const Value.absent(),
     this.emojiIcon = const Value.absent(),
     this.backgroundColor = const Value.absent(),
+    this.repeatDays = const Value.absent(),
   });
   HabitTableCompanion.insert({
     this.id = const Value.absent(),
@@ -235,9 +262,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     this.description = const Value.absent(),
     this.emojiIcon = const Value.absent(),
     this.backgroundColor = const Value.absent(),
+    required List<int> repeatDays,
   })  : name = Value(name),
         createdAt = Value(createdAt),
-        startDate = Value(startDate);
+        startDate = Value(startDate),
+        repeatDays = Value(repeatDays);
   static Insertable<HabitTableData> custom({
     Expression<int>? id,
     Expression<int?>? parentId,
@@ -249,6 +278,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     Expression<String?>? description,
     Expression<String?>? emojiIcon,
     Expression<int?>? backgroundColor,
+    Expression<List<int>>? repeatDays,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -261,6 +291,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       if (description != null) 'description': description,
       if (emojiIcon != null) 'emoji_icon': emojiIcon,
       if (backgroundColor != null) 'background_color': backgroundColor,
+      if (repeatDays != null) 'repeat_days': repeatDays,
     });
   }
 
@@ -274,7 +305,8 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       Value<int?>? durationSeconds,
       Value<String?>? description,
       Value<String?>? emojiIcon,
-      Value<int?>? backgroundColor}) {
+      Value<int?>? backgroundColor,
+      Value<List<int>>? repeatDays}) {
     return HabitTableCompanion(
       id: id ?? this.id,
       parentId: parentId ?? this.parentId,
@@ -286,6 +318,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       description: description ?? this.description,
       emojiIcon: emojiIcon ?? this.emojiIcon,
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      repeatDays: repeatDays ?? this.repeatDays,
     );
   }
 
@@ -322,6 +355,11 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     if (backgroundColor.present) {
       map['background_color'] = Variable<int?>(backgroundColor.value);
     }
+    if (repeatDays.present) {
+      final converter = $HabitTableTable.$converter0;
+      map['repeat_days'] =
+          Variable<String>(converter.mapToSql(repeatDays.value)!);
+    }
     return map;
   }
 
@@ -337,7 +375,8 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
           ..write('durationSeconds: $durationSeconds, ')
           ..write('description: $description, ')
           ..write('emojiIcon: $emojiIcon, ')
-          ..write('backgroundColor: $backgroundColor')
+          ..write('backgroundColor: $backgroundColor, ')
+          ..write('repeatDays: $repeatDays')
           ..write(')'))
         .toString();
   }
@@ -410,6 +449,12 @@ class $HabitTableTable extends HabitTable
   late final GeneratedColumn<int?> backgroundColor = GeneratedColumn<int?>(
       'background_color', aliasedName, true,
       type: const IntType(), requiredDuringInsert: false);
+  final VerificationMeta _repeatDaysMeta = const VerificationMeta('repeatDays');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<int>, String?> repeatDays =
+      GeneratedColumn<String?>('repeat_days', aliasedName, false,
+              type: const StringType(), requiredDuringInsert: true)
+          .withConverter<List<int>>($HabitTableTable.$converter0);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -421,7 +466,8 @@ class $HabitTableTable extends HabitTable
         durationSeconds,
         description,
         emojiIcon,
-        backgroundColor
+        backgroundColor,
+        repeatDays
       ];
   @override
   String get aliasedName => _alias ?? 'habit_table';
@@ -483,6 +529,7 @@ class $HabitTableTable extends HabitTable
           backgroundColor.isAcceptableOrUnknown(
               data['background_color']!, _backgroundColorMeta));
     }
+    context.handle(_repeatDaysMeta, const VerificationResult.success());
     return context;
   }
 
@@ -498,6 +545,9 @@ class $HabitTableTable extends HabitTable
   $HabitTableTable createAlias(String alias) {
     return $HabitTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<int>, String> $converter0 = ListConverter<int>(
+      fromJson: (j) => int.parse(j), toJson: (v) => v.toString());
 }
 
 class HabitEntryTableData extends DataClass

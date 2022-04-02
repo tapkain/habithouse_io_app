@@ -25,6 +25,10 @@ List<Habit> generateHabits(DateTime now) => [
         startDate: now - 1.days,
         emojiIcon: '🔥',
         backgroundColor: Colors.yellow.value,
+        repeatDays: [
+          DateTime.sunday,
+          DateTime.wednesday,
+        ],
       ),
       Habit(
         name: 'now - 5.days ; now + 5.days',

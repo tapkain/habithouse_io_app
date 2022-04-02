@@ -72,7 +72,8 @@ abstract class DateFormatUtils {
   }
 }
 
-const autoIncrementId = -800;
+// arbitrary negative number, used to make id in models non-nullable by setting this as default
+const autoIncrementId = -1;
 
 abstract class DateTimeUtils {
   static DateTime? fromJsonN(dynamic json) =>

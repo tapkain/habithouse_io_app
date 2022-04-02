@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:habithouse_io/models/habit.dart';
 import 'package:habithouse_io/models/models.dart' as m;
 import 'package:habithouse_io/repository/drift/database.dart';
+import 'package:habithouse_io/repository/drift/list_converter.dart';
 import 'package:habithouse_io/util.dart';
 
 class HabitTable extends Table {
@@ -19,6 +20,12 @@ class HabitTable extends Table {
       .nullable()();
   TextColumn get emojiIcon => text().nullable()();
   IntColumn get backgroundColor => integer().nullable()();
+  TextColumn get repeatDays => text().map(
+        ListConverter<int>(
+          fromJson: (j) => int.parse(j),
+          toJson: (v) => v.toString(),
+        ),
+      )();
 }
 
 extension HabitsCompanionX on m.Habit {
@@ -33,5 +40,6 @@ extension HabitsCompanionX on m.Habit {
         description: Value(description),
         emojiIcon: Value(emojiIcon),
         backgroundColor: Value(backgroundColor),
+        repeatDays: Value(repeatDays),
       );
 }

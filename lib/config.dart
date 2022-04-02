@@ -8,7 +8,6 @@ abstract class Config {
   static const String supabaseKey = String.fromEnvironment('SUPABASE_KEY');
   static const bool isDebug = kDebugMode;
   static const loggingLevel = Level.FINE;
-  static const localDbName = 'isar';
   static const transientDb = true;
   static const populateDb = true;
   static const sentryDsn = String.fromEnvironment('SENTRY_DSN');

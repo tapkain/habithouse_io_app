@@ -15,6 +15,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
   final DateTime startDate;
   final DateTime? endDate;
   final int? durationSeconds;
+  final int sortKey;
   final String? description;
   final String? emojiIcon;
   final int? backgroundColor;
@@ -27,6 +28,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       required this.startDate,
       this.endDate,
       this.durationSeconds,
+      required this.sortKey,
       this.description,
       this.emojiIcon,
       this.backgroundColor,
@@ -48,6 +50,8 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           .mapFromDatabaseResponse(data['${effectivePrefix}end_date']),
       durationSeconds: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}duration_seconds']),
+      sortKey: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}sort_key'])!,
       description: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}description']),
       emojiIcon: const StringType()
@@ -74,6 +78,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
     if (!nullToAbsent || durationSeconds != null) {
       map['duration_seconds'] = Variable<int?>(durationSeconds);
     }
+    map['sort_key'] = Variable<int>(sortKey);
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String?>(description);
     }
@@ -105,6 +110,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       durationSeconds: durationSeconds == null && nullToAbsent
           ? const Value.absent()
           : Value(durationSeconds),
+      sortKey: Value(sortKey),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
@@ -129,6 +135,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       startDate: serializer.fromJson<DateTime>(json['startDate']),
       endDate: serializer.fromJson<DateTime?>(json['endDate']),
       durationSeconds: serializer.fromJson<int?>(json['durationSeconds']),
+      sortKey: serializer.fromJson<int>(json['sortKey']),
       description: serializer.fromJson<String?>(json['description']),
       emojiIcon: serializer.fromJson<String?>(json['emojiIcon']),
       backgroundColor: serializer.fromJson<int?>(json['backgroundColor']),
@@ -146,6 +153,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       'startDate': serializer.toJson<DateTime>(startDate),
       'endDate': serializer.toJson<DateTime?>(endDate),
       'durationSeconds': serializer.toJson<int?>(durationSeconds),
+      'sortKey': serializer.toJson<int>(sortKey),
       'description': serializer.toJson<String?>(description),
       'emojiIcon': serializer.toJson<String?>(emojiIcon),
       'backgroundColor': serializer.toJson<int?>(backgroundColor),
@@ -161,6 +169,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           DateTime? startDate,
           DateTime? endDate,
           int? durationSeconds,
+          int? sortKey,
           String? description,
           String? emojiIcon,
           int? backgroundColor,
@@ -173,6 +182,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
         startDate: startDate ?? this.startDate,
         endDate: endDate ?? this.endDate,
         durationSeconds: durationSeconds ?? this.durationSeconds,
+        sortKey: sortKey ?? this.sortKey,
         description: description ?? this.description,
         emojiIcon: emojiIcon ?? this.emojiIcon,
         backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -188,6 +198,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('durationSeconds: $durationSeconds, ')
+          ..write('sortKey: $sortKey, ')
           ..write('description: $description, ')
           ..write('emojiIcon: $emojiIcon, ')
           ..write('backgroundColor: $backgroundColor, ')
@@ -205,6 +216,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
       startDate,
       endDate,
       durationSeconds,
+      sortKey,
       description,
       emojiIcon,
       backgroundColor,
@@ -220,6 +232,7 @@ class HabitTableData extends DataClass implements Insertable<HabitTableData> {
           other.startDate == this.startDate &&
           other.endDate == this.endDate &&
           other.durationSeconds == this.durationSeconds &&
+          other.sortKey == this.sortKey &&
           other.description == this.description &&
           other.emojiIcon == this.emojiIcon &&
           other.backgroundColor == this.backgroundColor &&
@@ -234,6 +247,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
   final Value<DateTime> startDate;
   final Value<DateTime?> endDate;
   final Value<int?> durationSeconds;
+  final Value<int> sortKey;
   final Value<String?> description;
   final Value<String?> emojiIcon;
   final Value<int?> backgroundColor;
@@ -246,6 +260,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     this.startDate = const Value.absent(),
     this.endDate = const Value.absent(),
     this.durationSeconds = const Value.absent(),
+    this.sortKey = const Value.absent(),
     this.description = const Value.absent(),
     this.emojiIcon = const Value.absent(),
     this.backgroundColor = const Value.absent(),
@@ -259,6 +274,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     required DateTime startDate,
     this.endDate = const Value.absent(),
     this.durationSeconds = const Value.absent(),
+    required int sortKey,
     this.description = const Value.absent(),
     this.emojiIcon = const Value.absent(),
     this.backgroundColor = const Value.absent(),
@@ -266,6 +282,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
   })  : name = Value(name),
         createdAt = Value(createdAt),
         startDate = Value(startDate),
+        sortKey = Value(sortKey),
         repeatDays = Value(repeatDays);
   static Insertable<HabitTableData> custom({
     Expression<int>? id,
@@ -275,6 +292,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     Expression<DateTime>? startDate,
     Expression<DateTime?>? endDate,
     Expression<int?>? durationSeconds,
+    Expression<int>? sortKey,
     Expression<String?>? description,
     Expression<String?>? emojiIcon,
     Expression<int?>? backgroundColor,
@@ -288,6 +306,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       if (startDate != null) 'start_date': startDate,
       if (endDate != null) 'end_date': endDate,
       if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (sortKey != null) 'sort_key': sortKey,
       if (description != null) 'description': description,
       if (emojiIcon != null) 'emoji_icon': emojiIcon,
       if (backgroundColor != null) 'background_color': backgroundColor,
@@ -303,6 +322,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       Value<DateTime>? startDate,
       Value<DateTime?>? endDate,
       Value<int?>? durationSeconds,
+      Value<int>? sortKey,
       Value<String?>? description,
       Value<String?>? emojiIcon,
       Value<int?>? backgroundColor,
@@ -315,6 +335,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
       durationSeconds: durationSeconds ?? this.durationSeconds,
+      sortKey: sortKey ?? this.sortKey,
       description: description ?? this.description,
       emojiIcon: emojiIcon ?? this.emojiIcon,
       backgroundColor: backgroundColor ?? this.backgroundColor,
@@ -346,6 +367,9 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
     if (durationSeconds.present) {
       map['duration_seconds'] = Variable<int?>(durationSeconds.value);
     }
+    if (sortKey.present) {
+      map['sort_key'] = Variable<int>(sortKey.value);
+    }
     if (description.present) {
       map['description'] = Variable<String?>(description.value);
     }
@@ -373,6 +397,7 @@ class HabitTableCompanion extends UpdateCompanion<HabitTableData> {
           ..write('startDate: $startDate, ')
           ..write('endDate: $endDate, ')
           ..write('durationSeconds: $durationSeconds, ')
+          ..write('sortKey: $sortKey, ')
           ..write('description: $description, ')
           ..write('emojiIcon: $emojiIcon, ')
           ..write('backgroundColor: $backgroundColor, ')
@@ -430,6 +455,11 @@ class $HabitTableTable extends HabitTable
   late final GeneratedColumn<int?> durationSeconds = GeneratedColumn<int?>(
       'duration_seconds', aliasedName, true,
       type: const IntType(), requiredDuringInsert: false);
+  final VerificationMeta _sortKeyMeta = const VerificationMeta('sortKey');
+  @override
+  late final GeneratedColumn<int?> sortKey = GeneratedColumn<int?>(
+      'sort_key', aliasedName, false,
+      type: const IntType(), requiredDuringInsert: true);
   final VerificationMeta _descriptionMeta =
       const VerificationMeta('description');
   @override
@@ -464,6 +494,7 @@ class $HabitTableTable extends HabitTable
         startDate,
         endDate,
         durationSeconds,
+        sortKey,
         description,
         emojiIcon,
         backgroundColor,
@@ -512,6 +543,12 @@ class $HabitTableTable extends HabitTable
           _durationSecondsMeta,
           durationSeconds.isAcceptableOrUnknown(
               data['duration_seconds']!, _durationSecondsMeta));
+    }
+    if (data.containsKey('sort_key')) {
+      context.handle(_sortKeyMeta,
+          sortKey.isAcceptableOrUnknown(data['sort_key']!, _sortKeyMeta));
+    } else if (isInserting) {
+      context.missing(_sortKeyMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -767,7 +804,9 @@ class SharedPrefsTableData extends DataClass
     implements Insertable<SharedPrefsTableData> {
   final int id;
   final bool isFirstLaunch;
-  SharedPrefsTableData({required this.id, required this.isFirstLaunch});
+  final ThemeMode themeMode;
+  SharedPrefsTableData(
+      {required this.id, required this.isFirstLaunch, required this.themeMode});
   factory SharedPrefsTableData.fromData(Map<String, dynamic> data,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -776,6 +815,8 @@ class SharedPrefsTableData extends DataClass
           .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       isFirstLaunch: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}is_first_launch'])!,
+      themeMode: $SharedPrefsTableTable.$converter0.mapToDart(const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}theme_mode']))!,
     );
   }
   @override
@@ -783,6 +824,10 @@ class SharedPrefsTableData extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['is_first_launch'] = Variable<bool>(isFirstLaunch);
+    {
+      final converter = $SharedPrefsTableTable.$converter0;
+      map['theme_mode'] = Variable<int>(converter.mapToSql(themeMode)!);
+    }
     return map;
   }
 
@@ -790,6 +835,7 @@ class SharedPrefsTableData extends DataClass
     return SharedPrefsTableCompanion(
       id: Value(id),
       isFirstLaunch: Value(isFirstLaunch),
+      themeMode: Value(themeMode),
     );
   }
 
@@ -799,6 +845,7 @@ class SharedPrefsTableData extends DataClass
     return SharedPrefsTableData(
       id: serializer.fromJson<int>(json['id']),
       isFirstLaunch: serializer.fromJson<bool>(json['isFirstLaunch']),
+      themeMode: serializer.fromJson<ThemeMode>(json['themeMode']),
     );
   }
   @override
@@ -807,59 +854,72 @@ class SharedPrefsTableData extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'isFirstLaunch': serializer.toJson<bool>(isFirstLaunch),
+      'themeMode': serializer.toJson<ThemeMode>(themeMode),
     };
   }
 
-  SharedPrefsTableData copyWith({int? id, bool? isFirstLaunch}) =>
+  SharedPrefsTableData copyWith(
+          {int? id, bool? isFirstLaunch, ThemeMode? themeMode}) =>
       SharedPrefsTableData(
         id: id ?? this.id,
         isFirstLaunch: isFirstLaunch ?? this.isFirstLaunch,
+        themeMode: themeMode ?? this.themeMode,
       );
   @override
   String toString() {
     return (StringBuffer('SharedPrefsTableData(')
           ..write('id: $id, ')
-          ..write('isFirstLaunch: $isFirstLaunch')
+          ..write('isFirstLaunch: $isFirstLaunch, ')
+          ..write('themeMode: $themeMode')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, isFirstLaunch);
+  int get hashCode => Object.hash(id, isFirstLaunch, themeMode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SharedPrefsTableData &&
           other.id == this.id &&
-          other.isFirstLaunch == this.isFirstLaunch);
+          other.isFirstLaunch == this.isFirstLaunch &&
+          other.themeMode == this.themeMode);
 }
 
 class SharedPrefsTableCompanion extends UpdateCompanion<SharedPrefsTableData> {
   final Value<int> id;
   final Value<bool> isFirstLaunch;
+  final Value<ThemeMode> themeMode;
   const SharedPrefsTableCompanion({
     this.id = const Value.absent(),
     this.isFirstLaunch = const Value.absent(),
+    this.themeMode = const Value.absent(),
   });
   SharedPrefsTableCompanion.insert({
     this.id = const Value.absent(),
     this.isFirstLaunch = const Value.absent(),
-  });
+    required ThemeMode themeMode,
+  }) : themeMode = Value(themeMode);
   static Insertable<SharedPrefsTableData> custom({
     Expression<int>? id,
     Expression<bool>? isFirstLaunch,
+    Expression<ThemeMode>? themeMode,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (isFirstLaunch != null) 'is_first_launch': isFirstLaunch,
+      if (themeMode != null) 'theme_mode': themeMode,
     });
   }
 
   SharedPrefsTableCompanion copyWith(
-      {Value<int>? id, Value<bool>? isFirstLaunch}) {
+      {Value<int>? id,
+      Value<bool>? isFirstLaunch,
+      Value<ThemeMode>? themeMode}) {
     return SharedPrefsTableCompanion(
       id: id ?? this.id,
       isFirstLaunch: isFirstLaunch ?? this.isFirstLaunch,
+      themeMode: themeMode ?? this.themeMode,
     );
   }
 
@@ -872,6 +932,10 @@ class SharedPrefsTableCompanion extends UpdateCompanion<SharedPrefsTableData> {
     if (isFirstLaunch.present) {
       map['is_first_launch'] = Variable<bool>(isFirstLaunch.value);
     }
+    if (themeMode.present) {
+      final converter = $SharedPrefsTableTable.$converter0;
+      map['theme_mode'] = Variable<int>(converter.mapToSql(themeMode.value)!);
+    }
     return map;
   }
 
@@ -879,7 +943,8 @@ class SharedPrefsTableCompanion extends UpdateCompanion<SharedPrefsTableData> {
   String toString() {
     return (StringBuffer('SharedPrefsTableCompanion(')
           ..write('id: $id, ')
-          ..write('isFirstLaunch: $isFirstLaunch')
+          ..write('isFirstLaunch: $isFirstLaunch, ')
+          ..write('themeMode: $themeMode')
           ..write(')'))
         .toString();
   }
@@ -907,8 +972,14 @@ class $SharedPrefsTableTable extends SharedPrefsTable
       requiredDuringInsert: false,
       defaultConstraints: 'CHECK (is_first_launch IN (0, 1))',
       defaultValue: const Constant(false));
+  final VerificationMeta _themeModeMeta = const VerificationMeta('themeMode');
   @override
-  List<GeneratedColumn> get $columns => [id, isFirstLaunch];
+  late final GeneratedColumnWithTypeConverter<ThemeMode, int?> themeMode =
+      GeneratedColumn<int?>('theme_mode', aliasedName, false,
+              type: const IntType(), requiredDuringInsert: true)
+          .withConverter<ThemeMode>($SharedPrefsTableTable.$converter0);
+  @override
+  List<GeneratedColumn> get $columns => [id, isFirstLaunch, themeMode];
   @override
   String get aliasedName => _alias ?? 'shared_prefs_table';
   @override
@@ -928,6 +999,7 @@ class $SharedPrefsTableTable extends SharedPrefsTable
           isFirstLaunch.isAcceptableOrUnknown(
               data['is_first_launch']!, _isFirstLaunchMeta));
     }
+    context.handle(_themeModeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -943,6 +1015,9 @@ class $SharedPrefsTableTable extends SharedPrefsTable
   $SharedPrefsTableTable createAlias(String alias) {
     return $SharedPrefsTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<ThemeMode, int> $converter0 =
+      const EnumIndexConverter<ThemeMode>(ThemeMode.values);
 }
 
 abstract class _$AppDb extends GeneratedDatabase {

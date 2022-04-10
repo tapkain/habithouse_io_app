@@ -5,7 +5,7 @@ import 'package:habithouse_io/views/create_child_habit_view.dart';
 import 'package:habithouse_io/views/create_habit_view.dart';
 import 'package:habithouse_io/views/home_view.dart';
 import 'package:habithouse_io/views/preview_habit_view.dart';
-import 'package:habithouse_io/views/child_habit_templates_view.dart';
+import 'package:habithouse_io/views/child_habits_template_view.dart';
 import 'package:habithouse_io/widgets/modal_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -64,7 +64,7 @@ final routerProvider = Provider((ref) {
                 path: 'templates',
                 pageBuilder: (context, state) => ModalPage(
                   key: state.pageKey,
-                  child: SelectChildHabitsView(
+                  child: ChildHabitsTemplateView(
                     habitId: int.parse(state.params['habitid']!),
                   ),
                 ),

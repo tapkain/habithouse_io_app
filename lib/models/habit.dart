@@ -77,9 +77,12 @@ class Habit with _$Habit {
     @Default([]) List<String> localFileAttachmentUris,
 
     // days on which this habit will be repeated (DateTime.monday etc)
-    @Default(everyDay) List<int> repeatDays,
+    @Default(DateFormatUtils.everyDay) List<int> repeatDays,
     String? targetGoal,
     @Default(1) int backgroundColor,
+
+    // key to sort in queries and to display in UI
+    @Default(0) int sortKey,
   }) = _Habit;
 
   factory Habit.initial() => Habit(

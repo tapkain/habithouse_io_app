@@ -52,7 +52,7 @@ class ReactiveDateRangePicker
               final dateRange = await showDateRangePicker(
                 context: field.context,
                 currentDate: field.value!.start,
-                firstDate: DateTime.now().date,
+                firstDate: field.value!.start - 1.minutes,
                 lastDate: _lastDate(),
                 initialDateRange: endDate != null ? field.value : null,
               );
@@ -74,9 +74,9 @@ class ReactiveDateRangePicker
                 ),
                 subtitle: Row(
                   children: [
-                    Text(DateFormatUtils.formatStartDate(field.value!.start)),
+                    Text(field.value!.start.formatStartDate),
                     const Spacer(),
-                    Text(DateFormatUtils.formatStartDate(field.value!.end)),
+                    Text(field.value!.end.formatStartDate),
                   ],
                 ),
               );
@@ -99,8 +99,7 @@ class ReactiveDateRangePicker
                     }
                   },
                   title: Text('Start date'),
-                  trailing:
-                      Text(DateFormatUtils.formatStartDate(field.value!.start)),
+                  trailing: Text(field.value!.start.formatStartDate),
                 ),
                 const Divider(),
                 ListTile(

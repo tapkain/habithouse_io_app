@@ -16,14 +16,13 @@ void main() {
     });
 
     test('isFirstLaunch should be true on first fetch', () async {
-      expect(await prefs.isFirstLaunch(), equals(true));
+      expect(prefs.isFirstLaunch, equals(true));
     });
 
     test('isFirstLaunch should be modifiable', () async {
-      final isFirstLaunch = await prefs.isFirstLaunch();
-      expect(isFirstLaunch, equals(true));
-      await prefs.setFirstLaunch(!isFirstLaunch);
-      expect(await prefs.isFirstLaunch(), equals(!isFirstLaunch));
+      expect(prefs.isFirstLaunch, equals(true));
+      await prefs.setFirstLaunch(!prefs.isFirstLaunch);
+      expect(prefs.isFirstLaunch, equals(!prefs.isFirstLaunch));
     });
   });
 }

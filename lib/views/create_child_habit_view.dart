@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
 import 'package:habithouse_io/models/models.dart';
-import 'package:habithouse_io/state/child_habits_notifier.dart';
-import 'package:habithouse_io/state/select_child_habits_notifier.dart';
+import 'package:habithouse_io/state/habits_notifier.dart';
+import 'package:habithouse_io/theme.dart';
 import 'package:habithouse_io/util.dart';
-import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:reactive_forms/reactive_forms.dart';
+
+import '../widgets/widgets.dart';
 
 class CreateChildHabitView extends HookConsumerWidget {
   const CreateChildHabitView({
@@ -18,105 +19,141 @@ class CreateChildHabitView extends HookConsumerWidget {
   }) : super(key: key);
 
   final int? editHabitId;
-  final Habit? editHabitExtra;
   final int parentHabitId;
-
-  Habit? editHabit(WidgetRef ref) {
-    if (editHabitExtra != null) {
-      return editHabitExtra;
-    }
-
-    if (editHabitId != null) {
-      return ref.watch(childHabitByIdProvider(editHabitId!));
-    }
-
-    return null;
-  }
+  final Habit? editHabitExtra;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final habit = editHabit(ref);
-    return buildView(habit, ref);
-  }
+    if (editHabitExtra != null) {
+      return CreateChildHabitFormView(
+        model: editHabitExtra!.toCreateChildHabitForm(),
+        editHabitId: editHabitExtra!.id,
+        parentHabitId: parentHabitId,
+      );
+    }
 
-  Widget buildView(Habit? editHabit, WidgetRef ref) =>
-      CreateChildHabitFormBuilder(
-        model: editHabit?.toCreateChildHabitForm() ?? CreateChildHabit(),
-        builder: (context, formModel, child) =>
-            ReactiveCreateChildHabitFormConsumer(
-          builder: (context, formModel, child) => Scaffold(
+    if (editHabitId != null) {
+      final editHabit = ref.watch(habitByIdProvider(editHabitId!));
+      if (editHabit != null) {
+        return CreateChildHabitFormView(
+            model: editHabit.toCreateChildHabitForm(),
+            editHabitId: editHabitId,
+            parentHabitId: parentHabitId);
+      }
+    }
+
+    return CreateChildHabitFormView(
+      model: CreateChildHabit.initial(),
+      parentHabitId: parentHabitId,
+    );
+  }
+}
+
+class CreateChildHabitFormView extends HookConsumerWidget {
+  const CreateChildHabitFormView({
+    required this.model,
+    this.editHabitId,
+    required this.parentHabitId,
+    Key? key,
+  }) : super(key: key);
+
+  final CreateChildHabit model;
+  final int? editHabitId;
+  final int parentHabitId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final parentHabit = ref.watch(habitByIdProvider(parentHabitId))!;
+    return CreateChildHabitFormBuilder(
+      model: model,
+      builder: (context, formModel, child) =>
+          ReactiveCreateChildHabitFormConsumer(
+        builder: (context, formModel, child) => FancyThemeProvider(
+          applyFormTheming: true,
+          primary: Color(parentHabit.backgroundColor),
+          child: Scaffold(
             appBar: AppBar(
-              title: Text(editHabit == null ? 'New Habit' : 'Edit Habit'),
-              leading: TextButton(
+              title: Text(editHabitId == null ? 'New Habit' : 'Edit Habit'),
+              leading: IconButton(
                 onPressed: () => context.pop(),
-                child: const Text('Cancel'),
+                icon: const Icon(Icons.close),
               ),
+              centerTitle: false,
               actions: [
                 TextButton(
                   onPressed: formModel.form.valid
-                      ? () => submitForm(context, ref, formModel)
+                      ? () => submit(context, ref, formModel)
                       : null,
-                  child: Text(
-                    'Save',
-                    style: context.textTheme.button!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: formModel.form.valid
-                          ? context.theme.colorScheme.primary.textColor
-                          : context.theme.disabledColor,
-                    ),
-                  ),
+                  child: Text('Save'.toUpperCase()),
                 ),
               ],
             ),
             body: ListView(
-              padding: const EdgeInsets.all(padding * 2),
+              padding: const EdgeInsets.all(padding),
               children: [
-                ReactiveTextField<String>(
-                  autofocus: true,
-                  formControl: formModel.nameControl,
-                  decoration: const InputDecoration(labelText: 'Habit name'),
+                Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ReactiveTextField<String>(
+                        autofocus: true,
+                        keyboardAppearance: context.theme.brightness,
+                        formControl: formModel.nameControl,
+                        decoration:
+                            const InputDecoration(hintText: 'Habit name'),
+                      ),
+                      const Divider(),
+                      ReactiveEmojiPicker(formControl: formModel.emojiControl),
+                    ],
+                  ),
                 ),
-                const Divider(),
-                ReactiveEmojiPicker(
-                  formControl: formModel.emojiControl,
-                ),
-                const Divider(),
-                ReactiveTextField<int>(
-                  keyboardType: TextInputType.number,
-                  formControl: formModel.durationSecondsControl,
-                  decoration: InputDecoration(
-                    labelText: 'Duration',
-                    labelStyle: context.textTheme.button,
+                Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // ReactiveDateRangePicker(
+                      //   formControl: formModel.dateTimeRangeControl,
+                      // ),
+                      // const Divider(),
+                      // ReactiveFrequencyPicker(
+                      //   formControl: formModel.repeatDaysControl,
+                      // ),
+                    ],
                   ),
                 ),
                 ElevatedButton(
-                  child: Text('Submit'),
                   onPressed: formModel.form.valid
-                      ? () => submitForm(context, ref, formModel)
+                      ? () => submit(context, ref, formModel)
                       : null,
+                  child: Text('Next'),
                 ),
               ],
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
-  void submitForm(
+  void submit(
     BuildContext context,
     WidgetRef ref,
     CreateChildHabitForm form,
   ) async {
-    final childHabitsNotifier = ref.read(
-      selectChildHabitsProvider(parentHabitId).notifier,
-    );
+    final habitsNotifier = ref.read(habitsProvider.notifier);
     var habit = form.toHabit(parentHabitId);
 
     if (editHabitId != null) {
-      final editHabit = ref.read(childHabitByIdProvider(editHabitId!))!;
+      final editHabit = ref.read(habitByIdProvider(editHabitId!))!;
       habit = form.applyTo(editHabit, parentHabitId);
     }
 
-    childHabitsNotifier.putHabit(habit);
-    context.pop();
+    final habitId = await habitsNotifier.putHabit(habit);
+
+    if (editHabitId == null) {
+      context.go('/habits/view/$habitId/templates');
+    } else {
+      context.pop();
+    }
   }
 }

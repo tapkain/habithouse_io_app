@@ -198,7 +198,7 @@ class _DateListItem extends HookConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              DateFormat('EEE').format(date),
+              date.formatDay,
               style: context.textTheme.subtitle2!.copyWith(
                 color: isToday ? context.theme.colorScheme.onSecondary : null,
               ),

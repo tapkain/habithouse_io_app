@@ -4,36 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:habithouse_io/util.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-const everyDay = [
-  DateTime.monday,
-  DateTime.tuesday,
-  DateTime.wednesday,
-  DateTime.thursday,
-  DateTime.friday,
-  DateTime.saturday,
-  DateTime.sunday,
-];
-
-String parseWeekdays(
-  Iterable<int> days, {
-  String everyDayLabel = 'Every Day',
-  String anyDayLabel = 'Any Day',
-  String customDayLabel = 'Custom',
-}) {
-  if (days.isEmpty) {
-    return anyDayLabel;
-  }
-
-  if (days.reduce((v, e) => v + e) == everyDay.reduce((v, e) => v + e)) {
-    return everyDayLabel;
-  }
-
-  return days
-      .sorted()
-      .map((e) => DateFormatUtils.formatDay(e, 'EEE'))
-      .join(',');
-}
-
 class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
   ReactiveFrequencyPicker({
     String? formControlName,
@@ -44,7 +14,8 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
           formControlName: formControlName,
           formControl: formControl,
           builder: (field) {
-            final value = field.value == null ? everyDay : field.value!;
+            final value =
+                field.value == null ? DateFormatUtils.everyDay : field.value!;
 
             // ignore: prefer_function_declarations_over_variables
             final onTap = () async {
@@ -63,7 +34,7 @@ class ReactiveFrequencyPicker<T> extends ReactiveFormField<T, List<int>> {
               child: ListTile(
                 onTap: field.control.enabled ? onTap : null,
                 title: Text(inputDecoration?.labelText ?? 'How often?'),
-                trailing: Text(parseWeekdays(value)),
+                trailing: Text(DateFormatUtils.formatWeekday(value)),
               ),
             );
           },
@@ -85,12 +56,18 @@ class _DayCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      controlAffinity: ListTileControlAffinity.leading,
-      dense: true,
-      value: value,
-      onChanged: onChanged,
-      title: Text(DateFormatUtils.formatDay(day)),
+    return Theme(
+      data: context.theme.copyWith(
+          listTileTheme: context.theme.listTileTheme.copyWith(
+        tileColor: Colors.transparent,
+      )),
+      child: CheckboxListTile(
+        controlAffinity: ListTileControlAffinity.leading,
+        dense: true,
+        value: value,
+        onChanged: onChanged,
+        title: Text(DateFormatUtils.formatDay(day)),
+      ),
     );
   }
 }
@@ -121,14 +98,6 @@ class __FrequencyPickerDialogState extends State<_FrequencyPickerDialog> {
     });
   }
 
-  String formatDay(int day) {
-    var date = DateTime(2020, 1, 1);
-    while (date.weekday != day) {
-      date = date.add(1.days);
-    }
-    return DateFormat('EEEE').format(date);
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -136,7 +105,7 @@ class __FrequencyPickerDialogState extends State<_FrequencyPickerDialog> {
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: everyDay
+          children: DateFormatUtils.everyDay
               .map(
                 (e) => _DayCheckbox(
                   day: e,

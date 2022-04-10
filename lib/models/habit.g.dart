@@ -29,9 +29,10 @@ _$_Habit _$$_HabitFromJson(Map<String, dynamic> json) => _$_Habit(
       repeatDays: (json['repeatDays'] as List<dynamic>?)
               ?.map((e) => e as int)
               .toList() ??
-          everyDay,
+          DateFormatUtils.everyDay,
       targetGoal: json['targetGoal'] as String?,
       backgroundColor: json['backgroundColor'] as int? ?? 1,
+      sortKey: json['sortKey'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$$_HabitToJson(_$_Habit instance) => <String, dynamic>{
@@ -51,4 +52,5 @@ Map<String, dynamic> _$$_HabitToJson(_$_Habit instance) => <String, dynamic>{
       'repeatDays': instance.repeatDays,
       'targetGoal': instance.targetGoal,
       'backgroundColor': instance.backgroundColor,
+      'sortKey': instance.sortKey,
     };

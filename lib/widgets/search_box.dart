@@ -39,20 +39,23 @@ class _SearchBoxState extends State<SearchBox> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: textController,
-      decoration: InputDecoration(
-        suffixIcon: isEmpty
-            ? null
-            : GestureDetector(
-                onTap: () => textController.clear(),
-                child: const Icon(Icons.close),
-              ),
-        prefixIcon: const Icon(Icons.search),
-        hintText: widget.hintText,
-        contentPadding: const EdgeInsets.symmetric(horizontal: padding * 2),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
+    return Card(
+      child: TextField(
+        textAlignVertical: TextAlignVertical.center,
+        controller: textController,
+        decoration: InputDecoration(
+          suffixIcon: isEmpty
+              ? null
+              : GestureDetector(
+                  onTap: () => textController.clear(),
+                  child: const Icon(Icons.close),
+                ),
+          prefixIcon: const Icon(Icons.search),
+          hintText: widget.hintText,
+          contentPadding: EdgeInsets.zero,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
         ),
       ),
     );

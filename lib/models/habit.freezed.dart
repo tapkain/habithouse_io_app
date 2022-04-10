@@ -40,9 +40,10 @@ class _$HabitTearOff {
       @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
           List<TimeOfDay> reminders = const [],
       List<String> localFileAttachmentUris = const [],
-      List<int> repeatDays = everyDay,
+      List<int> repeatDays = DateFormatUtils.everyDay,
       String? targetGoal,
-      int backgroundColor = 1}) {
+      int backgroundColor = 1,
+      int sortKey = 0}) {
     return _Habit(
       id: id,
       isChallenge: isChallenge,
@@ -60,6 +61,7 @@ class _$HabitTearOff {
       repeatDays: repeatDays,
       targetGoal: targetGoal,
       backgroundColor: backgroundColor,
+      sortKey: sortKey,
     );
   }
 
@@ -99,7 +101,9 @@ mixin _$Habit {
       throw _privateConstructorUsedError; // days on which this habit will be repeated (DateTime.monday etc)
   List<int> get repeatDays => throw _privateConstructorUsedError;
   String? get targetGoal => throw _privateConstructorUsedError;
-  int get backgroundColor => throw _privateConstructorUsedError;
+  int get backgroundColor =>
+      throw _privateConstructorUsedError; // key to sort in queries and to display in UI
+  int get sortKey => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -130,7 +134,8 @@ abstract class $HabitCopyWith<$Res> {
       List<String> localFileAttachmentUris,
       List<int> repeatDays,
       String? targetGoal,
-      int backgroundColor});
+      int backgroundColor,
+      int sortKey});
 }
 
 /// @nodoc
@@ -159,6 +164,7 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
     Object? repeatDays = freezed,
     Object? targetGoal = freezed,
     Object? backgroundColor = freezed,
+    Object? sortKey = freezed,
   }) {
     return _then(_value.copyWith(
       id: id == freezed
@@ -225,6 +231,10 @@ class _$HabitCopyWithImpl<$Res> implements $HabitCopyWith<$Res> {
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as int,
+      sortKey: sortKey == freezed
+          ? _value.sortKey
+          : sortKey // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -254,7 +264,8 @@ abstract class _$HabitCopyWith<$Res> implements $HabitCopyWith<$Res> {
       List<String> localFileAttachmentUris,
       List<int> repeatDays,
       String? targetGoal,
-      int backgroundColor});
+      int backgroundColor,
+      int sortKey});
 }
 
 /// @nodoc
@@ -284,6 +295,7 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
     Object? repeatDays = freezed,
     Object? targetGoal = freezed,
     Object? backgroundColor = freezed,
+    Object? sortKey = freezed,
   }) {
     return _then(_Habit(
       id: id == freezed
@@ -350,6 +362,10 @@ class __$HabitCopyWithImpl<$Res> extends _$HabitCopyWithImpl<$Res>
           ? _value.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as int,
+      sortKey: sortKey == freezed
+          ? _value.sortKey
+          : sortKey // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -375,9 +391,10 @@ class _$_Habit implements _Habit {
       @JsonKey(toJson: remindersToJson, fromJson: remindersFromJson)
           this.reminders = const [],
       this.localFileAttachmentUris = const [],
-      this.repeatDays = everyDay,
+      this.repeatDays = DateFormatUtils.everyDay,
       this.targetGoal,
-      this.backgroundColor = 1})
+      this.backgroundColor = 1,
+      this.sortKey = 0})
       : assert(name.length != 0, 'name cannot be empty'),
         assert(name.length > 2 && name.length < 30,
             'name length should be > 2 && < 30'),
@@ -441,10 +458,13 @@ class _$_Habit implements _Habit {
   @JsonKey()
   @override
   final int backgroundColor;
+  @JsonKey()
+  @override // key to sort in queries and to display in UI
+  final int sortKey;
 
   @override
   String toString() {
-    return 'Habit(id: $id, isChallenge: $isChallenge, parentId: $parentId, name: $name, createdAt: $createdAt, startDate: $startDate, endDate: $endDate, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatDays: $repeatDays, targetGoal: $targetGoal, backgroundColor: $backgroundColor)';
+    return 'Habit(id: $id, isChallenge: $isChallenge, parentId: $parentId, name: $name, createdAt: $createdAt, startDate: $startDate, endDate: $endDate, durationSeconds: $durationSeconds, description: $description, isArchived: $isArchived, emojiIcon: $emojiIcon, reminders: $reminders, localFileAttachmentUris: $localFileAttachmentUris, repeatDays: $repeatDays, targetGoal: $targetGoal, backgroundColor: $backgroundColor, sortKey: $sortKey)';
   }
 
   @override
@@ -475,7 +495,8 @@ class _$_Habit implements _Habit {
             const DeepCollectionEquality()
                 .equals(other.targetGoal, targetGoal) &&
             const DeepCollectionEquality()
-                .equals(other.backgroundColor, backgroundColor));
+                .equals(other.backgroundColor, backgroundColor) &&
+            const DeepCollectionEquality().equals(other.sortKey, sortKey));
   }
 
   @override
@@ -496,7 +517,8 @@ class _$_Habit implements _Habit {
       const DeepCollectionEquality().hash(localFileAttachmentUris),
       const DeepCollectionEquality().hash(repeatDays),
       const DeepCollectionEquality().hash(targetGoal),
-      const DeepCollectionEquality().hash(backgroundColor));
+      const DeepCollectionEquality().hash(backgroundColor),
+      const DeepCollectionEquality().hash(sortKey));
 
   @JsonKey(ignore: true)
   @override
@@ -530,7 +552,8 @@ abstract class _Habit implements Habit {
       List<String> localFileAttachmentUris,
       List<int> repeatDays,
       String? targetGoal,
-      int backgroundColor}) = _$_Habit;
+      int backgroundColor,
+      int sortKey}) = _$_Habit;
 
   factory _Habit.fromJson(Map<String, dynamic> json) = _$_Habit.fromJson;
 
@@ -571,6 +594,8 @@ abstract class _Habit implements Habit {
   String? get targetGoal;
   @override
   int get backgroundColor;
+  @override // key to sort in queries and to display in UI
+  int get sortKey;
   @override
   @JsonKey(ignore: true)
   _$HabitCopyWith<_Habit> get copyWith => throw _privateConstructorUsedError;

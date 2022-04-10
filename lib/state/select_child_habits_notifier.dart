@@ -13,14 +13,34 @@ class HabitOption {
   final Habit habit;
 }
 
+class SelectChildHabitsState {
+  SelectChildHabitsState({required this.habits, required this.isStatePristine});
+
+  final BuiltList<HabitOption> habits;
+  final bool isStatePristine;
+
+  @override
+  int get hashCode => hashValues(habits.hashCode, isStatePristine.hashCode);
+
+  @override
+  bool operator ==(Object other) {
+    // TODO: implement ==
+    return super == other;
+  }
+}
+
 class SelectChildHabitsNotifier extends StateNotifier<BuiltList<HabitOption>> {
   SelectChildHabitsNotifier(BuiltList<Habit> habits) : super(BuiltList()) {
     final list = [
       ...habits.map((e) => HabitOption(e, true)),
       ...templateHabits.map((e) => HabitOption(e, false)),
     ];
-    state = BuiltList(list.distinctBy((e) => e.habit.hashCode));
+    state = BuiltList(list
+        .distinctBy((e) => e.habit.hashCode)
+        .sortedBy((e) => e.isSelected == true ? 0 : 1));
   }
+
+  bool isStatePristine = true;
 
   void toggle(Habit habit) {
     final index = state.indexWhere((e) => e.habit.hashCode == habit.hashCode);
@@ -36,6 +56,8 @@ class SelectChildHabitsNotifier extends StateNotifier<BuiltList<HabitOption>> {
         ..insert(index, HabitOption(habit, !old.isSelected))
         ..build(),
     );
+
+    isStatePristine = false;
   }
 
   void putHabit(Habit h) {

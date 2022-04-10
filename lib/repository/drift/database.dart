@@ -9,6 +9,7 @@ import 'package:habithouse_io/repository/drift/populate_db_data.dart';
 import 'package:habithouse_io/repository/drift/shared_prefs_table.dart';
 import 'package:habithouse_io/repository/storage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:habithouse_io/models/models.dart' as m;
 import 'list_converter.dart';
@@ -77,25 +78,26 @@ class AppDb extends _$AppDb implements IStorage {
 
   @override
   Future<m.HabitEntry?> fetchEntryForDate(DateTime date, int habitId) =>
-      (select(habitEntryTable)
-            ..where((tbl) =>
-                tbl.createdAt.isBetweenValues(date.date, date.date + 1.days))
-            ..where((tbl) => tbl.habitId.equals(habitId)))
-          .getSingleOrNull()
-          .then((value) =>
-              value == null ? null : m.HabitEntry.fromJson(value.toJson()));
+      _entryForDateQuery(date, habitId).getSingleOrNull().then((value) =>
+          value == null ? null : m.HabitEntry.fromJson(value.toJson()));
 
   @override
   Future<m.HabitEntry> putEntry(m.HabitEntry entry) async {
+    final oldEntry = await fetchEntryForDate(entry.createdAt, entry.habitId);
+    if (oldEntry != null) {
+      return oldEntry;
+    }
+
     final id =
         await into(habitEntryTable).insertOnConflictUpdate(entry.toCompanion());
     return entry.copyWith(id: id);
   }
 
   @override
-  Future<m.Habit> putHabit(m.Habit h) async {
-    final id = await into(habitTable).insertOnConflictUpdate(h.toCompanion());
-    return h.copyWith(id: id);
+  Future<m.Habit> putHabit(m.Habit habit) async {
+    final id =
+        await into(habitTable).insertOnConflictUpdate(habit.toCompanion());
+    return habit.copyWith(id: id);
   }
 
   @override
@@ -126,7 +128,11 @@ class AppDb extends _$AppDb implements IStorage {
                 .roundToInt()
                 .isBiggerOrEqual(date.julianday.roundToInt()),
           ))
-      ..where((tbl) => tbl.repeatDays.contains(date.weekday.toString()));
+      ..where((tbl) => tbl.repeatDays.contains(date.weekday.toString()))
+      ..orderBy([
+        (tbl) => OrderingTerm(expression: tbl.sortKey, mode: OrderingMode.desc),
+        (tbl) => OrderingTerm(expression: tbl.createdAt)
+      ]);
 
     if (parentHabitId == null) {
       query = query..where((tbl) => tbl.parentId.isNull());
@@ -143,6 +149,30 @@ class AppDb extends _$AppDb implements IStorage {
   ]) =>
       _habitsForDateQuery(date, parentHabitId).watch().map(
           (value) => value.map((e) => m.Habit.fromJson(e.toJson())).toList());
+
+  @override
+  Future<void> putHabits(List<m.Habit> habits) => batch((batch) {
+        batch.insertAllOnConflictUpdate(
+          habitTable,
+          habits.map((e) => e.toCompanion()),
+        );
+      });
+
+  SimpleSelectStatement<$HabitEntryTableTable, HabitEntryTableData>
+      _entryForDateQuery(
+    DateTime date,
+    int habitId,
+  ) =>
+          (select(habitEntryTable)
+            ..where((tbl) => tbl.createdAt.julianday
+                .roundToInt()
+                .equalsExp(date.julianday.roundToInt()))
+            ..where((tbl) => tbl.habitId.equals(habitId)));
+
+  @override
+  Stream<m.HabitEntry?> watchEntryForDate(DateTime date, int habitId) =>
+      _entryForDateQuery(date, habitId).watchSingleOrNull().map((value) =>
+          value == null ? null : m.HabitEntry.fromJson(value.toJson()));
 }
 
 extension DateTimeExpressionsX on Expression<DateTime?> {

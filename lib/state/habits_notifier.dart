@@ -6,12 +6,6 @@ import 'package:habithouse_io/repository/repository.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:time/src/extensions.dart';
 
-// TODO:
-// 1. (maybe) listen to isar query watcher for fetching habits
-// 2. filter by weekday
-// 3. if viewDate is less than DateTime.now() we are in "history browsing mode"
-// history browsing - filter additionally by habit entries
-
 class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
   HabitsNotifier(this.storage, this.viewDate) : super(BuiltList([])) {
     _queryListener = storage.watchHabitsForDate(viewDate).listen((event) {
@@ -20,10 +14,7 @@ class HabitsNotifier extends StateNotifier<BuiltList<Habit>> {
   }
 
   Future<int> putHabit(Habit habit) async {
-    final stateMap = Map.fromIterables(state.map((h) => h.id), state);
     final newHabit = await storage.putHabit(habit);
-    stateMap[newHabit.id] = newHabit;
-    state = BuiltList(stateMap.values);
     return newHabit.id;
   }
 

@@ -23,10 +23,15 @@ class CreateHabit {
     @FormControlAnnotation(validators: [habitNameValidator]) this.name = '',
     @FormControlAnnotation() this.emoji = const Emoji('emoji', '🎯'),
     @FormControlAnnotation() this.backgroundColor = Colors.black,
-    @FormControlAnnotation() this.repeatDays = everyDay,
+    @FormControlAnnotation() this.repeatDays = DateFormatUtils.everyDay,
     @FormArrayAnnotation() this.reminders = const [],
     @FormControlAnnotation() required this.dateTimeRange,
   });
+
+  factory CreateHabit.initial() => CreateHabit(
+        backgroundColor: ColorUtils.randomColor(),
+        dateTimeRange: DateTimeRangeUtils.now(),
+      );
 }
 
 extension CreateHabitFormX on CreateHabitForm {

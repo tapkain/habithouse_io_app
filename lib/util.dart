@@ -7,13 +7,13 @@ import 'package:habithouse_io/theme.dart';
 extension BuildContextX on BuildContext {
   ThemeData get theme => Theme.of(this);
   TextTheme get textTheme => theme.textTheme;
-  ThemeData flexTheme(Color primary) => theme.brightness == Brightness.dark
-      ? darkTheme(primary: primary)
-      : lightTheme(primary: primary);
+  ThemeData flexTheme(Color primary) =>
+      themeFor(theme.brightness, primary: primary);
 }
 
 extension TextThemeX on TextTheme {
   TextStyle? get emoji => headline4;
+  TextStyle? get bigEmoji => headline1;
 }
 
 abstract class ColorUtils {
@@ -50,18 +50,48 @@ extension ColorX on Color {
   }
 }
 
-abstract class DateFormatUtils {
-  static String formatStartDate(DateTime dateTime) {
-    if (dateTime.isToday) {
+extension DateTimeX on DateTime {
+  String get formatStartDate {
+    if (isToday) {
       return 'Today';
     }
 
-    if (dateTime.isTomorrow) {
+    if (isTomorrow) {
       return 'Tomorrow';
     }
 
-    return DateFormat.yMMMMd().format(dateTime);
+    return DateFormat.yMMMMd().format(this);
   }
+
+  String get formatTitleDate {
+    if (isToday) {
+      return 'Today';
+    }
+
+    if (isTomorrow) {
+      return 'Tomorrow';
+    }
+
+    return DateFormat()
+        .addPattern(DateFormat.ABBR_WEEKDAY + ',')
+        .addPattern(DateFormat.ABBR_MONTH)
+        .addPattern(DateFormat.DAY)
+        .format(this);
+  }
+
+  String get formatDay => DateFormat('EEE').format(this);
+}
+
+abstract class DateFormatUtils {
+  static const everyDay = [
+    DateTime.monday,
+    DateTime.tuesday,
+    DateTime.wednesday,
+    DateTime.thursday,
+    DateTime.friday,
+    DateTime.saturday,
+    DateTime.sunday,
+  ];
 
   static String formatDay(int day, [String pattern = 'EEEE']) {
     var date = DateTime(2020, 1, 1);
@@ -69,6 +99,33 @@ abstract class DateFormatUtils {
       date = date.add(1.days);
     }
     return DateFormat(pattern).format(date);
+  }
+
+  static String formatWeekday(Iterable<int> days) {
+    if (days.isEmpty) {
+      return 'Any Day';
+    }
+
+    if (days.reduce((v, e) => v + e) == everyDay.reduce((v, e) => v + e)) {
+      return 'Every Day';
+    }
+
+    if (!days.contains(DateTime.sunday) &&
+        !days.contains(DateTime.saturday) &&
+        days.length == 5) {
+      return 'Weekdays';
+    }
+
+    if (days.contains(DateTime.saturday) &&
+        days.contains(DateTime.sunday) &&
+        days.length == 2) {
+      return 'Weekends';
+    }
+
+    return days
+        .sorted()
+        .map((e) => DateFormatUtils.formatDay(e, 'EEE'))
+        .join(',');
   }
 }
 

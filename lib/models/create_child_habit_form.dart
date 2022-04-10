@@ -21,6 +21,8 @@ class CreateChildHabit {
     @FormControlAnnotation(validators: [habitDurationValidator])
         this.durationSeconds,
   });
+
+  factory CreateChildHabit.initial() => CreateChildHabit();
 }
 
 extension CreateChildHabitX on CreateChildHabitForm {

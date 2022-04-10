@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/models/models.dart';
 import 'package:habithouse_io/state/child_habit_entry_notifier.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
 import 'package:habithouse_io/state/child_habits_notifier.dart';
-import 'package:habithouse_io/widgets/widgets.dart';
+import 'package:habithouse_io/theme.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -25,27 +27,37 @@ class PreviewHabitView extends HookConsumerWidget {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        // appBarColor: Color(habit.backgroundColor),
-        title: Text(habit.name),
-        actions: [
-          TextButton(
-            onPressed: () =>
-                context.go('${GoRouter.of(context).location}/edit'),
-            child: const Text('Edit'),
+    return FancyThemeProvider(
+      primary: Color(habit.backgroundColor),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => context.pop(),
           ),
-        ],
-      ),
-      body: buildView(habit, ref),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => context.go('${GoRouter.of(context).location}/select'),
+          centerTitle: false,
+          title: Text(habit.name),
+          actions: [
+            TextButton(
+              onPressed: () =>
+                  context.go('${GoRouter.of(context).location}/edit'),
+              child: Text('Edit'.toUpperCase()),
+            ),
+          ],
+        ),
+        body: buildView(context, habit, ref),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            context.go('${GoRouter.of(context).location}/templates');
+          },
+        ),
       ),
     );
   }
 
-  Widget buildView(Habit habit, WidgetRef ref) {
+  Widget buildView(BuildContext context, Habit habit, WidgetRef ref) {
     final childHabits = ref.watch(childHabitsProvider(habitId));
     return CustomScrollView(
       slivers: [
@@ -55,6 +67,14 @@ class PreviewHabitView extends HookConsumerWidget {
               onPressed: () {},
               child: Text('Start ${habit.name}'),
             ),
+          )
+        else
+          SliverFillViewport(
+            delegate: SliverChildListDelegate.fixed(
+              [buildNoHabitsView(context)],
+            ),
+            viewportFraction: 0.8,
+            padEnds: false,
           ),
         SliverList(
           delegate: SliverChildBuilderDelegate(
@@ -65,6 +85,23 @@ class PreviewHabitView extends HookConsumerWidget {
       ],
     );
   }
+
+  Widget buildNoHabitsView(BuildContext context) => Center(
+        child: InkWell(
+          onTap: () => context.go('${GoRouter.of(context).location}/templates'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('🤷', style: context.textTheme.bigEmoji),
+              Text(
+                'No habits here',
+                style: context.textTheme.emoji,
+              ),
+            ],
+          ),
+        ),
+      );
 }
 
 class ChildHabitListTile extends HookConsumerWidget {

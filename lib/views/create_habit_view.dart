@@ -1,5 +1,3 @@
-import 'package:dartx/dartx.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
@@ -29,12 +27,7 @@ class CreateHabitView extends HookConsumerWidget {
       }
     }
 
-    return CreateHabitFormView(
-      model: CreateHabit(
-        backgroundColor: ColorUtils.randomColor(),
-        dateTimeRange: DateTimeRangeUtils.now(),
-      ),
-    );
+    return CreateHabitFormView(model: CreateHabit.initial());
   }
 }
 
@@ -53,7 +46,8 @@ class CreateHabitFormView extends HookConsumerWidget {
     return CreateHabitFormBuilder(
       model: model,
       builder: (context, formModel, child) => ReactiveCreateHabitFormConsumer(
-        builder: (context, formModel, child) => FormThemeProvider(
+        builder: (context, formModel, child) => FancyThemeProvider(
+          applyFormTheming: true,
           primary: formModel.backgroundColorValue,
           child: Scaffold(
             appBar: AppBar(

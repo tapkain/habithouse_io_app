@@ -5,28 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:habithouse_io/const.dart';
+import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
+import 'package:habithouse_io/theme.dart';
+import 'package:habithouse_io/util.dart';
 import 'package:habithouse_io/widgets/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeView extends HookConsumerWidget {
   const HomeView({Key? key}) : super(key: key);
-
-  String appBarTitleText(DateTime viewDate) {
-    if (viewDate.isToday) {
-      return 'Today';
-    }
-
-    if (viewDate.isTomorrow) {
-      return 'Tomorrow';
-    }
-
-    return DateFormat()
-        .addPattern(DateFormat.ABBR_WEEKDAY + ',')
-        .addPattern(DateFormat.ABBR_MONTH)
-        .addPattern(DateFormat.DAY)
-        .format(viewDate);
-  }
 
   void onFloatingButtonPressed(BuildContext context) {
     HapticFeedback.lightImpact();
@@ -48,6 +35,7 @@ class HomeView extends HookConsumerWidget {
           context,
           innerBoxIsScrolled,
           viewDate,
+          ref,
         ),
         body: const HabitListView(),
       ),
@@ -58,17 +46,38 @@ class HomeView extends HookConsumerWidget {
     BuildContext context,
     bool innerBoxIsScrolled,
     DateTime viewDate,
+    WidgetRef ref,
   ) =>
       [
         SliverAppBar(
-          title: Text(appBarTitleText(viewDate)),
+          title: Text(viewDate.formatTitleDate),
           stretch: true,
           actions: [
             if (kDebugMode)
               IconButton(
                 onPressed: () => context.go('/habits/dbviewer'),
                 icon: const Icon(Icons.perm_data_setting_outlined),
-              )
+              ),
+            if (kDebugMode)
+              PopupMenuButton<ThemeMode>(
+                icon: const Icon(Icons.design_services_outlined),
+                onSelected: (ThemeMode mode) =>
+                    ref.read(sharedPrefsProvider).setThemeMode(mode),
+                itemBuilder: (_) => [
+                  const PopupMenuItem<ThemeMode>(
+                    value: ThemeMode.system,
+                    child: Text('System'),
+                  ),
+                  const PopupMenuItem<ThemeMode>(
+                    value: ThemeMode.dark,
+                    child: Text('Dark mode'),
+                  ),
+                  const PopupMenuItem<ThemeMode>(
+                    value: ThemeMode.light,
+                    child: Text('Light mode'),
+                  ),
+                ],
+              ),
           ],
         ),
         const SliverToBoxAdapter(child: SizedBox(height: padding)),

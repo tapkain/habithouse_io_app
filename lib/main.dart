@@ -2,7 +2,6 @@ import 'package:catcher/catcher.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:habithouse_io/repository/drift/database.dart';
 import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/router.dart';
 import 'package:habithouse_io/service/service.dart';
@@ -77,13 +76,14 @@ void main() {
         transientDb: Config.transientDb,
         logStatements: kDebugMode,
       );
+
       final scheduler = ReminderScheduler();
       scheduler.initialize();
       final localNotifications = LocalNotificationsService(scheduler);
       await localNotifications.initialize();
       final prefs = DriftSharedPrefs(appDb);
 
-      prefs.onFirstLaunch(() {
+      await prefs.onFirstLaunch(() {
         // TODO: write template habits here
       });
 
@@ -106,6 +106,7 @@ class HabithouseIO extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final prefs = ref.watch(sharedPrefsProvider);
     return OverlaySupport.global(
       child: MaterialApp.router(
         builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
@@ -118,9 +119,9 @@ class HabithouseIO extends HookConsumerWidget {
           child: child ?? Container(),
         ),
         debugShowCheckedModeBanner: false,
-        darkTheme: darkTheme(scheme: FlexScheme.redWine),
-        theme: lightTheme(scheme: FlexScheme.redWine),
-        themeMode: ThemeMode.system,
+        darkTheme: themeFor(Brightness.dark, scheme: FlexScheme.redWine),
+        theme: themeFor(Brightness.light, scheme: FlexScheme.redWine),
+        themeMode: prefs.themeMode,
         routerDelegate: router.routerDelegate,
         routeInformationParser: router.routeInformationParser,
       ),

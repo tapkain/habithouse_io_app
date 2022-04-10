@@ -15,3 +15,13 @@
 ```
 flutter test
 ```
+
+# FOCUS
+- Add / Create habits view
+- Preview routine view
+- Start Routine view
+- Local push notifications
+
+# TODO
+- Allow advanced reminders (remove how often section, pick the weekdays repeat based on reminders) if no reminders are set, this means habit is done any day and shown every day
+- Look at google calendar integrations

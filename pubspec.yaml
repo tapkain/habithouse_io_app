@@ -33,6 +33,7 @@ dependencies:
   # Local Storage
   drift: ^1.5.0
   sqlite3_flutter_libs: ^0.5.0
+  drift_db_viewer: ^1.0.3
 
   # Backend SDK (data, auth, storage bucket)
   supabase_flutter: ^0.2.11
@@ -51,7 +52,6 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   emoji_picker_flutter: ^1.1.2
   flex_color_picker: ^2.3.0
-  drift_db_viewer: ^1.0.3
 
   # Notifications
   # TODO: implement local push notifications
@@ -71,6 +71,7 @@ dependencies:
   built_collection: ^5.1.1
   dartx: ^1.0.0
   permission_handler: ^9.2.0
+  package_info_plus: ^1.4.2
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +85,7 @@ dev_dependencies:
   reactive_forms_generator: ^0.9.5-beta
   flutter_gen_runner: ^4.1.6
   flutter_launcher_icons: ^0.9.2
+  dart_code_metrics: ^4.13.0
 
 flutter_icons:
   android: false

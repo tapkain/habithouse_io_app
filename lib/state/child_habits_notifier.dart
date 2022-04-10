@@ -1,6 +1,6 @@
+import 'dart:async';
+
 import 'package:built_collection/built_collection.dart';
-import 'package:dartx/dartx.dart';
-import 'package:habithouse_io/config.dart';
 import 'package:habithouse_io/models/habit.dart';
 import 'package:habithouse_io/repository/repository.dart';
 import 'package:habithouse_io/state/habits_notifier.dart';
@@ -12,34 +12,27 @@ class ChildHabitsNotifier extends StateNotifier<BuiltList<Habit>> {
     this.viewDate,
     this.habitId,
   ) : super(BuiltList([])) {
-    storage
-        .fetchHabitsForDate(viewDate, habitId)
-        .then((value) => state = BuiltList(value));
+    _queryListener =
+        storage.watchHabitsForDate(viewDate, habitId).listen((event) {
+      state = BuiltList(event);
+    });
   }
 
-  void putHabits(int parentHabitId, List<Habit> habits) {
-    // TODO: move this to repo + find a better logic
-    // _isar.writeTxn((isar) async {
-    //   if (state.isNotEmpty) {
-    //     await isar.habits.deleteAll(state.map((e) => e.id).toList());
-    //   }
+  Future<void> putHabits(int parentHabitId, List<Habit> habits) =>
+      storage.putHabits(
+        habits.map((e) => e.copyWith(parentId: parentHabitId)).toList(),
+      );
 
-    //   final ids = await isar.habits.putAll(
-    //     habits.map((e) => e.copyWith(parentId: parentHabitId)).toList(),
-    //     replaceOnConflict: true,
-    //   );
-
-    //   for (var i = 0; i < ids.length; i++) {
-    //     habits[i] = habits[i].copyWith(id: ids[i]);
-    //   }
-
-    //   state = BuiltList(habits);
-    // });
+  @override
+  void dispose() {
+    _queryListener.cancel();
+    super.dispose();
   }
 
   final int habitId;
   final DateTime viewDate;
   final IStorage storage;
+  late final StreamSubscription<List<Habit>> _queryListener;
 }
 
 final childHabitsProvider = StateNotifierProvider.family

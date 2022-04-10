@@ -14,6 +14,7 @@ class HabitTable extends Table {
   DateTimeColumn get startDate => dateTime()();
   DateTimeColumn get endDate => dateTime().nullable()();
   IntColumn get durationSeconds => integer().nullable()();
+  IntColumn get sortKey => integer()();
   TextColumn get description => text()
       .withLength(
           min: habitDescriptionMinLength, max: habitDescriptionMaxLength)
@@ -41,5 +42,6 @@ extension HabitsCompanionX on m.Habit {
         emojiIcon: Value(emojiIcon),
         backgroundColor: Value(backgroundColor),
         repeatDays: Value(repeatDays),
+        sortKey: Value(sortKey),
       );
 }
